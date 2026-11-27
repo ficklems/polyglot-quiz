@@ -1,6 +1,8 @@
 import { test as base, expect } from '@playwright/test';
 import type { Language } from '@pq/shared';
 import { HomePage } from '../pages/HomePage';
+import { QuizPage } from '../pages/QuizPage';
+import { ResultPage } from '../pages/ResultPage';
 
 type Options = {
   /** UI language the test starts in. Override per file with test.use({ uiLang: 'pl' }). */
@@ -11,6 +13,8 @@ type Options = {
 
 type Fixtures = {
   homePage: HomePage;
+  quizPage: QuizPage;
+  resultPage: ResultPage;
 };
 
 export const test = base.extend<Options & Fixtures>({
@@ -36,6 +40,14 @@ export const test = base.extend<Options & Fixtures>({
 
   homePage: async ({ page, uiLang }, use) => {
     await use(new HomePage(page, uiLang));
+  },
+
+  quizPage: async ({ page, uiLang }, use) => {
+    await use(new QuizPage(page, uiLang));
+  },
+
+  resultPage: async ({ page, uiLang }, use) => {
+    await use(new ResultPage(page, uiLang));
   },
 });
 
