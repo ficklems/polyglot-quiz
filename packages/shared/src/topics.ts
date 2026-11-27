@@ -1,0 +1,28 @@
+import { z } from 'zod';
+import { languageSchema } from './languages';
+
+export const topicIdSchema = z
+  .string()
+  .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, 'Topic id must be kebab-case');
+
+/** A topic as returned by GET /api/topics, already translated. */
+export const topicSchema = z.object({
+  id: topicIdSchema,
+  name: z.string().min(1),
+  description: z.string().min(1),
+});
+
+export type Topic = z.infer<typeof topicSchema>;
+
+export const topicsQuerySchema = z.object({
+  lang: languageSchema,
+});
+
+export type TopicsQuery = z.infer<typeof topicsQuerySchema>;
+
+export const topicsResponseSchema = z.object({
+  lang: languageSchema,
+  topics: z.array(topicSchema),
+});
+
+export type TopicsResponse = z.infer<typeof topicsResponseSchema>;

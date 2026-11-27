@@ -1,0 +1,20 @@
+{
+  "name": "@pq/tests",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Black-box Playwright tests (UI + API) for Polyglot Quiz",
+  "type": "module",
+  "scripts": {
+    "test:e2e": "playwright test",
+    "test:api": "playwright test --project=api",
+    "test:smoke": "playwright test --grep @smoke",
+    "report": "playwright show-report",
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  },
+  "dependencies": {
+    "@pq/shared": "*"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.65.1"
+  }
+}

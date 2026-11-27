@@ -1,0 +1,29 @@
+{
+  "app": {
+    "title": "Polyglot Quiz"
+  },
+  "home": {
+    "eyebrow": "Quiz in three languages",
+    "title": "Pick a topic and test yourself",
+    "subtitle": "10 questions, 20 seconds each",
+    "start": "Start",
+    "comingSoon": "Rounds arrive in the next version. Selected topic: {{topic}}"
+  },
+  "topics": {
+    "heading": "Topics",
+    "loading": "Loading topics…",
+    "error": "Couldn't load topics.",
+    "retry": "Try again",
+    "count_one": "{{count}} topic",
+    "count_other": "{{count}} topics"
+  },
+  "settings": {
+    "language": "Interface language",
+    "darkTheme": "Dark theme"
+  },
+  "languages": {
+    "uk": "Ukrainian",
+    "en": "English",
+    "pl": "Polish"
+  }
+}

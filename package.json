@@ -1,0 +1,38 @@
+{
+  "name": "polyglot-quiz",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Multilingual quiz game (UA/EN/PL) with a full QA suite: Playwright E2E & API tests, Vitest, GitHub Actions CI",
+  "type": "module",
+  "workspaces": [
+    "packages/*",
+    "apps/*",
+    "tests"
+  ],
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "dev": "concurrently -n api,web -c magenta,cyan \"npm run dev -w @pq/api\" \"npm run dev -w @pq/web\"",
+    "build": "npm run build -w @pq/web",
+    "start:api": "npm run start -w @pq/api",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "test:e2e": "npm run test:e2e -w @pq/tests",
+    "test:api": "npm run test:api -w @pq/tests"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/node": "^22.15.0",
+    "concurrently": "^10.0.7",
+    "eslint": "^10.16.0",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "globals": "^17.14.0",
+    "prettier": "^3.10.1",
+    "typescript": "~6.0.3",
+    "typescript-eslint": "^8.74.0"
+  }
+}

@@ -1,0 +1,66 @@
+/*
+ * Design tokens for the "A + C" direction: playful violet/yellow palette,
+ * rounded shapes, arcade details. Components use these variables only.
+ */
+:root,
+[data-theme='light'] {
+  color-scheme: light;
+  --color-bg: #f4f1ff;
+  --color-surface: #ffffff;
+  --color-text: #1e1640;
+  --color-muted: #5b5480;
+  --color-track: #e4defa;
+  --color-border: #e4defa;
+  --color-card-border: #1e1640;
+  --color-accent: #6c3ce0;
+  --color-accent-deep: #4b22b0;
+  --color-accent-text: #6c3ce0;
+  --color-on-accent: #ffffff;
+  --color-accent-2: #f5b400;
+  --color-on-accent-2: #1e1640;
+  --color-ok-bg: #ddf7e8;
+  --color-ok-border: #1f8a4c;
+  --color-ok-text: #0f5c32;
+  --color-error-bg: #fde4e4;
+  --color-error-text: #8f1d1d;
+  --color-focus: #6c3ce0;
+}
+
+[data-theme='dark'] {
+  color-scheme: dark;
+  --color-bg: #17122e;
+  --color-surface: #241c45;
+  --color-text: #f3f0ff;
+  --color-muted: #b7aedd;
+  --color-track: #3a3066;
+  --color-border: #3a3066;
+  --color-card-border: #9b7bff;
+  --color-accent: #9b7bff;
+  --color-accent-deep: #5b3fc4;
+  --color-accent-text: #b9a3ff;
+  --color-on-accent: #17122e;
+  --color-accent-2: #ffd45c;
+  --color-on-accent-2: #17122e;
+  --color-ok-bg: #123a27;
+  --color-ok-border: #3fcb7e;
+  --color-ok-text: #c4f7da;
+  --color-error-bg: #3d1620;
+  --color-error-text: #ffc2c2;
+  --color-focus: #ffd45c;
+}
+
+:root {
+  --font-body: 'Nunito', system-ui, sans-serif;
+  --font-display: 'Unbounded', 'Nunito', system-ui, sans-serif;
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-lg: 18px;
+  --radius-xl: 24px;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+}
