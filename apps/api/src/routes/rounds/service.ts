@@ -13,11 +13,20 @@ import {
   type Round,
   type RoundQuestion,
   type RoundSummary,
+  type Selection,
 } from '@pq/shared';
+import type { QuestionPool } from '../../content/question-pool';
+import {
+  collectionPlan,
+  matchesCollection,
+  matchesSelection,
+  pickQuestions,
+  type QuestionMeta,
+} from '../../content/selection';
 import type { Database } from '../../db/database';
 import { badRequest, conflict, notFound, unprocessable } from '../../lib/http-errors';
-import { createRng, shuffle } from '../../lib/random';
-import { PLAYABLE_TYPES_SQL, SERVE_COLUMN, topicExists } from '../topics/service';
+import { createRng, shuffle, type Rng } from '../../lib/random';
+import { topicExists } from '../topics/service';
 
 /**
  * Extra time on top of the limit before the server treats an answer as late,
@@ -27,7 +36,9 @@ export const TIME_GRACE_SECONDS = 2;
 
 type RoundRow = {
   id: string;
-  topic_id: string;
+  topic_id: string | null;
+  collection_id: string | null;
+  ranked: number;
   lang: Language;
   score: number;
   current_started_at: number | null;
@@ -57,33 +68,135 @@ function correctOptionOf(payload: Payload): OptionId {
 
 export type Clock = () => number;
 
+type RoundSource = {
+  topicId: string | null;
+  collectionId: string | null;
+  selection: Selection | null;
+  ranked: boolean;
+  questions: QuestionMeta[];
+};
+
+/**
+ * Turns the request into a pool and a plan. A selection of exactly one whole category is
+ * the same round as that topic, so it is ranked on that topic's board; any other selection
+ * is a custom mix, which isn't ranked (players could otherwise cherry-pick easy corners).
+ */
+function chooseQuestions(
+  db: Database,
+  pool: QuestionPool,
+  request: CreateRoundRequest,
+  rng: Rng,
+): RoundSource {
+  const { lang } = request;
+  const all = pool.questions(lang);
+  if (request.selection) assertSelectionExists(db, request.selection);
+  const topicId =
+    request.topicId ??
+    (request.selection &&
+    request.selection.categories.length === 1 &&
+    request.selection.subcategories.length === 0
+      ? request.selection.categories[0]
+      : undefined);
+
+  if (topicId !== undefined) {
+    if (!topicExists(db, topicId)) throw notFound(`Topic "${topicId}" does not exist`);
+    const candidates = all.filter((q) => q.category === topicId);
+    requireEnough(candidates.length, QUESTIONS_PER_ROUND, `Topic "${topicId}"`, lang);
+    return {
+      topicId,
+      collectionId: null,
+      selection: null,
+      ranked: true,
+      questions: pickQuestions(
+        candidates,
+        { count: QUESTIONS_PER_ROUND, balanceBy: 'category' },
+        rng,
+      ),
+    };
+  }
+
+  if (request.collectionId !== undefined) {
+    const collection = pool.collection(request.collectionId);
+    if (!collection) throw notFound(`Themed quiz "${request.collectionId}" does not exist`);
+    const plan = collectionPlan(collection, QUESTIONS_PER_ROUND);
+    const candidates = all.filter((q) => matchesCollection(q, collection));
+    requireEnough(
+      candidates.length,
+      Math.max(plan.count, collection.minimumUniqueQuestions),
+      `Themed quiz "${collection.id}"`,
+      lang,
+    );
+    return {
+      topicId: null,
+      collectionId: collection.id,
+      selection: null,
+      ranked: true,
+      questions: pickQuestions(candidates, plan, rng),
+    };
+  }
+
+  const selection = request.selection!;
+  const candidates = all.filter((q) => matchesSelection(q, selection));
+  requireEnough(candidates.length, QUESTIONS_PER_ROUND, 'This selection', lang);
+  return {
+    topicId: null,
+    collectionId: null,
+    selection,
+    ranked: false,
+    questions: pickQuestions(
+      candidates,
+      { count: QUESTIONS_PER_ROUND, balanceBy: 'category' },
+      rng,
+    ),
+  };
+}
+
+function requireEnough(available: number, needed: number, what: string, lang: Language): void {
+  if (available < needed) {
+    throw unprocessable(`${what} has ${available} questions in "${lang}", a round needs ${needed}`);
+  }
+}
+
+function assertSelectionExists(db: Database, selection: Selection): void {
+  const declared = new Map(
+    (
+      db.prepare('SELECT id, subcategories FROM categories').all() as {
+        id: string;
+        subcategories: string;
+      }[]
+    ).map((row) => [row.id, new Set(JSON.parse(row.subcategories) as string[])]),
+  );
+  for (const id of selection.categories) {
+    if (!declared.has(id)) throw badRequest(`Category "${id}" does not exist`);
+  }
+  for (const ref of selection.subcategories) {
+    const [category, sub] = ref.split('/') as [string, string];
+    const known =
+      declared.get(category)?.has(sub) === true ||
+      db
+        .prepare('SELECT 1 FROM questions WHERE category_id = ? AND subcategory = ? LIMIT 1')
+        .get(category, sub) !== undefined;
+    if (!known) throw badRequest(`Subcategory "${ref}" does not exist`);
+  }
+}
+
 export function createRound(
   db: Database,
+  pool: QuestionPool,
   request: CreateRoundRequest & { seed: number },
   now: Clock,
 ): Round {
-  const { topicId, lang, seed } = request;
-  if (!topicExists(db, topicId)) {
-    throw notFound(`Topic "${topicId}" does not exist`);
-  }
-
-  const candidates = db
-    .prepare(
-      `SELECT id, type, payload FROM questions
-        WHERE category_id = ? AND ${SERVE_COLUMN[lang]} = 1 AND type IN (${PLAYABLE_TYPES_SQL})
-        ORDER BY id`,
-    )
-    .all(topicId) as { id: string; type: string; payload: string }[];
-
-  if (candidates.length < QUESTIONS_PER_ROUND) {
-    throw unprocessable(
-      `Topic "${topicId}" has ${candidates.length} questions in "${lang}", a round needs ${QUESTIONS_PER_ROUND}`,
-    );
-  }
-
+  const { lang, seed } = request;
   const rng = createRng(seed);
-  const picked = shuffle(candidates, rng).slice(0, QUESTIONS_PER_ROUND);
-  const orders = picked.map((q) => optionOrder(q.type, JSON.parse(q.payload) as Payload, rng));
+  const source = chooseQuestions(db, pool, request, rng);
+
+  const payloadOf = db.prepare('SELECT payload FROM questions WHERE id = ?');
+  const picked = source.questions.map((q) => ({
+    id: q.id,
+    type: q.type,
+    payload: JSON.parse((payloadOf.get(q.id) as { payload: string }).payload) as Payload,
+  }));
+  const orders = picked.map((q) => optionOrder(q.type, q.payload, rng));
 
   const roundId = randomUUID();
   const startedAt = now();
@@ -95,9 +208,19 @@ export function createRound(
   db.exec('BEGIN');
   try {
     db.prepare(
-      `INSERT INTO rounds (id, topic_id, lang, created_at, current_started_at)
-       VALUES (?, ?, ?, ?, ?)`,
-    ).run(roundId, topicId, lang, startedAt, startedAt);
+      `INSERT INTO rounds (id, topic_id, collection_id, selection, ranked, lang, created_at,
+         current_started_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+    ).run(
+      roundId,
+      source.topicId,
+      source.collectionId,
+      source.selection ? JSON.stringify(source.selection) : null,
+      source.ranked ? 1 : 0,
+      lang,
+      startedAt,
+      startedAt,
+    );
     picked.forEach((q, position) => {
       insertRoundQuestion.run(roundId, position, q.id, JSON.stringify(orders[position]));
     });
@@ -109,12 +232,12 @@ export function createRound(
 
   return {
     roundId,
-    topicId,
+    topicId: source.topicId,
+    collectionId: source.collectionId,
+    ranked: source.ranked,
     lang,
     timeLimitSeconds: TIME_LIMIT_SECONDS,
-    questions: picked.map((q, i) =>
-      playerQuestion(q.id, JSON.parse(q.payload) as Payload, lang, orders[i] ?? []),
-    ),
+    questions: picked.map((q, i) => playerQuestion(q.id, q.payload, lang, orders[i] ?? [])),
   };
 }
 
@@ -155,7 +278,8 @@ function playerQuestion(
 function getRoundRow(db: Database, roundId: string): RoundRow {
   const round = db
     .prepare(
-      'SELECT id, topic_id, lang, score, current_started_at, finished_at FROM rounds WHERE id = ?',
+      `SELECT id, topic_id, collection_id, ranked, lang, score, current_started_at, finished_at
+         FROM rounds WHERE id = ?`,
     )
     .get(roundId) as RoundRow | undefined;
   if (!round) throw notFound(`Round "${roundId}" does not exist`);
@@ -272,6 +396,8 @@ export function getRoundSummary(db: Database, roundId: string): RoundSummary {
   return {
     roundId: round.id,
     topicId: round.topic_id,
+    collectionId: round.collection_id,
+    ranked: round.ranked === 1,
     lang: round.lang,
     score: round.score,
     correctCount: answered.filter((q) => q.is_correct === 1).length,

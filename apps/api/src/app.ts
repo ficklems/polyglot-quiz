@@ -2,9 +2,11 @@ import cors from '@fastify/cors';
 import Fastify, { type FastifyInstance } from 'fastify';
 import type { Config } from './config';
 import { loadContent, type ContentBundle } from './content/load-content';
+import { QuestionPool } from './content/question-pool';
 import { openDatabase } from './db/database';
 import { randomSeed as defaultRandomSeed } from './lib/random';
 import { registerErrorHandler } from './plugins/error-handler';
+import { catalogRoutes } from './routes/catalog';
 import { healthRoutes } from './routes/health';
 import { leaderboardRoutes } from './routes/leaderboard';
 import { roundsRoutes } from './routes/rounds';
@@ -33,6 +35,9 @@ export async function buildApp(options: BuildAppOptions): Promise<FastifyInstanc
   );
   const db = openDatabase(options.dbPath, content);
   app.decorate('db', db);
+  const pool = new QuestionPool(db, content);
+  pool.warmUp();
+  app.decorate('pool', pool);
   app.addHook('onClose', async () => db.close());
 
   registerErrorHandler(app);
@@ -42,6 +47,7 @@ export async function buildApp(options: BuildAppOptions): Promise<FastifyInstanc
     async (api) => {
       await api.register(healthRoutes);
       await api.register(topicsRoutes);
+      await api.register(catalogRoutes);
       const now = options.now ?? Date.now;
       await api.register(roundsRoutes, {
         now,

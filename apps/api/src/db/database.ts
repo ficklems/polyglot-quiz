@@ -3,12 +3,16 @@ import { dirname } from 'node:path';
 import { DatabaseSync } from 'node:sqlite';
 import type { ContentBundle } from '../content/load-content';
 import { migrateFromV1, needsV1Migration } from './migrate-v1';
+import { rebuildRoundTables } from './rebuild-round-tables';
 import { syncContent } from './sync-content';
 
 export type Database = DatabaseSync;
 
-/** v1 = milestones 0–2 (3 topics, 45 questions). v2 = imported content dataset. */
-export const SCHEMA_VERSION = 2;
+/**
+ * v1 = milestones 0–2 (3 topics, 45 questions). v2 = imported content dataset.
+ * v3 = rounds and leaderboard entries for themed quizzes and custom selections.
+ */
+export const SCHEMA_VERSION = 3;
 
 const SCHEMA = `
   CREATE TABLE IF NOT EXISTS meta (
@@ -47,7 +51,11 @@ const SCHEMA = `
 
   CREATE TABLE IF NOT EXISTS rounds (
     id                 TEXT PRIMARY KEY,
-    topic_id           TEXT NOT NULL REFERENCES categories(id),
+    -- A topic round has topic_id, a themed quiz has collection_id, a custom mix has neither.
+    topic_id           TEXT REFERENCES categories(id),
+    collection_id      TEXT,
+    selection          TEXT,  -- JSON Selection, for custom mixes
+    ranked             INTEGER NOT NULL DEFAULT 1,
     lang               TEXT NOT NULL,
     score              INTEGER NOT NULL DEFAULT 0,
     created_at         INTEGER NOT NULL,
@@ -75,15 +83,20 @@ const SCHEMA = `
     -- UNIQUE: one leaderboard entry per round.
     round_id        TEXT NOT NULL UNIQUE REFERENCES rounds(id),
     nickname        TEXT NOT NULL,
-    topic_id        TEXT NOT NULL REFERENCES categories(id),
+    -- The board: exactly one of topic_id / collection_id.
+    topic_id        TEXT REFERENCES categories(id),
+    collection_id   TEXT,
     score           INTEGER NOT NULL,
     correct_count   INTEGER NOT NULL,
     total_questions INTEGER NOT NULL,
-    created_at      INTEGER NOT NULL
+    created_at      INTEGER NOT NULL,
+    CHECK ((topic_id IS NULL) <> (collection_id IS NULL))
   );
 
   CREATE INDEX IF NOT EXISTS leaderboard_by_topic
     ON leaderboard_entries (topic_id, score DESC, created_at, id);
+  CREATE INDEX IF NOT EXISTS leaderboard_by_collection
+    ON leaderboard_entries (collection_id, score DESC, created_at, id);
 `;
 
 /**
@@ -100,7 +113,11 @@ export function openDatabase(path: string, content: ContentBundle): Database {
   // Off while the structure changes; checked explicitly before turning it back on.
   db.exec('PRAGMA foreign_keys = OFF;');
 
-  if (needsV1Migration(db)) migrateFromV1(db, content, SCHEMA);
+  if (needsV1Migration(db)) {
+    migrateFromV1(db, content, SCHEMA);
+  } else if (userVersion(db) === 2) {
+    rebuildRoundTables(db, SCHEMA);
+  }
   db.exec(SCHEMA);
   syncContent(db, content);
   db.exec(`PRAGMA user_version = ${SCHEMA_VERSION};`);
@@ -111,4 +128,8 @@ export function openDatabase(path: string, content: ContentBundle): Database {
   }
   db.exec('PRAGMA foreign_keys = ON;');
   return db;
+}
+
+function userVersion(db: DatabaseSync): number {
+  return (db.prepare('PRAGMA user_version').get() as { user_version: number }).user_version;
 }

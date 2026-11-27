@@ -334,6 +334,8 @@ describe('GET /api/rounds/:roundId', () => {
     expect(roundSummarySchema.parse(res.json())).toEqual({
       roundId: round.roundId,
       topicId: 'general',
+      collectionId: null,
+      ranked: true,
       lang: 'en',
       score: POINTS_PER_CORRECT,
       correctCount: 1,

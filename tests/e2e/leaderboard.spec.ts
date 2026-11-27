@@ -80,6 +80,7 @@ test.describe('Saving a result', () => {
       correctCount: 10,
       totalQuestions: 10,
       topicId: 'general',
+      collectionId: null,
       createdAt: '2026-01-01T00:00:00.000Z',
     }));
     const own: LeaderboardEntry = {

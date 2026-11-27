@@ -15,8 +15,12 @@ export async function leaderboardRoutes(
   { now }: LeaderboardRoutesOptions,
 ): Promise<void> {
   app.get('/leaderboard', async (request): Promise<LeaderboardResponse> => {
-    const { topicId, limit } = leaderboardQuerySchema.parse(request.query);
-    return getLeaderboard(app.db, topicId, limit);
+    const { topicId, collectionId, limit } = leaderboardQuerySchema.parse(request.query);
+    return getLeaderboard(app.db, app.pool, {
+      limit,
+      ...(topicId !== undefined ? { topicId } : {}),
+      ...(collectionId !== undefined ? { collectionId } : {}),
+    });
   });
 
   app.post('/leaderboard', async (request, reply): Promise<SubmitScoreResponse> => {

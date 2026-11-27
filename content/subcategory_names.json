@@ -1,0 +1,1350 @@
+{
+ "_comment": "Names of subcategories in three languages, authored for polyglot-quiz (2026-11-27); not part of the supplied archive. Needs proofreading like the rest of the content.",
+ "names": {
+  "1950s": {
+   "uk": "1950-ті",
+   "en": "1950s",
+   "pl": "Lata 50."
+  },
+  "1960s": {
+   "uk": "1960-ті",
+   "en": "1960s",
+   "pl": "Lata 60."
+  },
+  "1970s": {
+   "uk": "1970-ті",
+   "en": "1970s",
+   "pl": "Lata 70."
+  },
+  "1980s": {
+   "uk": "1980-ті",
+   "en": "1980s",
+   "pl": "Lata 80."
+  },
+  "1990s": {
+   "uk": "1990-ті",
+   "en": "1990s",
+   "pl": "Lata 90."
+  },
+  "2000s": {
+   "uk": "2000-ні",
+   "en": "2000s",
+   "pl": "Lata 2000."
+  },
+  "2010s": {
+   "uk": "2010-ті",
+   "en": "2010s",
+   "pl": "Lata 2010."
+  },
+  "2020s": {
+   "uk": "2020-ті",
+   "en": "2020s",
+   "pl": "Lata 2020."
+  },
+  "20th_century": {
+   "uk": "XX століття",
+   "en": "20th century",
+   "pl": "XX wiek"
+  },
+  "21st_century": {
+   "uk": "XXI століття",
+   "en": "21st century",
+   "pl": "XXI wiek"
+  },
+  "acronyms": {
+   "uk": "Абревіатури",
+   "en": "Acronyms",
+   "pl": "Skróty"
+  },
+  "actors": {
+   "uk": "Актори",
+   "en": "Actors",
+   "pl": "Aktorzy"
+  },
+  "ai": {
+   "uk": "Штучний інтелект",
+   "en": "Artificial intelligence",
+   "pl": "Sztuczna inteligencja"
+  },
+  "albums": {
+   "uk": "Альбоми",
+   "en": "Albums",
+   "pl": "Albumy"
+  },
+  "anatomy": {
+   "uk": "Анатомія",
+   "en": "Anatomy",
+   "pl": "Anatomia"
+  },
+  "ancient_world": {
+   "uk": "Стародавній світ",
+   "en": "Ancient world",
+   "pl": "Starożytność"
+  },
+  "anglophone_books": {
+   "uk": "Англомовна література",
+   "en": "English-language books",
+   "pl": "Literatura anglojęzyczna"
+  },
+  "anglophone_cinema": {
+   "uk": "Англомовне кіно",
+   "en": "English-language cinema",
+   "pl": "Kino anglojęzyczne"
+  },
+  "anglophone_geography": {
+   "uk": "Англомовні країни",
+   "en": "English-speaking countries",
+   "pl": "Kraje anglojęzyczne"
+  },
+  "anglophone_history": {
+   "uk": "Історія англомовних країн",
+   "en": "History of English-speaking countries",
+   "pl": "Historia krajów anglojęzycznych"
+  },
+  "animals": {
+   "uk": "Тварини",
+   "en": "Animals",
+   "pl": "Zwierzęta"
+  },
+  "animated_characters": {
+   "uk": "Мультгерої",
+   "en": "Animated characters",
+   "pl": "Postacie z kreskówek"
+  },
+  "animation_history": {
+   "uk": "Історія анімації",
+   "en": "Animation history",
+   "pl": "Historia animacji"
+  },
+  "anime": {
+   "uk": "Аніме",
+   "en": "Anime",
+   "pl": "Anime"
+  },
+  "archaeology": {
+   "uk": "Археологія",
+   "en": "Archaeology",
+   "pl": "Archeologia"
+  },
+  "architecture": {
+   "uk": "Архітектура",
+   "en": "Architecture",
+   "pl": "Architektura"
+  },
+  "arithmetic": {
+   "uk": "Арифметика",
+   "en": "Arithmetic",
+   "pl": "Arytmetyka"
+  },
+  "art_movements": {
+   "uk": "Мистецькі напрями",
+   "en": "Art movements",
+   "pl": "Kierunki w sztuce"
+  },
+  "artists": {
+   "uk": "Митці",
+   "en": "Artists",
+   "pl": "Artyści"
+  },
+  "astronauts": {
+   "uk": "Астронавти",
+   "en": "Astronauts",
+   "pl": "Astronauci"
+  },
+  "astronomy": {
+   "uk": "Астрономія",
+   "en": "Astronomy",
+   "pl": "Astronomia"
+  },
+  "athletes": {
+   "uk": "Спортсмени",
+   "en": "Athletes",
+   "pl": "Sportowcy"
+  },
+  "athletics": {
+   "uk": "Легка атлетика",
+   "en": "Athletics",
+   "pl": "Lekkoatletyka"
+  },
+  "attention": {
+   "uk": "Увага",
+   "en": "Attention",
+   "pl": "Uwaga"
+  },
+  "author_matching": {
+   "uk": "Автори і твори",
+   "en": "Authors and works",
+   "pl": "Autorzy i dzieła"
+  },
+  "authors": {
+   "uk": "Письменники",
+   "en": "Authors",
+   "pl": "Pisarze"
+  },
+  "automotive_history": {
+   "uk": "Історія автомобілів",
+   "en": "Automotive history",
+   "pl": "Historia motoryzacji"
+  },
+  "aviation": {
+   "uk": "Авіація",
+   "en": "Aviation",
+   "pl": "Lotnictwo"
+  },
+  "awards": {
+   "uk": "Нагороди",
+   "en": "Awards",
+   "pl": "Nagrody"
+  },
+  "basketball": {
+   "uk": "Баскетбол",
+   "en": "Basketball",
+   "pl": "Koszykówka"
+  },
+  "biology": {
+   "uk": "Біологія",
+   "en": "Biology",
+   "pl": "Biologia"
+  },
+  "birds": {
+   "uk": "Птахи",
+   "en": "Birds",
+   "pl": "Ptaki"
+  },
+  "board_games": {
+   "uk": "Настільні ігри",
+   "en": "Board games",
+   "pl": "Gry planszowe"
+  },
+  "borders": {
+   "uk": "Кордони",
+   "en": "Borders",
+   "pl": "Granice"
+  },
+  "boxing": {
+   "uk": "Бокс",
+   "en": "Boxing",
+   "pl": "Boks"
+  },
+  "brain": {
+   "uk": "Мозок",
+   "en": "Brain",
+   "pl": "Mózg"
+  },
+  "brand_history": {
+   "uk": "Історія брендів",
+   "en": "Brand history",
+   "pl": "Historia marek"
+  },
+  "brands": {
+   "uk": "Бренди",
+   "en": "Brands",
+   "pl": "Marki"
+  },
+  "calendar": {
+   "uk": "Календар",
+   "en": "Calendar",
+   "pl": "Kalendarz"
+  },
+  "capitals": {
+   "uk": "Столиці",
+   "en": "Capitals",
+   "pl": "Stolice"
+  },
+  "capitals_matching": {
+   "uk": "Країни і столиці",
+   "en": "Countries and capitals",
+   "pl": "Kraje i stolice"
+  },
+  "cats": {
+   "uk": "Коти",
+   "en": "Cats",
+   "pl": "Koty"
+  },
+  "celebrities": {
+   "uk": "Знаменитості",
+   "en": "Celebrities",
+   "pl": "Celebryci"
+  },
+  "central_europe": {
+   "uk": "Центральна Європа",
+   "en": "Central Europe",
+   "pl": "Europa Środkowa"
+  },
+  "central_europe_cinema": {
+   "uk": "Кіно Центральної Європи",
+   "en": "Central European cinema",
+   "pl": "Kino Europy Środkowej"
+  },
+  "central_europe_history": {
+   "uk": "Історія Центральної Європи",
+   "en": "Central European history",
+   "pl": "Historia Europy Środkowej"
+  },
+  "central_europe_music": {
+   "uk": "Музика Центральної Європи",
+   "en": "Central European music",
+   "pl": "Muzyka Europy Środkowej"
+  },
+  "characters": {
+   "uk": "Персонажі",
+   "en": "Characters",
+   "pl": "Postacie"
+  },
+  "cheese": {
+   "uk": "Сири",
+   "en": "Cheese",
+   "pl": "Sery"
+  },
+  "chemistry": {
+   "uk": "Хімія",
+   "en": "Chemistry",
+   "pl": "Chemia"
+  },
+  "childhood_tv": {
+   "uk": "Дитяче телебачення",
+   "en": "Childhood TV",
+   "pl": "Telewizja z dzieciństwa"
+  },
+  "childrens_books": {
+   "uk": "Дитячі книжки",
+   "en": "Children’s books",
+   "pl": "Książki dla dzieci"
+  },
+  "christmas": {
+   "uk": "Різдво",
+   "en": "Christmas",
+   "pl": "Boże Narodzenie"
+  },
+  "chronology": {
+   "uk": "Хронологія",
+   "en": "Chronology",
+   "pl": "Chronologia"
+  },
+  "cities": {
+   "uk": "Міста",
+   "en": "Cities",
+   "pl": "Miasta"
+  },
+  "classic_internet_memes": {
+   "uk": "Класичні інтернет-меми",
+   "en": "Classic internet memes",
+   "pl": "Klasyczne memy internetowe"
+  },
+  "classical": {
+   "uk": "Класична музика",
+   "en": "Classical music",
+   "pl": "Muzyka klasyczna"
+  },
+  "coffee_tea": {
+   "uk": "Кава і чай",
+   "en": "Coffee and tea",
+   "pl": "Kawa i herbata"
+  },
+  "cognitive_biases": {
+   "uk": "Когнітивні викривлення",
+   "en": "Cognitive biases",
+   "pl": "Błędy poznawcze"
+  },
+  "comedy": {
+   "uk": "Комедії",
+   "en": "Comedy",
+   "pl": "Komedie"
+  },
+  "common_myths": {
+   "uk": "Поширені міфи",
+   "en": "Common myths",
+   "pl": "Popularne mity"
+  },
+  "communication": {
+   "uk": "Зв’язок",
+   "en": "Communication",
+   "pl": "Łączność"
+  },
+  "companies": {
+   "uk": "Компанії",
+   "en": "Companies",
+   "pl": "Firmy"
+  },
+  "comparison": {
+   "uk": "Порівняння",
+   "en": "Comparisons",
+   "pl": "Porównania"
+  },
+  "computers": {
+   "uk": "Комп’ютери",
+   "en": "Computers",
+   "pl": "Komputery"
+  },
+  "consoles": {
+   "uk": "Ігрові консолі",
+   "en": "Consoles",
+   "pl": "Konsole"
+  },
+  "continents": {
+   "uk": "Континенти",
+   "en": "Continents",
+   "pl": "Kontynenty"
+  },
+  "cooking_methods": {
+   "uk": "Способи приготування",
+   "en": "Cooking methods",
+   "pl": "Metody gotowania"
+  },
+  "cosmetics": {
+   "uk": "Косметика",
+   "en": "Cosmetics",
+   "pl": "Kosmetyki"
+  },
+  "countries": {
+   "uk": "Країни",
+   "en": "Countries",
+   "pl": "Kraje"
+  },
+  "currencies": {
+   "uk": "Валюти",
+   "en": "Currencies",
+   "pl": "Waluty"
+  },
+  "cybersecurity": {
+   "uk": "Кібербезпека",
+   "en": "Cybersecurity",
+   "pl": "Cyberbezpieczeństwo"
+  },
+  "decades": {
+   "uk": "Десятиліття",
+   "en": "Decades",
+   "pl": "Dekady"
+  },
+  "deduction": {
+   "uk": "Дедукція",
+   "en": "Deduction",
+   "pl": "Dedukcja"
+  },
+  "design": {
+   "uk": "Дизайн",
+   "en": "Design",
+   "pl": "Projektowanie"
+  },
+  "designers": {
+   "uk": "Дизайнери",
+   "en": "Designers",
+   "pl": "Projektanci"
+  },
+  "desserts": {
+   "uk": "Десерти",
+   "en": "Desserts",
+   "pl": "Desery"
+  },
+  "detective": {
+   "uk": "Детективи",
+   "en": "Detective stories",
+   "pl": "Kryminały"
+  },
+  "dialects": {
+   "uk": "Діалекти",
+   "en": "Dialects",
+   "pl": "Dialekty"
+  },
+  "dinosaurs": {
+   "uk": "Динозаври",
+   "en": "Dinosaurs",
+   "pl": "Dinozaury"
+  },
+  "discoveries": {
+   "uk": "Відкриття",
+   "en": "Discoveries",
+   "pl": "Odkrycia"
+  },
+  "disney": {
+   "uk": "Disney",
+   "en": "Disney",
+   "pl": "Disney"
+  },
+  "documented_discoveries": {
+   "uk": "Задокументовані відкриття",
+   "en": "Documented discoveries",
+   "pl": "Udokumentowane odkrycia"
+  },
+  "dogs": {
+   "uk": "Собаки",
+   "en": "Dogs",
+   "pl": "Psy"
+  },
+  "drama": {
+   "uk": "Драма",
+   "en": "Drama",
+   "pl": "Dramat"
+  },
+  "dreamworks": {
+   "uk": "DreamWorks",
+   "en": "DreamWorks",
+   "pl": "DreamWorks"
+  },
+  "early_modern": {
+   "uk": "Ранній новий час",
+   "en": "Early modern period",
+   "pl": "Wczesna nowożytność"
+  },
+  "earth_science": {
+   "uk": "Науки про Землю",
+   "en": "Earth science",
+   "pl": "Nauki o Ziemi"
+  },
+  "easter": {
+   "uk": "Великдень",
+   "en": "Easter",
+   "pl": "Wielkanoc"
+  },
+  "economics": {
+   "uk": "Економіка",
+   "en": "Economics",
+   "pl": "Ekonomia"
+  },
+  "ecosystems": {
+   "uk": "Екосистеми",
+   "en": "Ecosystems",
+   "pl": "Ekosystemy"
+  },
+  "egyptian_mythology": {
+   "uk": "Єгипетська міфологія",
+   "en": "Egyptian mythology",
+   "pl": "Mitologia egipska"
+  },
+  "emoji": {
+   "uk": "Вгадай за емодзі",
+   "en": "Guess by emoji",
+   "pl": "Zgadnij z emoji"
+  },
+  "emotions": {
+   "uk": "Емоції",
+   "en": "Emotions",
+   "pl": "Emocje"
+  },
+  "empires": {
+   "uk": "Імперії",
+   "en": "Empires",
+   "pl": "Imperia"
+  },
+  "english_speaking": {
+   "uk": "Англомовна музика",
+   "en": "English-language music",
+   "pl": "Muzyka anglojęzyczna"
+  },
+  "entrepreneurs": {
+   "uk": "Підприємці",
+   "en": "Entrepreneurs",
+   "pl": "Przedsiębiorcy"
+  },
+  "etymology": {
+   "uk": "Етимологія",
+   "en": "Etymology",
+   "pl": "Etymologia"
+  },
+  "eurovision": {
+   "uk": "Євробачення",
+   "en": "Eurovision",
+   "pl": "Eurowizja"
+  },
+  "everyday": {
+   "uk": "Повсякдення",
+   "en": "Everyday life",
+   "pl": "Codzienność"
+  },
+  "experiments": {
+   "uk": "Експерименти",
+   "en": "Experiments",
+   "pl": "Eksperymenty"
+  },
+  "facts": {
+   "uk": "Цікаві факти",
+   "en": "Facts",
+   "pl": "Ciekawostki"
+  },
+  "fantasy": {
+   "uk": "Фентезі",
+   "en": "Fantasy",
+   "pl": "Fantastyka"
+  },
+  "fashion_terms": {
+   "uk": "Модні терміни",
+   "en": "Fashion terms",
+   "pl": "Terminy modowe"
+  },
+  "festivals": {
+   "uk": "Фестивалі і свята",
+   "en": "Festivals",
+   "pl": "Festiwale i święta"
+  },
+  "film_directors": {
+   "uk": "Режисери",
+   "en": "Film directors",
+   "pl": "Reżyserzy"
+  },
+  "film_franchises": {
+   "uk": "Кінофраншизи",
+   "en": "Film franchises",
+   "pl": "Serie filmowe"
+  },
+  "finance": {
+   "uk": "Фінанси",
+   "en": "Finance",
+   "pl": "Finanse"
+  },
+  "financial_literacy": {
+   "uk": "Фінансова грамотність",
+   "en": "Financial literacy",
+   "pl": "Edukacja finansowa"
+  },
+  "fixed_dates": {
+   "uk": "Свята з фіксованою датою",
+   "en": "Fixed-date holidays",
+   "pl": "Święta o stałej dacie"
+  },
+  "flags_text": {
+   "uk": "Прапори (опис)",
+   "en": "Flags (described)",
+   "pl": "Flagi (opis)"
+  },
+  "folk_legends": {
+   "uk": "Народні легенди",
+   "en": "Folk legends",
+   "pl": "Legendy ludowe"
+  },
+  "food_history": {
+   "uk": "Історія їжі",
+   "en": "Food history",
+   "pl": "Historia jedzenia"
+  },
+  "football": {
+   "uk": "Футбол",
+   "en": "Football",
+   "pl": "Piłka nożna"
+  },
+  "forensics": {
+   "uk": "Криміналістика",
+   "en": "Forensics",
+   "pl": "Kryminalistyka"
+  },
+  "galaxies": {
+   "uk": "Галактики",
+   "en": "Galaxies",
+   "pl": "Galaktyki"
+  },
+  "game_mechanics": {
+   "uk": "Ігрові механіки",
+   "en": "Game mechanics",
+   "pl": "Mechaniki gier"
+  },
+  "games": {
+   "uk": "Ігри",
+   "en": "Games",
+   "pl": "Gry"
+  },
+  "geographic_records": {
+   "uk": "Географічні рекорди",
+   "en": "Geographic records",
+   "pl": "Rekordy geograficzne"
+  },
+  "grammar": {
+   "uk": "Граматика",
+   "en": "Grammar",
+   "pl": "Gramatyka"
+  },
+  "greek_mythology": {
+   "uk": "Грецька міфологія",
+   "en": "Greek mythology",
+   "pl": "Mitologia grecka"
+  },
+  "halloween": {
+   "uk": "Гелловін",
+   "en": "Halloween",
+   "pl": "Halloween"
+  },
+  "heritage_sites": {
+   "uk": "Об’єкти спадщини",
+   "en": "Heritage sites",
+   "pl": "Miejsca dziedzictwa"
+  },
+  "hip_hop": {
+   "uk": "Хіп-хоп",
+   "en": "Hip-hop",
+   "pl": "Hip-hop"
+  },
+  "historical_puzzles": {
+   "uk": "Історичні загадки",
+   "en": "Historical puzzles",
+   "pl": "Zagadki historyczne"
+  },
+  "horror": {
+   "uk": "Жахи",
+   "en": "Horror",
+   "pl": "Horror"
+  },
+  "household_items": {
+   "uk": "Побутові речі",
+   "en": "Household items",
+   "pl": "Przedmioty codziennego użytku"
+  },
+  "human_achievements": {
+   "uk": "Досягнення людей",
+   "en": "Human achievements",
+   "pl": "Ludzkie osiągnięcia"
+  },
+  "idioms": {
+   "uk": "Ідіоми",
+   "en": "Idioms",
+   "pl": "Idiomy"
+  },
+  "independence": {
+   "uk": "Незалежність",
+   "en": "Independence",
+   "pl": "Niepodległość"
+  },
+  "industry": {
+   "uk": "Промисловість",
+   "en": "Industry",
+   "pl": "Przemysł"
+  },
+  "ingredients": {
+   "uk": "Інгредієнти",
+   "en": "Ingredients",
+   "pl": "Składniki"
+  },
+  "insects": {
+   "uk": "Комахи",
+   "en": "Insects",
+   "pl": "Owady"
+  },
+  "interdisciplinary": {
+   "uk": "Різне",
+   "en": "Mixed topics",
+   "pl": "Różne"
+  },
+  "international_hits": {
+   "uk": "Світові хіти",
+   "en": "International hits",
+   "pl": "Światowe przeboje"
+  },
+  "internet_culture": {
+   "uk": "Інтернет-культура",
+   "en": "Internet culture",
+   "pl": "Kultura internetu"
+  },
+  "internet_history": {
+   "uk": "Історія інтернету",
+   "en": "Internet history",
+   "pl": "Historia internetu"
+  },
+  "internet_slang": {
+   "uk": "Інтернет-сленг",
+   "en": "Internet slang",
+   "pl": "Slang internetowy"
+  },
+  "inventors": {
+   "uk": "Винахідники",
+   "en": "Inventors",
+   "pl": "Wynalazcy"
+  },
+  "islands": {
+   "uk": "Острови",
+   "en": "Islands",
+   "pl": "Wyspy"
+  },
+  "jazz": {
+   "uk": "Джаз",
+   "en": "Jazz",
+   "pl": "Jazz"
+  },
+  "landmarks": {
+   "uk": "Пам’ятки",
+   "en": "Landmarks",
+   "pl": "Zabytki"
+  },
+  "learning": {
+   "uk": "Навчання",
+   "en": "Learning",
+   "pl": "Uczenie się"
+  },
+  "local_customs": {
+   "uk": "Місцеві звичаї",
+   "en": "Local customs",
+   "pl": "Lokalne zwyczaje"
+  },
+  "location_clues": {
+   "uk": "Підказки про місце",
+   "en": "Location clues",
+   "pl": "Wskazówki o miejscu"
+  },
+  "lost_civilizations": {
+   "uk": "Зниклі цивілізації",
+   "en": "Lost civilizations",
+   "pl": "Zaginione cywilizacje"
+  },
+  "map_locations": {
+   "uk": "На карті",
+   "en": "On the map",
+   "pl": "Na mapie"
+  },
+  "marine_life": {
+   "uk": "Морське життя",
+   "en": "Marine life",
+   "pl": "Życie morskie"
+  },
+  "mathematics": {
+   "uk": "Математика",
+   "en": "Mathematics",
+   "pl": "Matematyka"
+  },
+  "media": {
+   "uk": "Медіа",
+   "en": "Media",
+   "pl": "Media"
+  },
+  "medical_history": {
+   "uk": "Історія медицини",
+   "en": "Medical history",
+   "pl": "Historia medycyny"
+  },
+  "medicine": {
+   "uk": "Медицина",
+   "en": "Medicine",
+   "pl": "Medycyna"
+  },
+  "medieval_history": {
+   "uk": "Середньовіччя",
+   "en": "Middle Ages",
+   "pl": "Średniowiecze"
+  },
+  "memory": {
+   "uk": "Пам’ять",
+   "en": "Memory",
+   "pl": "Pamięć"
+  },
+  "missions": {
+   "uk": "Космічні місії",
+   "en": "Space missions",
+   "pl": "Misje kosmiczne"
+  },
+  "modern_history": {
+   "uk": "Новітня історія",
+   "en": "Modern history",
+   "pl": "Historia najnowsza"
+  },
+  "motorsport": {
+   "uk": "Автоспорт",
+   "en": "Motorsport",
+   "pl": "Sporty motorowe"
+  },
+  "mountains": {
+   "uk": "Гори",
+   "en": "Mountains",
+   "pl": "Góry"
+  },
+  "museums": {
+   "uk": "Музеї",
+   "en": "Museums",
+   "pl": "Muzea"
+  },
+  "national_dishes": {
+   "uk": "Національні страви",
+   "en": "National dishes",
+   "pl": "Dania narodowe"
+  },
+  "national_sports": {
+   "uk": "Національні види спорту",
+   "en": "National sports",
+   "pl": "Sporty narodowe"
+  },
+  "natural_records": {
+   "uk": "Рекорди природи",
+   "en": "Natural records",
+   "pl": "Rekordy natury"
+  },
+  "new_year": {
+   "uk": "Новий рік",
+   "en": "New Year",
+   "pl": "Nowy Rok"
+  },
+  "norse_mythology": {
+   "uk": "Скандинавська міфологія",
+   "en": "Norse mythology",
+   "pl": "Mitologia nordycka"
+  },
+  "nutrition": {
+   "uk": "Харчування",
+   "en": "Nutrition",
+   "pl": "Odżywianie"
+  },
+  "oceans": {
+   "uk": "Океани і моря",
+   "en": "Oceans and seas",
+   "pl": "Oceany i morza"
+  },
+  "olympic_hosts": {
+   "uk": "Олімпійські столиці",
+   "en": "Olympic hosts",
+   "pl": "Gospodarze igrzysk"
+  },
+  "organs": {
+   "uk": "Органи",
+   "en": "Organs",
+   "pl": "Narządy"
+  },
+  "paintings": {
+   "uk": "Картини",
+   "en": "Paintings",
+   "pl": "Obrazy"
+  },
+  "pattern_recognition": {
+   "uk": "Закономірності",
+   "en": "Pattern recognition",
+   "pl": "Rozpoznawanie wzorców"
+  },
+  "perception": {
+   "uk": "Сприйняття",
+   "en": "Perception",
+   "pl": "Percepcja"
+  },
+  "perfumes": {
+   "uk": "Парфуми",
+   "en": "Perfumes",
+   "pl": "Perfumy"
+  },
+  "periodic_table": {
+   "uk": "Таблиця Менделєєва",
+   "en": "Periodic table",
+   "pl": "Układ okresowy"
+  },
+  "photography": {
+   "uk": "Фотографія",
+   "en": "Photography",
+   "pl": "Fotografia"
+  },
+  "physics": {
+   "uk": "Фізика",
+   "en": "Physics",
+   "pl": "Fizyka"
+  },
+  "physiology": {
+   "uk": "Фізіологія",
+   "en": "Physiology",
+   "pl": "Fizjologia"
+  },
+  "pixar": {
+   "uk": "Pixar",
+   "en": "Pixar",
+   "pl": "Pixar"
+  },
+  "planet_order": {
+   "uk": "Порядок планет",
+   "en": "Planet order",
+   "pl": "Kolejność planet"
+  },
+  "planets": {
+   "uk": "Планети",
+   "en": "Planets",
+   "pl": "Planety"
+  },
+  "plants": {
+   "uk": "Рослини",
+   "en": "Plants",
+   "pl": "Rośliny"
+  },
+  "poetry": {
+   "uk": "Поезія",
+   "en": "Poetry",
+   "pl": "Poezja"
+  },
+  "poland": {
+   "uk": "Польща",
+   "en": "Poland",
+   "pl": "Polska"
+  },
+  "polish_books": {
+   "uk": "Польська література",
+   "en": "Polish books",
+   "pl": "Literatura polska"
+  },
+  "polish_history": {
+   "uk": "Історія Польщі",
+   "en": "Polish history",
+   "pl": "Historia Polski"
+  },
+  "polish_memes": {
+   "uk": "Польські меми",
+   "en": "Polish memes",
+   "pl": "Polskie memy"
+  },
+  "polish_music": {
+   "uk": "Польська музика",
+   "en": "Polish music",
+   "pl": "Muzyka polska"
+  },
+  "political_quotes": {
+   "uk": "Політичні цитати",
+   "en": "Political quotes",
+   "pl": "Cytaty polityków"
+  },
+  "pop": {
+   "uk": "Поп",
+   "en": "Pop",
+   "pl": "Pop"
+  },
+  "probability": {
+   "uk": "Ймовірність",
+   "en": "Probability",
+   "pl": "Prawdopodobieństwo"
+  },
+  "programming": {
+   "uk": "Програмування",
+   "en": "Programming",
+   "pl": "Programowanie"
+  },
+  "proverbs": {
+   "uk": "Прислів’я",
+   "en": "Proverbs",
+   "pl": "Przysłowia"
+  },
+  "psychology_history": {
+   "uk": "Історія психології",
+   "en": "History of psychology",
+   "pl": "Historia psychologii"
+  },
+  "public_transport": {
+   "uk": "Громадський транспорт",
+   "en": "Public transport",
+   "pl": "Transport publiczny"
+  },
+  "railways": {
+   "uk": "Залізниця",
+   "en": "Railways",
+   "pl": "Kolej"
+  },
+  "regional_animation": {
+   "uk": "Регіональна анімація",
+   "en": "Regional animation",
+   "pl": "Animacja regionalna"
+  },
+  "regional_food": {
+   "uk": "Регіональна кухня",
+   "en": "Regional food",
+   "pl": "Kuchnia regionalna"
+  },
+  "regional_nostalgia": {
+   "uk": "Ностальгія: Україна і Польща",
+   "en": "Nostalgia: Ukraine and Poland",
+   "pl": "Nostalgia: Ukraina i Polska"
+  },
+  "regional_poland": {
+   "uk": "Польське кіно і ТБ",
+   "en": "Polish film and TV",
+   "pl": "Polskie kino i TV"
+  },
+  "regional_pop_culture": {
+   "uk": "Регіональна попкультура",
+   "en": "Regional pop culture",
+   "pl": "Regionalna popkultura"
+  },
+  "regional_traditions": {
+   "uk": "Регіональні традиції",
+   "en": "Regional traditions",
+   "pl": "Tradycje regionalne"
+  },
+  "regional_ukraine": {
+   "uk": "Українське кіно і ТБ",
+   "en": "Ukrainian film and TV",
+   "pl": "Ukraińskie kino i TV"
+  },
+  "release_years": {
+   "uk": "Роки виходу",
+   "en": "Release years",
+   "pl": "Lata premier"
+  },
+  "retro_games": {
+   "uk": "Ретроігри",
+   "en": "Retro games",
+   "pl": "Gry retro"
+  },
+  "retro_technology": {
+   "uk": "Ретротехніка",
+   "en": "Retro technology",
+   "pl": "Technologia retro"
+  },
+  "revolutions": {
+   "uk": "Революції",
+   "en": "Revolutions",
+   "pl": "Rewolucje"
+  },
+  "rivers": {
+   "uk": "Річки",
+   "en": "Rivers",
+   "pl": "Rzeki"
+  },
+  "rock": {
+   "uk": "Рок",
+   "en": "Rock",
+   "pl": "Rock"
+  },
+  "roman_mythology": {
+   "uk": "Римська міфологія",
+   "en": "Roman mythology",
+   "pl": "Mitologia rzymska"
+  },
+  "romance": {
+   "uk": "Романтика",
+   "en": "Romance",
+   "pl": "Romans"
+  },
+  "school_knowledge": {
+   "uk": "Шкільні знання",
+   "en": "School knowledge",
+   "pl": "Wiedza szkolna"
+  },
+  "school_life": {
+   "uk": "Шкільне життя",
+   "en": "School life",
+   "pl": "Życie szkolne"
+  },
+  "school_science": {
+   "uk": "Шкільна наука",
+   "en": "School science",
+   "pl": "Nauki szkolne"
+  },
+  "science_fiction": {
+   "uk": "Наукова фантастика",
+   "en": "Science fiction",
+   "pl": "Science fiction"
+  },
+  "science_records": {
+   "uk": "Наукові рекорди",
+   "en": "Science records",
+   "pl": "Rekordy naukowe"
+  },
+  "scientific_method": {
+   "uk": "Науковий метод",
+   "en": "Scientific method",
+   "pl": "Metoda naukowa"
+  },
+  "scientists": {
+   "uk": "Науковці",
+   "en": "Scientists",
+   "pl": "Naukowcy"
+  },
+  "sculptures": {
+   "uk": "Скульптура",
+   "en": "Sculptures",
+   "pl": "Rzeźby"
+  },
+  "senses": {
+   "uk": "Органи чуття",
+   "en": "Senses",
+   "pl": "Zmysły"
+  },
+  "sequences": {
+   "uk": "Послідовності",
+   "en": "Sequences",
+   "pl": "Ciągi"
+  },
+  "ships": {
+   "uk": "Кораблі",
+   "en": "Ships",
+   "pl": "Statki"
+  },
+  "skryabin": {
+   "uk": "Скрябін",
+   "en": "Skryabin",
+   "pl": "Skriabin"
+  },
+  "slang": {
+   "uk": "Сленг",
+   "en": "Slang",
+   "pl": "Slang"
+  },
+  "slavic_mythology": {
+   "uk": "Слов’янська міфологія",
+   "en": "Slavic mythology",
+   "pl": "Mitologia słowiańska"
+  },
+  "sleep": {
+   "uk": "Сон",
+   "en": "Sleep",
+   "pl": "Sen"
+  },
+  "smartphones": {
+   "uk": "Смартфони",
+   "en": "Smartphones",
+   "pl": "Smartfony"
+  },
+  "social_media": {
+   "uk": "Соцмережі",
+   "en": "Social media",
+   "pl": "Media społecznościowe"
+  },
+  "song_matching": {
+   "uk": "Виконавці і пісні",
+   "en": "Artists and songs",
+   "pl": "Wykonawcy i piosenki"
+  },
+  "soundtracks": {
+   "uk": "Саундтреки",
+   "en": "Soundtracks",
+   "pl": "Ścieżki dźwiękowe"
+  },
+  "spices": {
+   "uk": "Спеції",
+   "en": "Spices",
+   "pl": "Przyprawy"
+  },
+  "sports_rules": {
+   "uk": "Правила спорту",
+   "en": "Sports rules",
+   "pl": "Zasady sportów"
+  },
+  "stars": {
+   "uk": "Зорі",
+   "en": "Stars",
+   "pl": "Gwiazdy"
+  },
+  "studios": {
+   "uk": "Студії",
+   "en": "Studios",
+   "pl": "Studia"
+  },
+  "styles": {
+   "uk": "Стилі",
+   "en": "Styles",
+   "pl": "Style"
+  },
+  "television": {
+   "uk": "Телебачення",
+   "en": "Television",
+   "pl": "Telewizja"
+  },
+  "tennis": {
+   "uk": "Теніс",
+   "en": "Tennis",
+   "pl": "Tenis"
+  },
+  "toys": {
+   "uk": "Іграшки",
+   "en": "Toys",
+   "pl": "Zabawki"
+  },
+  "transport": {
+   "uk": "Транспорт",
+   "en": "Transport",
+   "pl": "Transport"
+  },
+  "tv_series": {
+   "uk": "Серіали",
+   "en": "TV series",
+   "pl": "Seriale"
+  },
+  "ukraine": {
+   "uk": "Україна",
+   "en": "Ukraine",
+   "pl": "Ukraina"
+  },
+  "ukrainian_books": {
+   "uk": "Українська література",
+   "en": "Ukrainian books",
+   "pl": "Literatura ukraińska"
+  },
+  "ukrainian_history": {
+   "uk": "Історія України",
+   "en": "Ukrainian history",
+   "pl": "Historia Ukrainy"
+  },
+  "ukrainian_memes": {
+   "uk": "Українські меми",
+   "en": "Ukrainian memes",
+   "pl": "Ukraińskie memy"
+  },
+  "ukrainian_music": {
+   "uk": "Українська музика",
+   "en": "Ukrainian music",
+   "pl": "Muzyka ukraińska"
+  },
+  "unusual_facts": {
+   "uk": "Незвичайні факти",
+   "en": "Unusual facts",
+   "pl": "Niezwykłe fakty"
+  },
+  "vehicle_brands": {
+   "uk": "Марки авто",
+   "en": "Vehicle brands",
+   "pl": "Marki pojazdów"
+  },
+  "viral_challenges": {
+   "uk": "Вірусні челенджі",
+   "en": "Viral challenges",
+   "pl": "Wiralowe wyzwania"
+  },
+  "viral_videos": {
+   "uk": "Вірусні відео",
+   "en": "Viral videos",
+   "pl": "Wiralowe filmy"
+  },
+  "volleyball": {
+   "uk": "Волейбол",
+   "en": "Volleyball",
+   "pl": "Siatkówka"
+  },
+  "weather": {
+   "uk": "Погода",
+   "en": "Weather",
+   "pl": "Pogoda"
+  },
+  "web": {
+   "uk": "Веб",
+   "en": "The web",
+   "pl": "Sieć WWW"
+  },
+  "weddings": {
+   "uk": "Весілля",
+   "en": "Weddings",
+   "pl": "Wesela"
+  },
+  "winter_sports": {
+   "uk": "Зимові види спорту",
+   "en": "Winter sports",
+   "pl": "Sporty zimowe"
+  },
+  "word_matching": {
+   "uk": "Слова і значення",
+   "en": "Words and meanings",
+   "pl": "Słowa i znaczenia"
+  },
+  "word_puzzles": {
+   "uk": "Словесні головоломки",
+   "en": "Word puzzles",
+   "pl": "Łamigłówki słowne"
+  },
+  "world_books": {
+   "uk": "Світова література",
+   "en": "World literature",
+   "pl": "Literatura światowa"
+  },
+  "world_cuisines": {
+   "uk": "Кухні світу",
+   "en": "World cuisines",
+   "pl": "Kuchnie świata"
+  },
+  "world_events": {
+   "uk": "Світові події",
+   "en": "World events",
+   "pl": "Wydarzenia światowe"
+  },
+  "world_wonders": {
+   "uk": "Чудеса світу",
+   "en": "World wonders",
+   "pl": "Cuda świata"
+  },
+  "writing_systems": {
+   "uk": "Системи письма",
+   "en": "Writing systems",
+   "pl": "Systemy pisma"
+  }
+ }
+}

@@ -1,5 +1,5 @@
 import type { FastifyInstance } from 'fastify';
-import { roundSchema, type AnswerRequest, type CreateRoundRequest, type Round } from '@pq/shared';
+import { roundSchema, type AnswerRequest, type CreateRoundInput, type Round } from '@pq/shared';
 import { join } from 'node:path';
 import { buildApp } from '../src/app';
 import { loadContent, type ContentBundle } from '../src/content/load-content';
@@ -30,12 +30,18 @@ export function buildTestApp(clock?: FakeClock, content: ContentBundle = FIXTURE
 
 export async function startRound(
   app: FastifyInstance,
-  body: Partial<CreateRoundRequest> = {},
+  body: Partial<CreateRoundInput> = {},
 ): Promise<Round> {
   const res = await app.inject({
     method: 'POST',
     url: '/api/rounds',
-    payload: { topicId: 'general', lang: 'en', seed: 42, ...body },
+    // A topic round of "general" unless the test picks another source.
+    payload: {
+      ...(body.selection || body.collectionId ? {} : { topicId: 'general' }),
+      lang: 'en',
+      seed: 42,
+      ...body,
+    },
   });
   if (res.statusCode !== 201) {
     throw new Error(`startRound failed: ${res.statusCode} ${res.body}`);
@@ -57,7 +63,7 @@ export function next(app: FastifyInstance, roundId: string) {
  */
 export async function playRound(
   app: FastifyInstance,
-  { correctAnswers = 10, ...body }: Partial<CreateRoundRequest> & { correctAnswers?: number } = {},
+  { correctAnswers = 10, ...body }: Partial<CreateRoundInput> & { correctAnswers?: number } = {},
 ): Promise<string> {
   const round = await startRound(app, body);
   for (const [i, q] of round.questions.entries()) {

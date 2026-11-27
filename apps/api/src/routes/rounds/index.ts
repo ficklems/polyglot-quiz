@@ -26,7 +26,7 @@ export async function roundsRoutes(
 ): Promise<void> {
   app.post('/rounds', async (request, reply): Promise<Round> => {
     const body = createRoundRequestSchema.parse(request.body ?? {});
-    const round = createRound(app.db, { ...body, seed: body.seed ?? randomSeed() }, now);
+    const round = createRound(app.db, app.pool, { ...body, seed: body.seed ?? randomSeed() }, now);
     reply.status(201);
     return round;
   });

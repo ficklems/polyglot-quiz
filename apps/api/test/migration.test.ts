@@ -105,6 +105,67 @@ describe('migration from the v1 database', () => {
   });
 });
 
+// The parts of the v2 layout (expansion phase 2) that v3 changes.
+const V2_SCHEMA = `
+  CREATE TABLE meta (key TEXT PRIMARY KEY, value TEXT NOT NULL);
+  CREATE TABLE categories (id TEXT PRIMARY KEY, sort_order INTEGER NOT NULL, names TEXT NOT NULL,
+    subcategories TEXT NOT NULL);
+  CREATE TABLE rounds (id TEXT PRIMARY KEY, topic_id TEXT NOT NULL REFERENCES categories(id),
+    lang TEXT NOT NULL, score INTEGER NOT NULL DEFAULT 0, created_at INTEGER NOT NULL,
+    current_started_at INTEGER, finished_at INTEGER);
+  CREATE TABLE leaderboard_entries (id INTEGER PRIMARY KEY AUTOINCREMENT,
+    round_id TEXT NOT NULL UNIQUE REFERENCES rounds(id), nickname TEXT NOT NULL,
+    topic_id TEXT NOT NULL REFERENCES categories(id), score INTEGER NOT NULL,
+    correct_count INTEGER NOT NULL, total_questions INTEGER NOT NULL, created_at INTEGER NOT NULL);
+  CREATE INDEX leaderboard_by_topic ON leaderboard_entries (topic_id, score DESC, created_at, id);
+  INSERT INTO categories VALUES ('music', 0, '{"uk":"Музика","en":"Music","pl":"Muzyka"}', '[]');
+  INSERT INTO rounds VALUES ('r2', 'music', 'en', 300, 1, NULL, 2);
+  INSERT INTO leaderboard_entries VALUES (7, 'r2', 'Iga', 'music', 300, 3, 10, 5);
+  PRAGMA user_version = 2;
+`;
+
+describe('migration from the v2 database', () => {
+  function v2Database(): string {
+    dir = mkdtempSync(join(tmpdir(), 'pq-migration-'));
+    const path = join(dir, 'quiz.db');
+    const db = new DatabaseSync(path);
+    db.exec(V2_SCHEMA);
+    db.close();
+    return path;
+  }
+
+  it('keeps rounds and entries as ranked topic boards and allows themed-quiz boards', () => {
+    const db = openDatabase(v2Database(), content);
+
+    expect(db.prepare('PRAGMA user_version').get()).toEqual({ user_version: SCHEMA_VERSION });
+    expect(db.prepare('SELECT topic_id, collection_id, ranked, score FROM rounds').all()).toEqual([
+      { topic_id: 'music', collection_id: null, ranked: 1, score: 300 },
+    ]);
+    expect(
+      db.prepare('SELECT id, nickname, topic_id, collection_id FROM leaderboard_entries').all(),
+    ).toEqual([{ id: 7, nickname: 'Iga', topic_id: 'music', collection_id: null }]);
+    expect(db.prepare('PRAGMA foreign_key_check').all()).toEqual([]);
+    db.close();
+  });
+
+  it('enforces exactly one board per entry', () => {
+    const db = openDatabase(v2Database(), content);
+    const insert = (topic: string | null, collection: string | null) =>
+      db
+        .prepare(
+          `INSERT INTO leaderboard_entries (round_id, nickname, topic_id, collection_id, score,
+             correct_count, total_questions, created_at) VALUES ('r2', 'X', ?, ?, 0, 0, 10, 1)`,
+        )
+        .run(topic, collection);
+    db.prepare('DELETE FROM leaderboard_entries').run();
+
+    expect(() => insert(null, null)).toThrow(/CHECK/);
+    expect(() => insert('music', 'millionaire')).toThrow(/CHECK/);
+    expect(() => insert(null, 'millionaire')).not.toThrow();
+    db.close();
+  });
+});
+
 describe('content sync', () => {
   it('marks a question that left the content as no longer served instead of deleting it', () => {
     const path = v1Database();

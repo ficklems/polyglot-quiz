@@ -1,6 +1,7 @@
 import type { LeaderboardEntry, LeaderboardResponse, SubmitScoreRequest } from '@pq/shared';
 import type { Database } from '../../db/database';
-import { conflict, notFound } from '../../lib/http-errors';
+import type { QuestionPool } from '../../content/question-pool';
+import { conflict, notFound, unprocessable } from '../../lib/http-errors';
 import type { Clock } from '../rounds/service';
 import { getRoundSummary } from '../rounds/service';
 import { topicExists } from '../topics/service';
@@ -12,7 +13,8 @@ type EntryRow = {
   score: number;
   correct_count: number;
   total_questions: number;
-  topic_id: string;
+  topic_id: string | null;
+  collection_id: string | null;
   created_at: number;
 };
 
@@ -28,6 +30,7 @@ function toEntry(row: EntryRow): LeaderboardEntry {
     correctCount: row.correct_count,
     totalQuestions: row.total_questions,
     topicId: row.topic_id,
+    collectionId: row.collection_id,
     createdAt: new Date(row.created_at).toISOString(),
   };
 }
@@ -45,6 +48,9 @@ export function submitScore(
   if (!summary.finished) {
     throw conflict('Only a finished round can be submitted');
   }
+  if (!summary.ranked) {
+    throw unprocessable('Custom mixes are not ranked');
+  }
 
   const existing = db
     .prepare('SELECT 1 FROM leaderboard_entries WHERE round_id = ?')
@@ -56,13 +62,15 @@ export function submitScore(
   const result = db
     .prepare(
       `INSERT INTO leaderboard_entries
-         (round_id, nickname, topic_id, score, correct_count, total_questions, created_at)
-       VALUES (?, ?, ?, ?, ?, ?, ?)`,
+         (round_id, nickname, topic_id, collection_id, score, correct_count, total_questions,
+          created_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
     )
     .run(
       request.roundId,
       request.nickname,
       summary.topicId,
+      summary.collectionId,
       summary.score,
       summary.correctCount,
       summary.totalQuestions,
@@ -72,12 +80,12 @@ export function submitScore(
   return getEntryWithRank(db, Number(result.lastInsertRowid));
 }
 
-/** The entry with its rank within its topic, even when it is outside the top 10. */
+/** The entry with its rank on its board, even when it is outside the top 10. */
 function getEntryWithRank(db: Database, id: number): LeaderboardEntry {
   const row = db
     .prepare(
       `SELECT * FROM (
-         SELECT *, ROW_NUMBER() OVER (PARTITION BY topic_id ORDER BY ${ORDER}) AS rank
+         SELECT *, ROW_NUMBER() OVER (PARTITION BY topic_id, collection_id ORDER BY ${ORDER}) AS rank
            FROM leaderboard_entries
        ) WHERE id = ?`,
     )
@@ -86,30 +94,36 @@ function getEntryWithRank(db: Database, id: number): LeaderboardEntry {
   return toEntry(row);
 }
 
+export type BoardQuery = { topicId?: string; collectionId?: string; limit: number };
+
 export function getLeaderboard(
   db: Database,
-  topicId: string | undefined,
-  limit: number,
+  pool: QuestionPool,
+  { topicId, collectionId, limit }: BoardQuery,
 ): LeaderboardResponse {
   if (topicId !== undefined && !topicExists(db, topicId)) {
     throw notFound(`Topic "${topicId}" does not exist`);
   }
+  if (collectionId !== undefined && !pool.collection(collectionId)) {
+    throw notFound(`Themed quiz "${collectionId}" does not exist`);
+  }
 
-  const rows = (
-    topicId === undefined
-      ? db
-          .prepare(
-            `SELECT *, ROW_NUMBER() OVER (ORDER BY ${ORDER}) AS rank
-               FROM leaderboard_entries ORDER BY ${ORDER} LIMIT ?`,
-          )
-          .all(limit)
-      : db
-          .prepare(
-            `SELECT *, ROW_NUMBER() OVER (ORDER BY ${ORDER}) AS rank
-               FROM leaderboard_entries WHERE topic_id = ? ORDER BY ${ORDER} LIMIT ?`,
-          )
-          .all(topicId, limit)
-  ) as EntryRow[];
+  const [where, params] =
+    topicId !== undefined
+      ? ['WHERE topic_id = ?', [topicId]]
+      : collectionId !== undefined
+        ? ['WHERE collection_id = ?', [collectionId]]
+        : ['', []];
+  const rows = db
+    .prepare(
+      `SELECT *, ROW_NUMBER() OVER (ORDER BY ${ORDER}) AS rank
+         FROM leaderboard_entries ${where} ORDER BY ${ORDER} LIMIT ?`,
+    )
+    .all(...params, limit) as EntryRow[];
 
-  return { topicId: topicId ?? null, entries: rows.map(toEntry) };
+  return {
+    topicId: topicId ?? null,
+    collectionId: collectionId ?? null,
+    entries: rows.map(toEntry),
+  };
 }

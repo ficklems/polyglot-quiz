@@ -191,6 +191,6 @@ describe('GET /api/leaderboard', () => {
   it('is empty on a fresh database', async () => {
     app = await buildTestApp();
 
-    expect(await board()).toEqual({ topicId: null, entries: [] });
+    expect(await board()).toEqual({ topicId: null, collectionId: null, entries: [] });
   });
 });

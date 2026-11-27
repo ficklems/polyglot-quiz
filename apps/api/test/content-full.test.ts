@@ -1,6 +1,7 @@
 import { beforeAll, describe, expect, it } from 'vitest';
 import { LANGUAGES, QUESTIONS_PER_ROUND, SINGLE_ANSWER_TYPES } from '@pq/shared';
 import { loadContent, type ContentBundle } from '../src/content/load-content';
+import { collectionPlan, matchesCollection } from '../src/content/selection';
 
 // The real content in content/: 24k records, loaded once (about a second).
 let content: ContentBundle;
@@ -79,6 +80,31 @@ describe('content dataset', () => {
         record.localizations[l].options?.map((o) => o.text).join('|'),
       );
       expect(new Set(names).size, record.id).toBe(1);
+    }
+  });
+
+  it('has 20 themed quizzes and a name for every subcategory in all three languages', () => {
+    expect(content.collections).toHaveLength(20);
+    const used = new Set(content.categories.flatMap((c) => c.subcategories));
+    for (const sub of used) {
+      for (const lang of LANGUAGES) {
+        expect(content.subcategoryNames[sub]?.[lang], `${sub} ${lang}`).toBeTruthy();
+      }
+    }
+  });
+
+  it('every themed quiz has enough questions for a round in English and Polish', () => {
+    const playable = (lang: (typeof LANGUAGES)[number]) =>
+      served(lang)
+        .filter((q) => (SINGLE_ANSWER_TYPES as readonly string[]).includes(q.record.type))
+        .map((q) => q.record);
+    for (const lang of ['en', 'pl'] as const) {
+      const pool = playable(lang);
+      for (const collection of content.collections) {
+        const plan = collectionPlan(collection, QUESTIONS_PER_ROUND);
+        const count = pool.filter((q) => matchesCollection(q, collection)).length;
+        expect(count, `${collection.id} ${lang}`).toBeGreaterThanOrEqual(plan.count);
+      }
     }
   });
 });

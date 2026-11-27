@@ -110,3 +110,37 @@ export type Servability = Record<Language, ExclusionReason[]>;
 export function emptyServability(): Servability {
   return Object.fromEntries(LANGUAGES.map((l) => [l, []])) as unknown as Servability;
 }
+
+/** A rule matches when every field it sets matches; a collection matches any of its rules. */
+export const collectionRuleSchema = z.object({
+  categories: z.array(z.string()).optional(),
+  anyTags: z.array(z.string()).optional(),
+  types: z.array(questionTypeSchema).optional(),
+  regions: z.array(regionSchema).optional(),
+  difficulties: z.array(difficultySchema).optional(),
+});
+export type CollectionRule = z.infer<typeof collectionRuleSchema>;
+
+export const collectionSchema = z.object({
+  id: z.string().regex(/^[a-z0-9]+(?:_[a-z0-9]+)*$/),
+  name: z.object({ uk: z.string().min(1), en: z.string().min(1), pl: z.string().min(1) }),
+  rules: z.array(collectionRuleSchema).min(1),
+  settings: z
+    .object({
+      difficultySequence: z.array(difficultySchema).optional(),
+      questionCount: z.number().int().positive().optional(),
+      balanceBy: z.enum(['category', 'decade']).optional(),
+      requireRegionalSelection: z.boolean().optional(),
+    })
+    .passthrough()
+    .default({}),
+  minimumUniqueQuestions: z.number().int().positive().default(10),
+});
+export type Collection = z.infer<typeof collectionSchema>;
+
+export const subcategoryNamesSchema = z.object({
+  names: z.record(
+    z.string(),
+    z.object({ uk: z.string().min(1), en: z.string().min(1), pl: z.string().min(1) }),
+  ),
+});
