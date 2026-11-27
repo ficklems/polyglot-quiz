@@ -1,21 +1,40 @@
-import type { Language } from '@pq/shared';
+import type { Language, Topic } from '@pq/shared';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { TopicPicker } from '../features/topics/components/TopicPicker';
 import { useTopics } from '../features/topics/hooks/use-topics';
 
-export function HomePage({ lang }: { lang: Language }) {
+type Props = {
+  lang: Language;
+  onStart: (topic: Topic) => Promise<void>;
+};
+
+export function HomePage({ lang, onStart }: Props) {
   const { t } = useTranslation();
   const { state, retry } = useTopics(lang);
   const [selectedId, setSelectedId] = useState<string | null>(null);
-  const [started, setStarted] = useState(false);
+  const [starting, setStarting] = useState(false);
+  const [startFailed, setStartFailed] = useState(false);
 
   const topics = state.status === 'success' ? state.topics : [];
   const selected = topics.find((topic) => topic.id === selectedId);
 
   const select = (topicId: string) => {
     setSelectedId(topicId);
-    setStarted(false);
+    setStartFailed(false);
+  };
+
+  const start = async () => {
+    if (!selected) return;
+    setStarting(true);
+    setStartFailed(false);
+    try {
+      await onStart(selected);
+    } catch (error) {
+      console.error(error);
+      setStartFailed(true);
+      setStarting(false);
+    }
   };
 
   return (
@@ -45,21 +64,21 @@ export function HomePage({ lang }: { lang: Language }) {
         <>
           <span className="eyebrow">{t('topics.count', { count: topics.length })}</span>
           <TopicPicker topics={topics} selectedId={selectedId} onSelect={select} />
+          {startFailed && (
+            <p className="status status--error" role="alert">
+              {t('home.startError')}
+            </p>
+          )}
           <button
             type="button"
             className="primary-button"
-            disabled={!selected}
-            onClick={() => setStarted(true)}
+            disabled={!selected || starting}
+            aria-busy={starting}
+            onClick={() => void start()}
           >
             {t('home.start')}
           </button>
         </>
-      )}
-
-      {started && selected && (
-        <p className="status status--info" role="status">
-          {t('home.comingSoon', { topic: selected.name })}
-        </p>
       )}
     </div>
   );

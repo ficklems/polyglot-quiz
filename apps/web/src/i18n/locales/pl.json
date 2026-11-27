@@ -7,7 +7,7 @@
     "title": "Wybierz temat i sprawdź się",
     "subtitle": "10 pytań, 20 sekund na każde",
     "start": "Zacznij",
-    "comingSoon": "Rundy pojawią się w następnej wersji. Wybrany temat: {{topic}}"
+    "startError": "Nie udało się rozpocząć rundy. Spróbuj ponownie."
   },
   "topics": {
     "heading": "Tematy",
@@ -17,7 +17,11 @@
     "count_one": "{{count}} temat",
     "count_few": "{{count}} tematy",
     "count_many": "{{count}} tematów",
-    "count_other": "{{count}} tematu"
+    "count_other": "{{count}} tematu",
+    "questions_one": "{{count}} pytanie",
+    "questions_few": "{{count}} pytania",
+    "questions_many": "{{count}} pytań",
+    "questions_other": "{{count}} pytania"
   },
   "settings": {
     "language": "Język interfejsu",
@@ -27,5 +31,41 @@
     "uk": "Ukraiński",
     "en": "Angielski",
     "pl": "Polski"
+  },
+  "quiz": {
+    "quit": "Wróć do wyboru tematu",
+    "progress": "Pytanie {{current}}/{{total}}",
+    "progressLabel": "Postęp rundy",
+    "score": "Wynik: {{score}}",
+    "secondsShort": "sek",
+    "secondsLeft_one": "Została {{count}} sekunda",
+    "secondsLeft_few": "Zostały {{count}} sekundy",
+    "secondsLeft_many": "Zostało {{count}} sekund",
+    "secondsLeft_other": "Zostało {{count}} sekundy",
+    "answersLabel": "Warianty odpowiedzi",
+    "correctMark": "(poprawna odpowiedź)",
+    "wrongMark": "(twoja odpowiedź, błędna)",
+    "feedbackCorrect": "Dobrze! +{{points}}",
+    "feedbackWrong": "Źle. Poprawna odpowiedź: {{answer}}",
+    "feedbackTimeout": "Czas minął! Poprawna odpowiedź: {{answer}}",
+    "next": "Dalej",
+    "finish": "Wynik",
+    "answerError": "Nie udało się wysłać odpowiedzi. Sprawdź połączenie."
+  },
+  "result": {
+    "title": "Runda zakończona",
+    "points_one": "{{count}} punkt",
+    "points_few": "{{count}} punkty",
+    "points_many": "{{count}} punktów",
+    "points_other": "{{count}} punktu",
+    "correct": "Poprawne odpowiedzi: {{correct}} z {{total}}",
+    "verdict": {
+      "perfect": "Perfekcyjnie! Ani jednego błędu.",
+      "great": "Świetny wynik!",
+      "good": "Nieźle, ale może być jeszcze lepiej.",
+      "tryAgain": "Spróbuj jeszcze raz, następnym razem się uda!"
+    },
+    "playAgain": "Zagraj jeszcze raz",
+    "home": "Wróć do wyboru tematu"
   }
 }

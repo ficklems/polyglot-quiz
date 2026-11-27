@@ -7,7 +7,7 @@
     "title": "Обери тему й перевір себе",
     "subtitle": "10 питань, 20 секунд на кожне",
     "start": "Почати",
-    "comingSoon": "Раунди з'являться в наступній версії. Обрана тема: {{topic}}"
+    "startError": "Не вдалося почати раунд. Спробуйте ще раз."
   },
   "topics": {
     "heading": "Теми",
@@ -17,7 +17,11 @@
     "count_one": "{{count}} тема",
     "count_few": "{{count}} теми",
     "count_many": "{{count}} тем",
-    "count_other": "{{count}} теми"
+    "count_other": "{{count}} теми",
+    "questions_one": "{{count}} питання",
+    "questions_few": "{{count}} питання",
+    "questions_many": "{{count}} питань",
+    "questions_other": "{{count}} питання"
   },
   "settings": {
     "language": "Мова інтерфейсу",
@@ -27,5 +31,41 @@
     "uk": "Українська",
     "en": "Англійська",
     "pl": "Польська"
+  },
+  "quiz": {
+    "quit": "Вийти до вибору теми",
+    "progress": "Питання {{current}}/{{total}}",
+    "progressLabel": "Прогрес раунду",
+    "score": "Рахунок: {{score}}",
+    "secondsShort": "сек",
+    "secondsLeft_one": "Залишилась {{count}} секунда",
+    "secondsLeft_few": "Залишилось {{count}} секунди",
+    "secondsLeft_many": "Залишилось {{count}} секунд",
+    "secondsLeft_other": "Залишилось {{count}} секунди",
+    "answersLabel": "Варіанти відповіді",
+    "correctMark": "(правильна відповідь)",
+    "wrongMark": "(ваша відповідь, неправильна)",
+    "feedbackCorrect": "Правильно! +{{points}}",
+    "feedbackWrong": "Неправильно. Правильна відповідь: {{answer}}",
+    "feedbackTimeout": "Час вийшов! Правильна відповідь: {{answer}}",
+    "next": "Далі",
+    "finish": "Результат",
+    "answerError": "Не вдалося надіслати відповідь. Перевірте з’єднання."
+  },
+  "result": {
+    "title": "Раунд завершено",
+    "points_one": "{{count}} бал",
+    "points_few": "{{count}} бали",
+    "points_many": "{{count}} балів",
+    "points_other": "{{count}} бала",
+    "correct": "Правильних відповідей: {{correct}} з {{total}}",
+    "verdict": {
+      "perfect": "Ідеально! Жодної помилки.",
+      "great": "Чудовий результат!",
+      "good": "Непогано, можна ще краще.",
+      "tryAgain": "Спробуйте ще раз, наступного разу вийде!"
+    },
+    "playAgain": "Грати ще",
+    "home": "До вибору теми"
   }
 }
