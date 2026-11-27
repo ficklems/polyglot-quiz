@@ -9,15 +9,17 @@ The game is the system under test; **the test suite is the main deliverable**.
 | -------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
 | <img src="docs/screenshots/home-light.png" width="240" alt="Home screen, light theme"> | <img src="docs/screenshots/quiz-feedback-light.png" width="240" alt="Wrong answer feedback"> | <img src="docs/screenshots/quiz-feedback-dark.png" width="240" alt="Correct answer, dark theme"> |
 
-> **Status: milestone 1.** Playable rounds: 3 topics, 45 questions in 3 languages, 20 s timer,
-> server-side scoring. Leaderboard and deployment are next. Progress: [`docs/DEVLOG.md`](docs/DEVLOG.md).
+> **Status: milestone 2.** Playable rounds (3 topics, 45 questions in 3 languages, 20 s timer,
+> server-side scoring) and a top-10 leaderboard per topic. Deployment is next. Progress: [`docs/DEVLOG.md`](docs/DEVLOG.md).
 
 ## How the game works
 
 1. Pick a language (UA / EN / PL) and a topic.
 2. A round is **10 random questions** with **4 options** each and **20 seconds** per question.
 3. The server checks every answer: 100 points for a correct one, 0 for wrong or late.
-4. The result screen shows points, correct answers and a verdict; play again or pick a new topic.
+4. The result screen shows points, correct answers and a verdict.
+5. Save the result under a nickname to get on the **top-10 leaderboard** of the topic. The
+   score is taken from the finished round on the server, so it can't be faked by the client.
 
 The browser never receives the correct answers in advance: they come back only after the
 player answers. The time limit is enforced on the server too (20 s + 2 s grace).
@@ -36,8 +38,12 @@ player answers. The time limit is enforced on the server too (20 s + 2 s grace).
 
 Highlights of the framework:
 
-- **Page Object Model** (`HomePage`, `QuizPage`, `ResultPage`) with custom **fixtures**
-  (`uiLang`, `uiTheme` options).
+- **Page Object Model** (`HomePage`, `QuizPage`, `ResultPage`, `LeaderboardPage`) with custom
+  **fixtures** (`uiLang`, `uiTheme` options, a `QuizApi` client to set up state over HTTP).
+- **Security rule tested on two levels**: the leaderboard score comes only from the server
+  (a request carrying its own score is rejected).
+- **Shared-state-safe black-box tests**: unique nicknames per test and invariant checks
+  (sorted, consecutive ranks), so parallel workers can share one server.
 - **Language-independent tests**: UI text is read from the app's own locale files, so the same
   test runs in UA, EN and PL.
 - **Test oracle**: tests know the correct answers from the seed data, so they can play like a

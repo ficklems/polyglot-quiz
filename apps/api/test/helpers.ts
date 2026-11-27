@@ -45,6 +45,27 @@ export function next(app: FastifyInstance, roundId: string) {
   return app.inject({ method: 'POST', url: `/api/rounds/${roundId}/next` });
 }
 
+/**
+ * Plays a whole round and returns its id. The first `correctAnswers` questions are answered
+ * correctly, the rest wrongly, so the final score is known in advance.
+ */
+export async function playRound(
+  app: FastifyInstance,
+  { correctAnswers = 10, ...body }: Partial<CreateRoundRequest> & { correctAnswers?: number } = {},
+): Promise<string> {
+  const round = await startRound(app, body);
+  for (const [i, q] of round.questions.entries()) {
+    if (i > 0) await next(app, round.roundId);
+    const optionId = i < correctAnswers ? correctOptionOf(q.id) : wrongOptionOf(q.id);
+    await answer(app, round.roundId, { questionId: q.id, optionId });
+  }
+  return round.roundId;
+}
+
+export function submitScore(app: FastifyInstance, payload: Record<string, unknown>) {
+  return app.inject({ method: 'POST', url: '/api/leaderboard', payload });
+}
+
 /** The test oracle: correct and wrong option ids straight from the seed data. */
 export function correctOptionOf(questionId: string) {
   const seed = QUESTION_SEEDS.find((q) => q.id === questionId);

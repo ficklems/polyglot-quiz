@@ -1,6 +1,7 @@
 # Test plan: Polyglot Quiz v1
 
-> Living document. Status: **draft**, covers milestones 0–1 (home screen, rounds, timer, results);
+> Living document. Status: **draft**, covers milestones 0–2 (home screen, rounds, timer, results,
+> leaderboard);
 > extended with each milestone.
 
 ## 1. Scope
