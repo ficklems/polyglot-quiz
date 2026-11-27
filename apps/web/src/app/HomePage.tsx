@@ -1,4 +1,4 @@
-import { QUESTIONS_PER_ROUND, type CatalogResponse, type Language } from '@pq/shared';
+import type { CatalogResponse, Language } from '@pq/shared';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { RoundSource } from '../features/quiz/api/rounds-api';
@@ -9,19 +9,23 @@ import {
   toRequestSelection,
   type PickerSelection,
 } from '../features/topics/catalog.utils';
+import { RoundSettingsPanel } from '../features/settings/components/RoundSettingsPanel';
+import { isStandard, type RoundSettings } from '../features/settings/round-settings';
 import { CategoryPicker } from '../features/topics/components/CategoryPicker';
 import { CollectionList } from '../features/topics/components/CollectionList';
 import { useCatalog } from '../features/topics/hooks/use-catalog';
 
 type Props = {
   lang: Language;
+  settings: RoundSettings;
+  onSettingsChange: (change: Partial<RoundSettings>) => void;
   onStart: (source: RoundSource, title: string) => Promise<void>;
   onOpenLeaderboard: () => void;
 };
 
-export function HomePage({ lang, onStart, onOpenLeaderboard }: Props) {
+export function HomePage({ lang, settings, onSettingsChange, onStart, onOpenLeaderboard }: Props) {
   const { t } = useTranslation();
-  const { state, retry } = useCatalog(lang);
+  const { state, retry } = useCatalog(lang, settings.region, settings.difficulty);
   const [selection, setSelection] = useState<PickerSelection>(EMPTY_SELECTION);
   const [starting, setStarting] = useState(false);
   const [startFailed, setStartFailed] = useState(false);
@@ -50,6 +54,8 @@ export function HomePage({ lang, onStart, onOpenLeaderboard }: Props) {
         <h1>{t('home.title')}</h1>
         <p>{t('home.subtitle')}</p>
       </section>
+
+      <RoundSettingsPanel lang={lang} settings={settings} onChange={onSettingsChange} />
 
       {state.status === 'loading' && (
         <p className="status" role="status">
@@ -82,13 +88,16 @@ export function HomePage({ lang, onStart, onOpenLeaderboard }: Props) {
           <SelectionSummary
             catalog={state.catalog}
             selection={selection}
+            settings={settings}
             starting={starting}
+            onWiden={() => onSettingsChange({ region: 'all' })}
             onStart={(title) =>
               void start({ kind: 'selection', selection: toRequestSelection(selection) }, title)
             }
           />
           <CollectionList
             collections={state.catalog.collections}
+            questionCount={settings.questionCount}
             busy={starting}
             onStart={(c) => void start({ kind: 'collection', collectionId: c.id }, c.name)}
           />
@@ -109,33 +118,48 @@ export function HomePage({ lang, onStart, onOpenLeaderboard }: Props) {
 function SelectionSummary({
   catalog,
   selection,
+  settings,
   starting,
+  onWiden,
   onStart,
 }: {
   catalog: CatalogResponse;
   selection: PickerSelection;
+  settings: RoundSettings;
   starting: boolean;
+  onWiden: () => void;
   onStart: (title: string) => void;
 }) {
   const { t } = useTranslation();
   const count = selectionQuestionCount(catalog.categories, selection);
-  const enough = count >= QUESTIONS_PER_ROUND;
+  const needed = settings.questionCount;
+  const enough = count >= needed;
   const single = singleTitle(catalog, selection);
-  // Exactly one whole category is that topic's ranked round; anything else is a custom mix.
-  const ranked = selection.categories.size === 1 && selection.subcategories.size === 0;
+  // Exactly one whole category is that topic's round; anything else is a custom mix.
+  const oneTopic = selection.categories.size === 1 && selection.subcategories.size === 0;
+  const rankedHint = !oneTopic
+    ? t('home.mixNotRanked')
+    : isStandard(settings)
+      ? t('home.ranked')
+      : t('home.notStandard');
 
   let message: string;
   if (isEmpty(selection)) message = t('home.selectNothing');
-  else if (!enough) message = t('home.selectionTooSmall', { count, needed: QUESTIONS_PER_ROUND });
+  else if (!enough) message = t('home.selectionTooSmall', { count, needed });
   else message = t('home.selectionCount', { count });
+  // Honest small pool (spec §3): offer every region instead of quietly adding other ones.
+  const canWiden = !isEmpty(selection) && !enough && settings.region !== 'all';
 
   return (
     <section className="selection-summary" aria-label={t('home.summaryLabel')}>
       <p className="selection-status" role="status">
         {message}
       </p>
-      {enough && (
-        <p className="section-hint">{ranked ? t('home.ranked') : t('home.mixNotRanked')}</p>
+      {enough && <p className="section-hint">{rankedHint}</p>}
+      {canWiden && (
+        <button type="button" className="secondary-button widen-button" onClick={onWiden}>
+          {t('home.widenRegion')}
+        </button>
       )}
       <button
         type="button"

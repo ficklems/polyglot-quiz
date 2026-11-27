@@ -19,7 +19,9 @@
     "selectionTooSmall_few": "Wybrano tylko {{count}} pytania, runda potrzebuje {{needed}}. Dodaj więcej.",
     "selectionTooSmall_many": "Wybrano tylko {{count}} pytań, runda potrzebuje {{needed}}. Dodaj więcej.",
     "selectionTooSmall_other": "Wybrano tylko {{count}} pytania, runda potrzebuje {{needed}}. Dodaj więcej.",
-    "summaryLabel": "Twój wybór"
+    "summaryLabel": "Twój wybór",
+    "notStandard": "Do tabeli trafiają tylko rundy z 10 pytań na mieszanym poziomie.",
+    "widenRegion": "Użyj pytań ze wszystkich regionów"
   },
   "topics": {
     "heading": "Tematy",
@@ -52,7 +54,7 @@
   "collections": {
     "heading": "Quizy tematyczne",
     "hint": "Gotowe rundy. Kliknij, aby zacząć.",
-    "notEnough": "Na razie za mało pytań w tym języku",
+    "notEnough": "Za mało pytań przy tych ustawieniach ({{count}})",
     "questionsPerRound_one": "{{count}} pytanie",
     "questionsPerRound_few": "{{count}} pytania",
     "questionsPerRound_many": "{{count}} pytań",
@@ -86,7 +88,11 @@
     "next": "Dalej",
     "finish": "Wynik",
     "answerError": "Nie udało się wysłać odpowiedzi. Sprawdź połączenie.",
-    "customMix": "Twój miks"
+    "customMix": "Twój miks",
+    "repeated_one": "Powtarza się {{count}} pytanie z niedawnych rund: zabrakło nowych.",
+    "repeated_few": "Powtarzają się {{count}} pytania z niedawnych rund: zabrakło nowych.",
+    "repeated_many": "Powtarza się {{count}} pytań z niedawnych rund: zabrakło nowych.",
+    "repeated_other": "Powtarza się {{count}} pytania z niedawnych rund: zabrakło nowych."
   },
   "result": {
     "title": "Runda zakończona",
@@ -135,5 +141,31 @@
       "already": "Ta runda jest już w tabeli wyników.",
       "failed": "Nie udało się zapisać wyniku. Spróbuj ponownie."
     }
+  },
+  "roundSettings": {
+    "heading": "Ustawienia rundy",
+    "region": "Pytania o",
+    "regionHint": {
+      "all": "Pytania ze wszystkich regionów.",
+      "global": "Tylko pytania międzynarodowe.",
+      "mixed": "Około jednej trzeciej pytań dotyczy regionu: {{region}}, reszta jest międzynarodowa."
+    },
+    "regions": {
+      "auto": "Według języka: {{region}}",
+      "all": "Cały świat (wszystkie regiony)",
+      "global": "Tylko międzynarodowe",
+      "UA": "Ukraina",
+      "PL": "Polska",
+      "CE": "Europa Środkowa",
+      "EN": "Kraje anglojęzyczne"
+    },
+    "difficulty": "Poziom trudności",
+    "difficulties": {
+      "mixed": "Mieszany",
+      "easy": "Łatwy",
+      "medium": "Średni",
+      "hard": "Trudny"
+    },
+    "questionCount": "Pytań w rundzie"
   }
 }

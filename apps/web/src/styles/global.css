@@ -420,6 +420,35 @@ h3 {
   width: 100%;
 }
 
+.round-settings {
+  padding: var(--space-4);
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  background: var(--color-surface);
+}
+
+.setting {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.text-input.setting-select {
+  flex: none;
+  width: 100%;
+}
+
+.segmented {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.widen-button {
+  flex-basis: 100%;
+  order: 4;
+}
+
 /* ---------- Status ---------- */
 
 .status {
@@ -550,9 +579,11 @@ h3 {
 }
 
 .progress-steps {
+  /* One row whatever the length (10–50); the gap shrinks with many steps. */
+  --steps: 10;
   display: grid;
-  grid-template-columns: repeat(10, minmax(0, 1fr));
-  gap: 5px;
+  grid-template-columns: repeat(var(--steps), minmax(0, 1fr));
+  gap: min(5px, calc(25% / var(--steps)));
 }
 
 .progress-step {

@@ -1,5 +1,11 @@
 import { useCallback, useEffect, useState } from 'react';
-import type { CatalogResponse, Language } from '@pq/shared';
+import {
+  DEFAULT_DIFFICULTY,
+  DEFAULT_REGION,
+  type CatalogQuery,
+  type CatalogResponse,
+  type Language,
+} from '@pq/shared';
 import { fetchCatalog } from '../api/fetch-catalog';
 
 type State =
@@ -9,16 +15,20 @@ type Result = { key: string } & (
   { status: 'error' } | { status: 'success'; catalog: CatalogResponse }
 );
 
-/** Categories, subcategories and themed quizzes in `lang`. */
-export function useCatalog(lang: Language) {
+/** Categories, subcategories and themed quizzes, counted under the round settings. */
+export function useCatalog(
+  lang: Language,
+  region: CatalogQuery['region'] = DEFAULT_REGION,
+  difficulty: CatalogQuery['difficulty'] = DEFAULT_DIFFICULTY,
+) {
   const [attempt, setAttempt] = useState(0);
   const [result, setResult] = useState<Result | null>(null);
-  const key = `${lang}:${attempt}`;
+  const key = `${lang}:${region}:${difficulty}:${attempt}`;
 
   useEffect(() => {
     const controller = new AbortController();
 
-    fetchCatalog(lang, controller.signal)
+    fetchCatalog({ lang, region, difficulty }, controller.signal)
       .then((catalog) => setResult({ key, status: 'success', catalog }))
       .catch((error: unknown) => {
         if (controller.signal.aborted) return;
@@ -27,7 +37,7 @@ export function useCatalog(lang: Language) {
       });
 
     return () => controller.abort();
-  }, [lang, key]);
+  }, [lang, region, difficulty, key]);
 
   // A result for an older request (previous language or attempt) means we are loading again.
   const state: State =
