@@ -2,11 +2,19 @@ import cors from '@fastify/cors';
 import Fastify, { type FastifyInstance } from 'fastify';
 import type { Config } from './config';
 import { openDatabase } from './db/database';
+import { randomSeed as defaultRandomSeed } from './lib/random';
 import { registerErrorHandler } from './plugins/error-handler';
 import { healthRoutes } from './routes/health';
+import { roundsRoutes } from './routes/rounds';
+import type { Clock } from './routes/rounds/service';
 import { topicsRoutes } from './routes/topics';
 
-export type BuildAppOptions = Pick<Config, 'dbPath' | 'corsOrigins' | 'logLevel'>;
+export type BuildAppOptions = Pick<Config, 'dbPath' | 'corsOrigins' | 'logLevel'> & {
+  /** Current time in ms. Tests inject a fake clock to check the time limit. */
+  now?: Clock;
+  /** Seed used when a round request doesn't send one. */
+  randomSeed?: () => number;
+};
 
 /**
  * Builds the app without listening on a port, so tests can call it with `app.inject()`.
@@ -25,6 +33,10 @@ export async function buildApp(options: BuildAppOptions): Promise<FastifyInstanc
     async (api) => {
       await api.register(healthRoutes);
       await api.register(topicsRoutes);
+      await api.register(roundsRoutes, {
+        now: options.now ?? Date.now,
+        randomSeed: options.randomSeed ?? defaultRandomSeed,
+      });
     },
     { prefix: '/api' },
   );

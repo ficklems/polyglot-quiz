@@ -11,9 +11,9 @@ export const TOPIC_SEEDS: TopicSeed[] = [
   {
     id: 'music-decades',
     translations: {
-      uk: { name: 'Музика за десятиліттями', description: 'Від хітів 60-х до 2010-х' },
-      en: { name: 'Music by decade', description: 'From 60s hits to the 2010s' },
-      pl: { name: 'Muzyka według dekad', description: 'Od przebojów lat 60. do 2010.' },
+      uk: { name: 'Музика за десятиліттями', description: 'Від 60-х до 2020-х' },
+      en: { name: 'Music by decade', description: 'From the 60s to the 2020s' },
+      pl: { name: 'Muzyka według dekad', description: 'Od lat 60. do 2020.' },
     },
   },
   {
