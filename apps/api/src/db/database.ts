@@ -65,6 +65,21 @@ const SCHEMA = `
     answered_at     INTEGER,
     PRIMARY KEY (round_id, position)
   );
+
+  CREATE TABLE IF NOT EXISTS leaderboard_entries (
+    id              INTEGER PRIMARY KEY AUTOINCREMENT,
+    -- UNIQUE: one leaderboard entry per round.
+    round_id        TEXT NOT NULL UNIQUE REFERENCES rounds(id),
+    nickname        TEXT NOT NULL,
+    topic_id        TEXT NOT NULL REFERENCES topics(id),
+    score           INTEGER NOT NULL,
+    correct_count   INTEGER NOT NULL,
+    total_questions INTEGER NOT NULL,
+    created_at      INTEGER NOT NULL
+  );
+
+  CREATE INDEX IF NOT EXISTS leaderboard_by_topic
+    ON leaderboard_entries (topic_id, score DESC, created_at, id);
 `;
 
 function isEmpty(db: DatabaseSync, table: 'topics' | 'questions'): boolean {

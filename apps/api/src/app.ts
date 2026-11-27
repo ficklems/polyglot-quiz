@@ -5,6 +5,7 @@ import { openDatabase } from './db/database';
 import { randomSeed as defaultRandomSeed } from './lib/random';
 import { registerErrorHandler } from './plugins/error-handler';
 import { healthRoutes } from './routes/health';
+import { leaderboardRoutes } from './routes/leaderboard';
 import { roundsRoutes } from './routes/rounds';
 import type { Clock } from './routes/rounds/service';
 import { topicsRoutes } from './routes/topics';
@@ -33,10 +34,12 @@ export async function buildApp(options: BuildAppOptions): Promise<FastifyInstanc
     async (api) => {
       await api.register(healthRoutes);
       await api.register(topicsRoutes);
+      const now = options.now ?? Date.now;
       await api.register(roundsRoutes, {
-        now: options.now ?? Date.now,
+        now,
         randomSeed: options.randomSeed ?? defaultRandomSeed,
       });
+      await api.register(leaderboardRoutes, { now });
     },
     { prefix: '/api' },
   );
