@@ -4,6 +4,72 @@ Newest entry first. Each entry: what was done, decisions and why, how it was ver
 
 ---
 
+## 2026-11-27 · Milestone 2: leaderboard (branch `feat/leaderboard`)
+
+### Done
+
+- **API:**
+  - `POST /api/leaderboard` `{ roundId, nickname }` → `201 { entry }` with the entry's rank in
+    its topic (also when it's outside the top 10). **Score, correct answers and topic are read
+    from the finished round on the server**; the request is a strict contract, so a client
+    that sends its own `score` gets `400`.
+  - `GET /api/leaderboard?topicId=&limit=` → top 10 (or `limit` ≤ 10) for a topic, or across
+    all topics without `topicId`. Order: score ↓, then earlier submission, then id.
+  - Rules: unknown round `404`, unfinished round `409`, one entry per round `409` (also a
+    `UNIQUE` constraint in the DB), unknown topic `404`, bad `limit` `400`.
+  - Nickname: 2–20 characters after trimming; letters of any script (Ukrainian and Polish
+    work), digits, space, `_ - .`; markup and emoji are rejected. One shared Zod schema for
+    API and UI.
+- **Web:**
+  - Result screen: "Save your result" form (label, hint, inline validation with a reason in
+    the player's language, `aria-invalid`), then "Saved! Your rank: N" and the topic's top 10
+    with the player's row highlighted (`aria-current`, "(you)"). If the player isn't in the
+    top 10, their row is added below a dashed separator.
+  - Nickname remembered for the next round (localStorage).
+  - Leaderboard screen from home: "All topics" + per-topic filters, empty and error states.
+- **Tests:**
+  - Vitest API (+27): saving, strict contract (no client score), unfinished/duplicate/unknown
+    rounds, 6 invalid nicknames, 6 valid ones incl. Cyrillic and Polish letters, ordering
+    incl. a tie broken by submission time (fake clock), topic separation, top-10 cut with the
+    real rank of the 11th, limits, empty board.
+  - Vitest web: nickname error reasons.
+  - Playwright API: save + server score, rank ↔ board position, client score rejected,
+    409s, 4 bad nicknames, **order and rank invariants on every board**, limit, bad queries.
+  - Playwright UI: save and see own highlighted row, validation and fix, nickname
+    remembered, own entry outside the top 10 (mocked API), save failure, leaderboard screen
+    (open, filter, back), empty and error states, Polish labels.
+  - New: `LeaderboardPage` page object, `QuizApi` fixture to set up state over HTTP,
+    `uniqueNickname()`.
+
+### Decisions
+
+- **Score comes from the server, never from the client.** The only things the player
+  sends are the round id and a nickname. This is the main security rule of the feature and
+  has tests on both levels.
+- **Shared server in black-box tests:** all Playwright tests and workers talk to one API
+  process, so the leaderboard fills up during a run. Tests therefore use unique nicknames
+  and check invariants (sorted, consecutive ranks, rank = position) instead of exact
+  contents. Exact orderings are tested where the DB is private: Vitest with `:memory:`.
+- **Ties** go to whoever submitted first: simple to explain and deterministic.
+- No profanity filter in v1 (would need a word list per language); noted for v2.
+
+### Verified
+
+- `format:check`, `lint`, `typecheck`: clean.
+- Vitest: 114 passed (82 API, 32 web).
+- Playwright locally (`api`, `chromium`, `mobile-chrome`): 102 passed; new suites repeated 5×
+  in parallel: 160/160.
+- Screenshot: `docs/screenshots/result-leaderboard.png`.
+
+### Next
+
+1. Merge PR #1 and this PR into `main`.
+2. Deployment: Postgres + free hosting, live link in the README.
+3. Accessibility checks with `@axe-core/playwright` (`@a11y`).
+4. More questions (target 30 per topic).
+
+---
+
 ## 2026-11-27 · Milestone 1: questions and playable rounds (branch `feat/quiz-rounds`)
 
 ### Done

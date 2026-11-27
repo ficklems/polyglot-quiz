@@ -133,6 +133,11 @@ Playwright rules (from the official best practices):
 - Projects in config: Chromium, Firefox, WebKit + mobile viewports (Pixel, iPhone).
 - Traces `on-first-retry` in CI; HTML report uploaded as a CI artifact.
 - The test oracle for answers is `tests/data/questions.ts` (reads the seed data).
+- Playwright tests share one API server (and DB) across tests and workers: never assume an
+  empty leaderboard. Use `uniqueNickname(testInfo)` and check invariants; test exact orderings
+  in Vitest, where each test gets its own `:memory:` database.
+- Set up state over HTTP with the `quizApi` fixture instead of clicking through the UI when the
+  UI isn't what the test is about.
 - Before merging a new or changed suite, run it with `--repeat-each=5` to catch flakiness.
 - Test names describe behaviour: `shows time-out state when timer reaches zero`.
 - Tags: `@smoke` for the critical path, `@i18n`, `@a11y`.
