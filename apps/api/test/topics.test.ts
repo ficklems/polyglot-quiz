@@ -1,8 +1,7 @@
 import type { FastifyInstance } from 'fastify';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { apiErrorSchema, LANGUAGES, topicsResponseSchema } from '@pq/shared';
-import { TOPIC_SEEDS } from '../src/db/seed/topics';
-import { buildTestApp } from './helpers';
+import { buildTestApp, FIXTURE } from './helpers';
 
 describe('GET /api/topics', () => {
   let app: FastifyInstance;
@@ -15,17 +14,34 @@ describe('GET /api/topics', () => {
     await app.close();
   });
 
-  it.each(LANGUAGES)('returns every topic translated into %s', async (lang) => {
+  async function topics(lang: string) {
     const res = await app.inject({ method: 'GET', url: `/api/topics?lang=${lang}` });
-
     expect(res.statusCode).toBe(200);
-    const body = topicsResponseSchema.parse(res.json());
-    expect(body.lang).toBe(lang);
-    expect(body.topics.map((t) => t.id)).toEqual(TOPIC_SEEDS.map((t) => t.id));
-    for (const topic of body.topics) {
-      const seed = TOPIC_SEEDS.find((t) => t.id === topic.id);
-      expect(topic.name).toBe(seed?.translations[lang].name);
-    }
+    return topicsResponseSchema.parse(res.json()).topics;
+  }
+
+  it.each(LANGUAGES)(
+    'returns every category, translated into %s, in content order',
+    async (lang) => {
+      const body = await topics(lang);
+
+      expect(body.map((t) => t.id)).toEqual(FIXTURE.categories.map((c) => c.id));
+      for (const topic of body) {
+        expect(topic.name).toBe(FIXTURE.categories.find((c) => c.id === topic.id)?.name[lang]);
+      }
+    },
+  );
+
+  it('counts only questions that can be played in that language', async () => {
+    const count = (list: Awaited<ReturnType<typeof topics>>, id: string) =>
+      list.find((t) => t.id === id)?.questionCount;
+    const [uk, en] = [await topics('uk'), await topics('en')];
+
+    expect(count(en, 'music')).toBe(15);
+    // memes fixture: true/false, flagged-in-uk, machine-translated-uk, one of two exact
+    // duplicates. Not counted: profanity, the second duplicate, an "order" question.
+    expect(count(en, 'memes')).toBe(4);
+    expect(count(uk, 'memes')).toBe(2);
   });
 
   it('rejects an unsupported language with 400 and a detail for "lang"', async () => {

@@ -6,11 +6,13 @@ export const QUESTIONS_PER_ROUND = 10;
 export const TIME_LIMIT_SECONDS = 20;
 export const POINTS_PER_CORRECT = 100;
 
-export const OPTION_IDS = ['a', 'b', 'c', 'd'] as const;
-export const optionIdSchema = z.enum(OPTION_IDS);
+/** Option ids as stored in the content: o1, o2, … (stable, independent of display order). */
+export const optionIdSchema = z.string().regex(/^o[1-9]$/, 'Unknown option id');
 export type OptionId = z.infer<typeof optionIdSchema>;
 
-export const questionIdSchema = z.string().regex(/^[a-z]+-\d{2,}$/, 'Unknown question id format');
+export const questionIdSchema = z
+  .string()
+  .regex(/^[A-Za-z0-9_-]{3,64}$/, 'Unknown question id format');
 
 // ---------- POST /api/rounds ----------
 
@@ -33,7 +35,8 @@ export const roundQuestionSchema = z.strictObject({
   text: z.string().min(1),
   options: z
     .array(z.strictObject({ id: optionIdSchema, text: z.string().min(1) }))
-    .length(OPTION_IDS.length),
+    .min(2)
+    .max(4),
 });
 export type RoundQuestion = z.infer<typeof roundQuestionSchema>;
 

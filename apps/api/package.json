@@ -8,7 +8,8 @@
     "dev": "tsx watch --disable-warning=ExperimentalWarning src/server.ts",
     "start": "tsx --disable-warning=ExperimentalWarning src/server.ts",
     "typecheck": "tsc --noEmit -p tsconfig.json",
-    "test": "vitest run"
+    "test": "vitest run",
+    "content:report": "tsx src/content/report-cli.ts"
   },
   "dependencies": {
     "@fastify/cors": "^11.4.3",

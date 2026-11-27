@@ -1,13 +1,14 @@
 import { randomUUID } from 'node:crypto';
 import {
-  OPTION_IDS,
   POINTS_PER_CORRECT,
   QUESTIONS_PER_ROUND,
   TIME_LIMIT_SECONDS,
   type AnswerRequest,
   type AnswerResult,
   type CreateRoundRequest,
+  type AnswerKey,
   type Language,
+  type Localization,
   type OptionId,
   type Round,
   type RoundQuestion,
@@ -16,7 +17,7 @@ import {
 import type { Database } from '../../db/database';
 import { badRequest, conflict, notFound, unprocessable } from '../../lib/http-errors';
 import { createRng, shuffle } from '../../lib/random';
-import { topicExists } from '../topics/service';
+import { PLAYABLE_TYPES_SQL, SERVE_COLUMN, topicExists } from '../topics/service';
 
 /**
  * Extra time on top of the limit before the server treats an answer as late,
@@ -38,8 +39,21 @@ type RoundQuestionRow = {
   question_id: string;
   answered_option: string | null;
   is_correct: number | null;
-  correct_option: OptionId;
+  option_order: string;
+  payload: string;
 };
+
+type Payload = {
+  localizations: Record<Language, Localization>;
+  answer: AnswerKey;
+};
+
+function correctOptionOf(payload: Payload): OptionId {
+  if (!('correctOptionId' in payload.answer)) {
+    throw new Error('Question has no single correct option');
+  }
+  return payload.answer.correctOptionId;
+}
 
 export type Clock = () => number;
 
@@ -53,21 +67,23 @@ export function createRound(
     throw notFound(`Topic "${topicId}" does not exist`);
   }
 
-  const ids = (
-    db.prepare('SELECT id FROM questions WHERE topic_id = ? ORDER BY id').all(topicId) as {
-      id: string;
-    }[]
-  ).map((row) => row.id);
+  const candidates = db
+    .prepare(
+      `SELECT id, type, payload FROM questions
+        WHERE category_id = ? AND ${SERVE_COLUMN[lang]} = 1 AND type IN (${PLAYABLE_TYPES_SQL})
+        ORDER BY id`,
+    )
+    .all(topicId) as { id: string; type: string; payload: string }[];
 
-  if (ids.length < QUESTIONS_PER_ROUND) {
+  if (candidates.length < QUESTIONS_PER_ROUND) {
     throw unprocessable(
-      `Topic "${topicId}" has ${ids.length} questions, a round needs ${QUESTIONS_PER_ROUND}`,
+      `Topic "${topicId}" has ${candidates.length} questions in "${lang}", a round needs ${QUESTIONS_PER_ROUND}`,
     );
   }
 
   const rng = createRng(seed);
-  const picked = shuffle(ids, rng).slice(0, QUESTIONS_PER_ROUND);
-  const orders = picked.map(() => shuffle(OPTION_IDS, rng));
+  const picked = shuffle(candidates, rng).slice(0, QUESTIONS_PER_ROUND);
+  const orders = picked.map((q) => optionOrder(q.type, JSON.parse(q.payload) as Payload, rng));
 
   const roundId = randomUUID();
   const startedAt = now();
@@ -82,8 +98,8 @@ export function createRound(
       `INSERT INTO rounds (id, topic_id, lang, created_at, current_started_at)
        VALUES (?, ?, ?, ?, ?)`,
     ).run(roundId, topicId, lang, startedAt, startedAt);
-    picked.forEach((questionId, position) => {
-      insertRoundQuestion.run(roundId, position, questionId, JSON.stringify(orders[position]));
+    picked.forEach((q, position) => {
+      insertRoundQuestion.run(roundId, position, q.id, JSON.stringify(orders[position]));
     });
     db.exec('COMMIT');
   } catch (error) {
@@ -96,29 +112,42 @@ export function createRound(
     topicId,
     lang,
     timeLimitSeconds: TIME_LIMIT_SECONDS,
-    questions: picked.map((id, i) => loadQuestion(db, id, lang, orders[i] ?? [...OPTION_IDS])),
+    questions: picked.map((q, i) =>
+      playerQuestion(q.id, JSON.parse(q.payload) as Payload, lang, orders[i] ?? []),
+    ),
   };
 }
 
-/** Builds the player-facing question. The correct option is deliberately not selected. */
-function loadQuestion(
-  db: Database,
+/**
+ * The order the options are shown in. Shuffled, because in the content the correct answer
+ * is usually option o1. True/false keeps a fixed True-then-False order, which is easier to
+ * read and gives nothing away since both options are always shown.
+ */
+function optionOrder(type: string, payload: Payload, rng: () => number): OptionId[] {
+  const options = payload.localizations.en.options ?? [];
+  if (type === 'true_false') {
+    return [...options]
+      .sort((a, b) => (a.text === 'True' ? -1 : b.text === 'True' ? 1 : 0))
+      .map((o) => o.id);
+  }
+  return shuffle(
+    options.map((o) => o.id),
+    rng,
+  );
+}
+
+/** Builds the player-facing question. The answer key is deliberately left out. */
+function playerQuestion(
   questionId: string,
+  payload: Payload,
   lang: Language,
   order: readonly OptionId[],
 ): RoundQuestion {
-  const { text } = db
-    .prepare('SELECT text FROM question_texts WHERE question_id = ? AND lang = ?')
-    .get(questionId, lang) as { text: string };
-
-  const optionRows = db
-    .prepare('SELECT option_id, text FROM question_options WHERE question_id = ? AND lang = ?')
-    .all(questionId, lang) as { option_id: OptionId; text: string }[];
-  const textById = new Map(optionRows.map((row) => [row.option_id, row.text]));
-
+  const localization = payload.localizations[lang];
+  const textById = new Map((localization.options ?? []).map((o) => [o.id, o.text]));
   return {
     id: questionId,
-    text,
+    text: localization.prompt,
     options: order.map((id) => ({ id, text: textById.get(id) ?? '' })),
   };
 }
@@ -136,7 +165,7 @@ function getRoundRow(db: Database, roundId: string): RoundRow {
 function getRoundQuestions(db: Database, roundId: string): RoundQuestionRow[] {
   return db
     .prepare(
-      `SELECT rq.position, rq.question_id, rq.answered_option, rq.is_correct, q.correct_option
+      `SELECT rq.position, rq.question_id, rq.answered_option, rq.is_correct, rq.option_order, q.payload
          FROM round_questions rq
          JOIN questions q ON q.id = rq.question_id
         WHERE rq.round_id = ?
@@ -165,6 +194,11 @@ export function answerQuestion(
     throw conflict(`Question "${answer.questionId}" is already answered`);
   }
 
+  const shown = JSON.parse(target.option_order) as string[];
+  if (answer.optionId !== null && !shown.includes(answer.optionId)) {
+    throw badRequest(`Option "${answer.optionId}" is not an option of this question`);
+  }
+
   const current = questions.find((q) => q.is_correct === null);
   if (current && current.question_id !== target.question_id) {
     throw conflict('Questions must be answered in order');
@@ -178,7 +212,8 @@ export function answerQuestion(
   const elapsedSeconds = (answeredAt - round.current_started_at) / 1000;
   const timedOut =
     answer.optionId === null || elapsedSeconds > TIME_LIMIT_SECONDS + TIME_GRACE_SECONDS;
-  const correct = !timedOut && answer.optionId === target.correct_option;
+  const correctOptionId = correctOptionOf(JSON.parse(target.payload) as Payload);
+  const correct = !timedOut && answer.optionId === correctOptionId;
   const pointsAwarded = correct ? POINTS_PER_CORRECT : 0;
   const answeredCount = questions.filter((q) => q.is_correct !== null).length + 1;
   const finished = answeredCount === questions.length;
@@ -204,7 +239,7 @@ export function answerQuestion(
     questionId: target.question_id,
     correct,
     timedOut,
-    correctOptionId: target.correct_option,
+    correctOptionId,
     pointsAwarded,
     score,
     answeredCount,

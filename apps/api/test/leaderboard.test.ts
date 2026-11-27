@@ -24,7 +24,7 @@ async function board(query = '') {
 describe('POST /api/leaderboard', () => {
   it('saves a finished round with the score taken from the server', async () => {
     app = await buildTestApp();
-    const roundId = await playRound(app, { correctAnswers: 7, topicId: 'music-decades' });
+    const roundId = await playRound(app, { correctAnswers: 7, topicId: 'music' });
 
     const res = await submitScore(app, { roundId, nickname: 'Mariia' });
 
@@ -35,7 +35,7 @@ describe('POST /api/leaderboard', () => {
       score: 700,
       correctCount: 7,
       totalQuestions: 10,
-      topicId: 'music-decades',
+      topicId: 'music',
     });
   });
 
@@ -128,7 +128,7 @@ describe('GET /api/leaderboard', () => {
       await submitScore(app, { roundId, nickname });
     }
 
-    const { entries } = await board('?topicId=general-knowledge');
+    const { entries } = await board('?topicId=general');
 
     expect(entries.map((e) => [e.rank, e.nickname, e.score])).toEqual([
       [1, 'Gold', 900],
@@ -140,14 +140,12 @@ describe('GET /api/leaderboard', () => {
 
   it('keeps topics apart, and the board without a topic covers all of them', async () => {
     app = await buildTestApp();
-    for (const topicId of ['music-decades', 'region-history']) {
+    for (const topicId of ['music', 'history']) {
       const roundId = await playRound(app, { topicId });
       await submitScore(app, { roundId, nickname: topicId.slice(0, 10) });
     }
 
-    expect((await board('?topicId=music-decades')).entries.map((e) => e.nickname)).toEqual([
-      'music-deca',
-    ]);
+    expect((await board('?topicId=music')).entries.map((e) => e.nickname)).toEqual(['music']);
     expect((await board()).entries).toHaveLength(2);
     expect((await board()).topicId).toBeNull();
   });
@@ -163,7 +161,7 @@ describe('GET /api/leaderboard', () => {
     const res = await submitScore(app, { roundId: lowRound, nickname: 'Newbie' });
 
     expect(submitScoreResponseSchema.parse(res.json()).entry.rank).toBe(LEADERBOARD_SIZE + 1);
-    const top = await board('?topicId=general-knowledge');
+    const top = await board('?topicId=general');
     expect(top.entries).toHaveLength(LEADERBOARD_SIZE);
     expect(top.entries.some((e) => e.nickname === 'Newbie')).toBe(false);
   });
