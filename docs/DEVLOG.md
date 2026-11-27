@@ -4,6 +4,54 @@ Newest entry first. Each entry: what was done, decisions and why, how it was ver
 
 ---
 
+## 2026-11-28 · Expansion phase 4: regions, difficulty, round length (branch `feat/regions-difficulty`)
+
+### Done
+
+- **Shared settings** (`packages/shared/src/settings.ts`): region preference (`auto`, `all`,
+  `global`, `UA`, `PL`, `CE`, `EN`; auto follows the language), difficulty (`mixed`, `easy`,
+  `medium`, `hard`), length 10/20/30/50, the 35% regional and 40/40/20 targets.
+- **Selection:** a named region keeps its own and global questions and aims for 35/65
+  (`quotaPick`, largest remainder, shortfall filled from the rest); Mixed orders each
+  category's questions so every prefix follows 40/40/20 (`weightedInterleave`), so the
+  difficulty mix never upsets equal category shares. Only Locals is strictly regional.
+  Millionaire keeps its own sequence and ignores the difficulty setting.
+- **API:** `/api/rounds` takes `region`, `difficulty`, `questionCount`, `avoidIds`; returns
+  `repeatedCount`. `/api/catalog` counts under `region` and `difficulty` (cached per
+  combination). A too-small pool is `422` naming the settings. Only standard rounds are
+  ranked (mixed, default length).
+- **Web:** collapsible "Round settings" panel with a one-line summary; region select with an
+  explanation of what the region means; difficulty and length chips; all kept in
+  localStorage. The selection bar offers "use questions from all regions" when the pool is
+  too small, and says when a round won't be ranked. The browser remembers the last 500
+  played questions; repeats are disclosed on the first question. The progress bar fits any
+  length on one row.
+
+### Findings
+
+- Regional questions are thin (EN 2,022, UA 148, PL 172, CE 142 of 23,726 in English), so
+  under "by language" most rounds are global with a regional third where it exists.
+- Difficulty is 96% medium; Easy has 505 questions in EN/PL, Hard 402. Counts are shown
+  honestly; calibration belongs to phase 7.
+- First version applied the difficulty mix before the category balance and broke equal
+  shares (a Vitest test caught it: history 6 / general 4); fixed by mixing inside categories.
+- The first screenshot showed the open settings panel filling a phone screen before the
+  categories; it is collapsed by default now, with a summary line.
+
+### Verified
+
+- Vitest: 170 API tests (+29: settings selection units, region/difficulty/length/repeats
+  over the API) and 50 web unit tests (stored settings, recent ids).
+- Playwright: new `round-settings.spec.ts`; oracle counts are region-aware
+  (`questionCount(topic, lang, region = 'auto')`). Chromium, Pixel and API: 152 passed;
+  new and changed suites with `--repeat-each=5`.
+
+### Next
+
+Phase 4½: deployment (hosted Postgres, free hosting, live link).
+
+---
+
 ## 2026-11-27 · Expansion phase 3: categories, subcategories, themed quizzes (branch `feat/categories-collections`)
 
 ### Done

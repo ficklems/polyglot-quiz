@@ -1,6 +1,10 @@
 import {
+  DEFAULT_DIFFICULTY,
+  DEFAULT_REGION,
   LANGUAGES,
   QUESTIONS_PER_ROUND,
+  resolveRegion,
+  type CatalogQuery,
   type CatalogResponse,
   type Collection,
   type Language,
@@ -8,7 +12,15 @@ import {
 import type { Database } from '../db/database';
 import { PLAYABLE_TYPES_SQL, SERVE_COLUMN } from '../routes/topics/service';
 import type { ContentBundle } from './load-content';
-import { collectionPlan, matchesCollection, type QuestionMeta } from './selection';
+import {
+  collectionPlan,
+  collectionSettings,
+  effectiveRegion,
+  matchesCollection,
+  matchesSettings,
+  type QuestionMeta,
+  type SettingsFilter,
+} from './selection';
 
 /**
  * The playable questions per language (metadata only), read from the database once.
@@ -17,7 +29,7 @@ import { collectionPlan, matchesCollection, type QuestionMeta } from './selectio
  */
 export class QuestionPool {
   private readonly byLang = new Map<Language, QuestionMeta[]>();
-  private readonly catalogs = new Map<Language, CatalogResponse>();
+  private readonly catalogs = new Map<string, CatalogResponse>();
   private readonly collectionById: Map<string, Collection>;
 
   constructor(
@@ -63,12 +75,18 @@ export class QuestionPool {
     return this.collectionById.get(id);
   }
 
-  /** Categories with their non-empty subcategories, and the themed quizzes, for one language. */
-  catalog(lang: Language): CatalogResponse {
-    const cached = this.catalogs.get(lang);
+  /**
+   * Categories with their non-empty subcategories, and the themed quizzes, with counts under
+   * the player's language, region and difficulty settings.
+   */
+  catalog({ lang, region, difficulty }: CatalogQuery): CatalogResponse {
+    const key = `${lang}|${region}|${difficulty}`;
+    const cached = this.catalogs.get(key);
     if (cached) return cached;
 
-    const pool = this.questions(lang);
+    const all = this.questions(lang);
+    const filter: SettingsFilter = { region: resolveRegion(region, lang), difficulty };
+    const pool = all.filter((q) => matchesSettings(q, filter));
     const perCategory = new Map<string, number>();
     const perSubcategory = new Map<string, number>();
     for (const q of pool) {
@@ -107,24 +125,36 @@ export class QuestionPool {
     });
 
     const collections = this.content.collections.map((c) => {
-      const questionCount = pool.filter((q) => matchesCollection(q, c)).length;
+      const own = collectionSettings(c);
+      const collectionFilter: SettingsFilter = {
+        region: effectiveRegion(region, lang, own.strictRegion),
+        difficulty,
+        ...own,
+      };
+      const questionCount = all.filter(
+        (q) => matchesCollection(q, c) && matchesSettings(q, collectionFilter),
+      ).length;
       const questionsPerRound = collectionPlan(c, QUESTIONS_PER_ROUND).count;
       return {
         id: c.id,
         name: c.name[lang],
         questionCount,
         questionsPerRound,
+        fixedLength: c.settings.questionCount !== undefined,
+        ...own,
         playable: questionCount >= Math.max(questionsPerRound, c.minimumUniqueQuestions),
       };
     });
 
-    const catalog: CatalogResponse = { lang, categories, collections };
-    this.catalogs.set(lang, catalog);
+    const catalog: CatalogResponse = { lang, region, difficulty, categories, collections };
+    this.catalogs.set(key, catalog);
     return catalog;
   }
 
-  /** Builds every cache up front, so the first player doesn't wait for it. */
+  /** Builds the default catalogs up front, so the first player doesn't wait for them. */
   warmUp(): void {
-    for (const lang of LANGUAGES) this.catalog(lang);
+    for (const lang of LANGUAGES) {
+      this.catalog({ lang, region: DEFAULT_REGION, difficulty: DEFAULT_DIFFICULTY });
+    }
   }
 }

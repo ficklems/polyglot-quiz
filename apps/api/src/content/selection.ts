@@ -1,4 +1,16 @@
-import type { Collection, CollectionRule, Difficulty, Selection } from '@pq/shared';
+import {
+  MIXED_DIFFICULTY_TARGET,
+  REGIONAL_SHARE,
+  resolveRegion,
+  type Collection,
+  type CollectionRule,
+  type Difficulty,
+  type DifficultySetting,
+  type Language,
+  type RegionPreference,
+  type ResolvedRegion,
+  type Selection,
+} from '@pq/shared';
 import { shuffle, type Rng } from '../lib/random';
 
 /** What the selection logic needs to know about a question (no texts, no answer). */
@@ -52,6 +64,8 @@ export function balancedPick<T>(
   groupOf: (item: T) => string,
   count: number,
   rng: Rng,
+  /** Orders a group's (already shuffled) items; the first ones are taken first. */
+  orderGroup: (items: T[]) => T[] = (group) => group,
 ): T[] {
   const groups = new Map<string, T[]>();
   for (const item of items) {
@@ -61,7 +75,7 @@ export function balancedPick<T>(
     groups.set(key, list);
   }
   const queues = shuffle([...groups.keys()].sort(), rng).map((key) =>
-    shuffle(groups.get(key)!, rng),
+    orderGroup(shuffle(groups.get(key)!, rng)),
   );
 
   const picked: T[] = [];
@@ -75,19 +89,105 @@ export function balancedPick<T>(
   return picked;
 }
 
+/**
+ * Splits `count` by `shares` (largest remainder), takes up to each bucket's quota from that
+ * bucket and fills any shortfall from the remaining items. The targets are soft (sampling
+ * policy: "use the available pool honestly"): a thin bucket never shrinks the round.
+ */
+export function quotaPick<T>(
+  items: readonly T[],
+  bucketOf: (item: T) => string,
+  shares: Readonly<Record<string, number>>,
+  count: number,
+  pick: (items: readonly T[], n: number) => T[],
+): T[] {
+  const total = Object.values(shares).reduce((sum, share) => sum + share, 0);
+  const keys = Object.keys(shares);
+  const exact = keys.map((key) => ((shares[key] ?? 0) / total) * count);
+  const quotas = exact.map(Math.floor);
+  const order = exact
+    .map((value, i) => ({ i, rest: value - Math.floor(value) }))
+    .sort((a, b) => b.rest - a.rest || a.i - b.i);
+  for (let k = 0; k < count - quotas.reduce((a, b) => a + b, 0); k++) {
+    const target = order[k % order.length];
+    if (target) quotas[target.i] = (quotas[target.i] ?? 0) + 1;
+  }
+
+  const picked: T[] = [];
+  keys.forEach((key, i) => {
+    picked.push(
+      ...pick(
+        items.filter((item) => bucketOf(item) === key),
+        quotas[i] ?? 0,
+      ),
+    );
+  });
+  if (picked.length < count) {
+    const taken = new Set(picked);
+    picked.push(
+      ...pick(
+        items.filter((item) => !taken.has(item)),
+        count - picked.length,
+      ),
+    );
+  }
+  return picked;
+}
+
 export type PickPlan = {
   count: number;
   balanceBy: 'category' | 'decade';
   /** Millionaire Challenge: steps in ascending difficulty, equal share each. */
   difficultySequence?: Difficulty[];
+  /** Soft difficulty mix, e.g. 40/40/20 for Mixed. */
+  difficultyShares?: Readonly<Record<string, number>>;
+  /** Soft region mix, e.g. 35% UA / 65% global. */
+  regionShares?: Readonly<Record<string, number>>;
 };
 
 const DIFFICULTY_RANK: Record<Difficulty, number> = { easy: 0, medium: 1, hard: 2 };
 
 /**
- * Chooses the questions of a round. With a difficulty sequence, each step gets an equal
- * share from its difficulty; a step without enough questions is filled from the rest of
- * the pool ("use the available pool honestly"), and the round is then ordered easy → hard.
+ * Orders items so that every prefix follows `shares` as closely as the items allow: each
+ * step takes from the bucket furthest behind its share. Buckets without a share go last.
+ */
+export function weightedInterleave<T>(
+  items: readonly T[],
+  bucketOf: (item: T) => string,
+  shares: Readonly<Record<string, number>>,
+): T[] {
+  const buckets = new Map<string, T[]>();
+  for (const item of items) {
+    const key = bucketOf(item);
+    buckets.set(key, [...(buckets.get(key) ?? []), item]);
+  }
+  const weighted = Object.keys(shares).filter((key) => (shares[key] ?? 0) > 0);
+  const taken = new Map<string, number>();
+  const result: T[] = [];
+  for (;;) {
+    let best: string | undefined;
+    let bestDeficit = -Infinity;
+    for (const key of weighted) {
+      if ((buckets.get(key)?.length ?? 0) === 0) continue;
+      const deficit = (shares[key] ?? 0) * (result.length + 1) - (taken.get(key) ?? 0);
+      if (deficit > bestDeficit) {
+        best = key;
+        bestDeficit = deficit;
+      }
+    }
+    if (best === undefined) break;
+    result.push(buckets.get(best)!.shift()!);
+    taken.set(best, (taken.get(best) ?? 0) + 1);
+  }
+  for (const [key, rest] of buckets) if (!weighted.includes(key)) result.push(...rest);
+  return result;
+}
+
+/**
+ * Chooses the questions of a round. Layers, outside in: region mix, an equal share per
+ * category (or decade), and the difficulty mix inside each category. With a difficulty sequence each step gets an equal
+ * share from its difficulty, a short step is filled from the rest of the pool, and the round
+ * is ordered easy → hard; otherwise the result is shuffled so buckets don't come in blocks.
  */
 export function pickQuestions(
   pool: readonly QuestionMeta[],
@@ -95,8 +195,20 @@ export function pickQuestions(
   rng: Rng,
 ): QuestionMeta[] {
   const groupOf = plan.balanceBy === 'decade' ? decadeOf : (q: QuestionMeta) => q.category;
+  // Difficulty mixes inside each category, so it never upsets the equal category shares.
+  const shares = plan.difficultyShares;
+  const orderGroup = shares
+    ? (items: QuestionMeta[]) => weightedInterleave(items, (q) => q.difficulty, shares)
+    : undefined;
+  const byCategory = (items: readonly QuestionMeta[], n: number) =>
+    balancedPick(items, groupOf, n, rng, orderGroup);
+  const byRegion = plan.regionShares
+    ? (items: readonly QuestionMeta[], n: number) =>
+        quotaPick(items, (q) => q.region, plan.regionShares!, n, byCategory)
+    : byCategory;
+
   if (!plan.difficultySequence || plan.difficultySequence.length === 0) {
-    return balancedPick(pool, groupOf, plan.count, rng);
+    return shuffle(byRegion(pool, plan.count), rng);
   }
 
   const steps = plan.difficultySequence;
@@ -106,23 +218,91 @@ export function pickQuestions(
     const quota = i === steps.length - 1 ? plan.count - share * (steps.length - 1) : share;
     const taken = new Set(picked.map((q) => q.id));
     const bucket = pool.filter((q) => q.difficulty === difficulty && !taken.has(q.id));
-    picked.push(...balancedPick(bucket, groupOf, quota, rng));
+    picked.push(...byRegion(bucket, quota));
   });
   if (picked.length < plan.count) {
     const taken = new Set(picked.map((q) => q.id));
     const rest = pool.filter((q) => !taken.has(q.id));
-    picked.push(...balancedPick(rest, groupOf, plan.count - picked.length, rng));
+    picked.push(...byRegion(rest, plan.count - picked.length));
   }
-  // Stable sort keeps the balanced order within each difficulty.
-  return picked.sort((a, b) => DIFFICULTY_RANK[a.difficulty] - DIFFICULTY_RANK[b.difficulty]);
+  return sortByDifficulty(picked);
 }
 
-/** Round settings of a collection. */
-export function collectionPlan(collection: Collection, defaultCount: number): PickPlan {
+/** Stable: keeps the balanced order within each difficulty. */
+export function sortByDifficulty(questions: QuestionMeta[]): QuestionMeta[] {
+  return [...questions].sort(
+    (a, b) => DIFFICULTY_RANK[a.difficulty] - DIFFICULTY_RANK[b.difficulty],
+  );
+}
+
+/** Round settings of a collection; `count` is the player's choice unless the quiz fixes it. */
+export function collectionPlan(collection: Collection, count: number): PickPlan {
   const settings = collection.settings;
   return {
-    count: settings.questionCount ?? defaultCount,
+    count: settings.questionCount ?? count,
     balanceBy: settings.balanceBy ?? 'category',
     ...(settings.difficultySequence ? { difficultySequence: settings.difficultySequence } : {}),
+  };
+}
+
+export type SettingsFilter = {
+  region: ResolvedRegion;
+  difficulty: DifficultySetting;
+  /** Only the chosen region, no global questions (Only Locals). */
+  strictRegion?: boolean;
+  /** The quiz brings its own difficulty sequence; the setting doesn't filter. */
+  ownDifficulty?: boolean;
+};
+
+/**
+ * Strict quizzes need a concrete region: "all" and "international only" fall back to the
+ * language's region, so Only Locals is always about one place.
+ */
+export function effectiveRegion(
+  preference: RegionPreference,
+  lang: Language,
+  strict: boolean,
+): ResolvedRegion {
+  const region = resolveRegion(preference, lang);
+  return strict && (region === 'all' || region === 'global') ? resolveRegion('auto', lang) : region;
+}
+
+export function matchesSettings(q: QuestionMeta, f: SettingsFilter): boolean {
+  if (f.strictRegion) {
+    if (q.region !== f.region) return false;
+  } else if (f.region === 'global') {
+    if (q.region !== 'global') return false;
+  } else if (f.region !== 'all') {
+    if (q.region !== 'global' && q.region !== f.region) return false;
+  }
+  if (!f.ownDifficulty && f.difficulty !== 'mixed' && q.difficulty !== f.difficulty) {
+    return false;
+  }
+  return true;
+}
+
+/** The soft targets that apply under these settings. */
+export function settingsShares(
+  f: SettingsFilter,
+): Pick<PickPlan, 'regionShares' | 'difficultyShares'> {
+  const regional = !f.strictRegion && f.region !== 'all' && f.region !== 'global';
+  return {
+    ...(regional
+      ? { regionShares: { [f.region]: REGIONAL_SHARE, global: 1 - REGIONAL_SHARE } }
+      : {}),
+    ...(!f.ownDifficulty && f.difficulty === 'mixed'
+      ? { difficultyShares: MIXED_DIFFICULTY_TARGET }
+      : {}),
+  };
+}
+
+/** How a themed quiz treats the player's settings. */
+export function collectionSettings(collection: Collection): {
+  ownDifficulty: boolean;
+  strictRegion: boolean;
+} {
+  return {
+    ownDifficulty: (collection.settings.difficultySequence?.length ?? 0) > 0,
+    strictRegion: collection.settings.requireRegionalSelection === true,
   };
 }

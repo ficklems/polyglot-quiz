@@ -9,16 +9,23 @@ import {
   type Selection,
 } from '@pq/shared';
 import { postJson } from '../../../shared/api/http';
+import type { RoundSettings } from '../../settings/round-settings';
 
 /** Where a round's questions come from: the player's own selection or a themed quiz. */
 export type RoundSource =
   { kind: 'selection'; selection: Selection } | { kind: 'collection'; collectionId: string };
 
-export async function createRound(source: RoundSource, lang: Language): Promise<Round> {
+export async function createRound(
+  source: RoundSource,
+  lang: Language,
+  settings: RoundSettings,
+  avoidIds: string[],
+): Promise<Round> {
+  const common = { lang, ...settings, avoidIds };
   const body: CreateRoundInput =
     source.kind === 'selection'
-      ? { lang, selection: source.selection }
-      : { lang, collectionId: source.collectionId };
+      ? { ...common, selection: source.selection }
+      : { ...common, collectionId: source.collectionId };
   return roundSchema.parse(await postJson('/api/rounds', body));
 }
 

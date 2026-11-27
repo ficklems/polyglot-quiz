@@ -154,6 +154,8 @@ Playwright rules (from the official best practices):
 - Vitest API tests use the small fixture in `apps/api/test/fixtures/content/` (fast, one DB per
   test); `content-full.test.ts` checks the real dataset once.
 - Never assume a fixed number of options (true/false has 2) or a fixed set of topics.
+- Region matters for counts: the UI defaults to "by language" (`auto`), so oracle counts take a
+  region (`questionCount(topic, lang, 'auto')`); Vitest helpers start rounds with `region: 'all'`.
 - The home list is collapsed: reach a category with `homePage.selectCategory(name)` (search), not
   by assuming it is among the first 8.
 - Playwright tests share one API server (and DB) across tests and workers: never assume an

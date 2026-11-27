@@ -1,5 +1,5 @@
 import type { AnswerResult, OptionId, Round } from '@pq/shared';
-import { useCallback, useState } from 'react';
+import { useCallback, useState, type CSSProperties } from 'react';
 import { useTranslation } from 'react-i18next';
 import { startNextQuestion, submitAnswer } from '../api/rounds-api';
 import { optionState, optionText } from '../quiz.utils';
@@ -104,6 +104,11 @@ export function QuizScreen({ round, title, onFinish, onQuit }: Props) {
         </span>
       </div>
 
+      {/* Disclose repeats (spec §4): the pool had too few questions the player hadn't seen. */}
+      {index === 0 && round.repeatedCount > 0 && (
+        <p className="status status--info">{t('quiz.repeated', { count: round.repeatedCount })}</p>
+      )}
+
       <div className="quiz-status">
         <div className="progress-card">
           <div className="progress-labels">
@@ -112,6 +117,7 @@ export function QuizScreen({ round, title, onFinish, onQuit }: Props) {
           </div>
           <div
             className="progress-steps"
+            style={{ '--steps': total } as CSSProperties}
             role="progressbar"
             aria-label={t('quiz.progressLabel')}
             aria-valuemin={1}

@@ -24,6 +24,43 @@ export class HomePage {
     return this.page.getByRole('button', { name: text(this.lang, 'settings.darkTheme') });
   }
 
+  // ---------- round settings ----------
+
+  get settingsRegion(): Locator {
+    return this.page.getByRole('region', { name: text(this.lang, 'roundSettings.heading') });
+  }
+
+  get settingsToggle(): Locator {
+    return this.settingsRegion.getByRole('button', {
+      name: text(this.lang, 'roundSettings.heading'),
+    });
+  }
+
+  /** The panel starts collapsed; opening it twice would close it again. */
+  async openSettings(): Promise<void> {
+    if ((await this.settingsToggle.getAttribute('aria-expanded')) !== 'true') {
+      await this.settingsToggle.click();
+    }
+  }
+
+  get regionSelect(): Locator {
+    return this.settingsRegion.getByRole('combobox', {
+      name: text(this.lang, 'roundSettings.region'),
+    });
+  }
+
+  difficultyButton(setting: 'mixed' | 'easy' | 'medium' | 'hard'): Locator {
+    return this.settingsRegion
+      .getByRole('group', { name: text(this.lang, 'roundSettings.difficulty') })
+      .getByRole('button', { name: text(this.lang, `roundSettings.difficulties.${setting}`) });
+  }
+
+  countButton(count: number): Locator {
+    return this.settingsRegion
+      .getByRole('group', { name: text(this.lang, 'roundSettings.questionCount') })
+      .getByRole('button', { name: String(count), exact: true });
+  }
+
   // ---------- categories ----------
 
   get categoriesRegion(): Locator {
@@ -90,6 +127,10 @@ export class HomePage {
 
   get selectionStatus(): Locator {
     return this.summary.getByRole('status');
+  }
+
+  get widenButton(): Locator {
+    return this.summary.getByRole('button', { name: text(this.lang, 'home.widenRegion') });
   }
 
   get startButton(): Locator {

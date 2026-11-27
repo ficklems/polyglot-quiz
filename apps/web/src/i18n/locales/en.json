@@ -15,7 +15,9 @@
     "selectionCount_other": "{{count}} questions to play from",
     "selectionTooSmall_one": "Only {{count}} question selected, a round needs {{needed}}. Add more.",
     "selectionTooSmall_other": "Only {{count}} questions selected, a round needs {{needed}}. Add more.",
-    "summaryLabel": "Your selection"
+    "summaryLabel": "Your selection",
+    "notStandard": "Only rounds of 10 questions at mixed difficulty go on the leaderboard.",
+    "widenRegion": "Use questions from all regions"
   },
   "topics": {
     "heading": "Topics",
@@ -42,7 +44,7 @@
   "collections": {
     "heading": "Themed quizzes",
     "hint": "Ready-made rounds. Tap one to start.",
-    "notEnough": "Not enough questions in this language yet",
+    "notEnough": "Not enough questions with these settings ({{count}})",
     "questionsPerRound_one": "{{count}} question",
     "questionsPerRound_other": "{{count}} questions"
   },
@@ -72,7 +74,9 @@
     "next": "Next",
     "finish": "See result",
     "answerError": "Couldn't send your answer. Check your connection.",
-    "customMix": "Your mix"
+    "customMix": "Your mix",
+    "repeated_one": "{{count}} question from recent rounds is repeated: there weren’t enough new ones.",
+    "repeated_other": "{{count}} questions from recent rounds are repeated: there weren’t enough new ones."
   },
   "result": {
     "title": "Round complete",
@@ -119,5 +123,33 @@
       "already": "This round is already on the leaderboard.",
       "failed": "Couldn't save your result. Please try again."
     }
+  },
+  "roundSettings": {
+    "heading": "Round settings",
+    "region": "Questions about",
+    "regionHint": {
+      "all": "Questions from every region.",
+      "global": "Only international questions.",
+      "mixed": "About a third of the questions are about {{region}}, the rest are international."
+    },
+    "regions": {
+      "auto": "By language: {{region}}",
+      "all": "Worldwide (all regions)",
+      "global": "International only",
+      "UA": "Ukraine",
+      "PL": "Poland",
+      "CE": "Central Europe",
+      "EN": "English-speaking countries"
+    },
+    "difficulty": "Difficulty",
+    "difficulties": {
+      "mixed": "Mixed",
+      "easy": "Easy",
+      "medium": "Medium",
+      "hard": "Hard"
+    },
+    "questionCount": "Questions per round",
+    "countSummary_one": "{{count}} question",
+    "countSummary_other": "{{count}} questions"
   }
 }

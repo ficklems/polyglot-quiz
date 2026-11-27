@@ -23,7 +23,7 @@ test.describe('GET /api/topics', () => {
       expect(body.topics).toHaveLength(TOPIC_COUNT);
       // The API and the content oracle must agree on what can be played.
       for (const topic of body.topics) {
-        expect(topic.questionCount, topic.id).toBe(questionCount(topic.id, lang));
+        expect(topic.questionCount, topic.id).toBe(questionCount(topic.id, lang, 'all'));
       }
     });
   }

@@ -8,7 +8,9 @@ import { QuizScreen } from '../features/quiz/components/QuizScreen';
 import { ResultScreen } from '../features/quiz/components/ResultScreen';
 import { LanguageSwitcher } from '../features/settings/components/LanguageSwitcher';
 import { ThemeToggle } from '../features/settings/components/ThemeToggle';
+import { useRoundSettings } from '../features/settings/use-round-settings';
 import { useTheme } from '../features/settings/use-theme';
+import { readRecent, rememberPlayed } from '../features/quiz/recent-questions';
 import { HomePage } from './HomePage';
 
 type View =
@@ -30,12 +32,14 @@ type View =
 export function App() {
   const { t, i18n } = useTranslation();
   const { theme, toggle } = useTheme();
+  const { settings, update: updateSettings } = useRoundSettings();
   const [view, setView] = useState<View>({ name: 'home' });
   const lang: Language = isLanguage(i18n.resolvedLanguage) ? i18n.resolvedLanguage : 'en';
 
   /** Throws on failure so the caller can show the error where the player clicked. */
   const start = async (source: RoundSource, title: string) => {
-    const round = await createRound(source, lang);
+    const round = await createRound(source, lang, settings, readRecent());
+    rememberPlayed(round.questions.map((q) => q.id));
     setView({ name: 'quiz', round, source, title });
   };
 
@@ -64,6 +68,8 @@ export function App() {
         {view.name === 'home' && (
           <HomePage
             lang={lang}
+            settings={settings}
+            onSettingsChange={updateSettings}
             onStart={start}
             onOpenLeaderboard={() => setView({ name: 'leaderboard' })}
           />

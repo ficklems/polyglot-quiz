@@ -1,7 +1,9 @@
 import { randomUUID } from 'node:crypto';
 import {
+  DEFAULT_DIFFICULTY,
+  DEFAULT_QUESTION_COUNT,
   POINTS_PER_CORRECT,
-  QUESTIONS_PER_ROUND,
+  resolveRegion,
   TIME_LIMIT_SECONDS,
   type AnswerRequest,
   type AnswerResult,
@@ -18,10 +20,17 @@ import {
 import type { QuestionPool } from '../../content/question-pool';
 import {
   collectionPlan,
+  collectionSettings,
+  effectiveRegion,
   matchesCollection,
   matchesSelection,
+  matchesSettings,
   pickQuestions,
+  settingsShares,
+  sortByDifficulty,
+  type PickPlan,
   type QuestionMeta,
+  type SettingsFilter,
 } from '../../content/selection';
 import type { Database } from '../../db/database';
 import { badRequest, conflict, notFound, unprocessable } from '../../lib/http-errors';
@@ -74,20 +83,32 @@ type RoundSource = {
   selection: Selection | null;
   ranked: boolean;
   questions: QuestionMeta[];
+  repeatedCount: number;
+};
+
+type Source = {
+  topicId: string | null;
+  collectionId: string | null;
+  selection: Selection | null;
+  /** Topic and themed quiz; a custom mix never is. */
+  rankable: boolean;
+  candidates: QuestionMeta[];
+  plan: PickPlan;
+  /** Minimum pool size to start (a themed quiz may require more than its round length). */
+  needed: number;
+  what: string;
+  filter: SettingsFilter;
+  /** The quiz fixes the round length (Millionaire Challenge). */
+  fixedLength: boolean;
 };
 
 /**
  * Turns the request into a pool and a plan. A selection of exactly one whole category is
- * the same round as that topic, so it is ranked on that topic's board; any other selection
- * is a custom mix, which isn't ranked (players could otherwise cherry-pick easy corners).
+ * the same round as that topic; any other selection is a custom mix, which isn't ranked
+ * (players could otherwise cherry-pick easy corners).
  */
-function chooseQuestions(
-  db: Database,
-  pool: QuestionPool,
-  request: CreateRoundRequest,
-  rng: Rng,
-): RoundSource {
-  const { lang } = request;
+function resolveSource(db: Database, pool: QuestionPool, request: CreateRoundRequest): Source {
+  const { lang, region, difficulty, questionCount } = request;
   const all = pool.questions(lang);
   if (request.selection) assertSelectionExists(db, request.selection);
   const topicId =
@@ -97,63 +118,122 @@ function chooseQuestions(
     request.selection.subcategories.length === 0
       ? request.selection.categories[0]
       : undefined);
+  const standard: SettingsFilter = { region: resolveRegion(region, lang), difficulty };
+  const basePlan = (filter: SettingsFilter): PickPlan => ({
+    count: questionCount,
+    balanceBy: 'category',
+    ...settingsShares(filter),
+  });
 
   if (topicId !== undefined) {
     if (!topicExists(db, topicId)) throw notFound(`Topic "${topicId}" does not exist`);
-    const candidates = all.filter((q) => q.category === topicId);
-    requireEnough(candidates.length, QUESTIONS_PER_ROUND, `Topic "${topicId}"`, lang);
     return {
       topicId,
       collectionId: null,
       selection: null,
-      ranked: true,
-      questions: pickQuestions(
-        candidates,
-        { count: QUESTIONS_PER_ROUND, balanceBy: 'category' },
-        rng,
-      ),
+      rankable: true,
+      candidates: all.filter((q) => q.category === topicId),
+      plan: basePlan(standard),
+      needed: questionCount,
+      what: `Topic "${topicId}"`,
+      filter: standard,
+      fixedLength: false,
     };
   }
 
   if (request.collectionId !== undefined) {
     const collection = pool.collection(request.collectionId);
     if (!collection) throw notFound(`Themed quiz "${request.collectionId}" does not exist`);
-    const plan = collectionPlan(collection, QUESTIONS_PER_ROUND);
-    const candidates = all.filter((q) => matchesCollection(q, collection));
-    requireEnough(
-      candidates.length,
-      Math.max(plan.count, collection.minimumUniqueQuestions),
-      `Themed quiz "${collection.id}"`,
-      lang,
-    );
+    const own = collectionSettings(collection);
+    const filter: SettingsFilter = {
+      region: effectiveRegion(region, lang, own.strictRegion),
+      difficulty,
+      ...own,
+    };
+    const plan = { ...collectionPlan(collection, questionCount), ...settingsShares(filter) };
     return {
       topicId: null,
       collectionId: collection.id,
       selection: null,
-      ranked: true,
-      questions: pickQuestions(candidates, plan, rng),
+      rankable: true,
+      candidates: all.filter((q) => matchesCollection(q, collection)),
+      plan,
+      needed: Math.max(plan.count, collection.minimumUniqueQuestions),
+      what: `Themed quiz "${collection.id}"`,
+      filter,
+      fixedLength: collection.settings.questionCount !== undefined,
     };
   }
 
   const selection = request.selection!;
-  const candidates = all.filter((q) => matchesSelection(q, selection));
-  requireEnough(candidates.length, QUESTIONS_PER_ROUND, 'This selection', lang);
   return {
     topicId: null,
     collectionId: null,
     selection,
-    ranked: false,
-    questions: pickQuestions(
-      candidates,
-      { count: QUESTIONS_PER_ROUND, balanceBy: 'category' },
-      rng,
-    ),
+    rankable: false,
+    candidates: all.filter((q) => matchesSelection(q, selection)),
+    plan: basePlan(standard),
+    needed: questionCount,
+    what: 'This selection',
+    filter: standard,
+    fixedLength: false,
   };
 }
 
-function requireEnough(available: number, needed: number, what: string, lang: Language): void {
+function chooseQuestions(
+  db: Database,
+  pool: QuestionPool,
+  request: CreateRoundRequest,
+  rng: Rng,
+): RoundSource {
+  const source = resolveSource(db, pool, request);
+  const eligible = source.candidates.filter((q) => matchesSettings(q, source.filter));
+  requireEnough(eligible.length, source.needed, source.what, request);
+
+  // Prefer questions the player hasn't seen recently; repeat only when the pool runs out,
+  // and say how many were repeated.
+  const avoid = new Set(request.avoidIds);
+  const fresh = eligible.filter((q) => !avoid.has(q.id));
+  let questions = pickQuestions(fresh, source.plan, rng);
+  let repeatedCount = 0;
+  if (questions.length < source.plan.count) {
+    const seen = eligible.filter((q) => avoid.has(q.id));
+    const extra = pickQuestions(
+      seen,
+      { ...source.plan, count: source.plan.count - questions.length },
+      rng,
+    );
+    repeatedCount = extra.length;
+    questions = [...questions, ...extra];
+    if (source.plan.difficultySequence) questions = sortByDifficulty(questions);
+  }
+
+  // Easier or longer rounds aren't comparable on a board. Settings a quiz overrides
+  // (Millionaire's own length and difficulty) don't count against it.
+  const standardSettings =
+    (source.filter.ownDifficulty === true || request.difficulty === DEFAULT_DIFFICULTY) &&
+    (source.fixedLength || request.questionCount === DEFAULT_QUESTION_COUNT);
+
+  return {
+    topicId: source.topicId,
+    collectionId: source.collectionId,
+    selection: source.selection,
+    ranked: source.rankable && standardSettings,
+    questions,
+    repeatedCount,
+  };
+}
+
+function requireEnough(
+  available: number,
+  needed: number,
+  what: string,
+  { lang, region, difficulty }: CreateRoundRequest,
+): void {
   if (available < needed) {
-    throw unprocessable(`${what} has ${available} questions in "${lang}", a round needs ${needed}`);
+    throw unprocessable(
+      `${what} has ${available} questions in "${lang}" (region ${region}, difficulty ${difficulty}), a round needs ${needed}`,
+    );
   }
 }
 
@@ -236,6 +316,7 @@ export function createRound(
     collectionId: source.collectionId,
     ranked: source.ranked,
     lang,
+    repeatedCount: source.repeatedCount,
     timeLimitSeconds: TIME_LIMIT_SECONDS,
     questions: picked.map((q, i) => playerQuestion(q.id, q.payload, lang, orders[i] ?? [])),
   };

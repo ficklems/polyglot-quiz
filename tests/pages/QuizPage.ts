@@ -45,6 +45,15 @@ export class QuizPage {
     return this.page.getByTestId('quiz-title');
   }
 
+  /** Tells the player that recently played questions had to be repeated. */
+  repeatedNote(count: number): Locator {
+    return this.page.getByText(
+      text(this.lang, count === 1 ? 'quiz.repeated_one' : 'quiz.repeated_other', {
+        count: String(count),
+      }),
+    );
+  }
+
   get quitButton(): Locator {
     return this.page.getByRole('button', { name: text(this.lang, 'quiz.quit') });
   }

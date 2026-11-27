@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { languageSchema } from './languages';
+import { difficultySettingSchema, regionPreferenceSchema } from './settings';
 import { topicIdSchema } from './topics';
 
 export const collectionIdSchema = z
@@ -25,7 +26,12 @@ export const selectionSchema = z
   });
 export type Selection = z.infer<typeof selectionSchema>;
 
-export const catalogQuerySchema = z.object({ lang: languageSchema });
+export const catalogQuerySchema = z.object({
+  lang: languageSchema,
+  region: regionPreferenceSchema.default('auto'),
+  difficulty: difficultySettingSchema.default('mixed'),
+});
+export type CatalogQuery = z.infer<typeof catalogQuerySchema>;
 
 export const catalogSubcategorySchema = z.strictObject({
   /** "<categoryId>/<subcategoryId>" */
@@ -48,15 +54,23 @@ export const catalogCollectionSchema = z.strictObject({
   id: collectionIdSchema,
   name: z.string().min(1),
   questionCount: z.number().int().min(0),
-  /** How many questions a round of this collection has (15 for Millionaire Challenge). */
+  /** How many questions a round of this collection has by default (15 for Millionaire). */
   questionsPerRound: z.number().int().positive(),
-  /** False when there are fewer eligible questions than a round needs in this language. */
+  /** True when the player can't change the length (Millionaire Challenge). */
+  fixedLength: z.boolean(),
+  /** Ignores the difficulty setting (it has its own easy → hard sequence). */
+  ownDifficulty: z.boolean(),
+  /** Uses only regional questions of the chosen region, no global ones (Only Locals). */
+  strictRegion: z.boolean(),
+  /** False when there are fewer eligible questions than a default round needs. */
   playable: z.boolean(),
 });
 export type CatalogCollection = z.infer<typeof catalogCollectionSchema>;
 
 export const catalogResponseSchema = z.strictObject({
   lang: languageSchema,
+  region: regionPreferenceSchema,
+  difficulty: difficultySettingSchema,
   categories: z.array(catalogCategorySchema),
   collections: z.array(catalogCollectionSchema),
 });
