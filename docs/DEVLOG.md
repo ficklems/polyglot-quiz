@@ -58,6 +58,14 @@ Newest entry first. Each entry: what was done, decisions and why, how it was ver
   Firefox, WebKit and mobile Safari run in CI only.
 - Screenshots of the home screen (light/dark, Pixel 7): `docs/screenshots/`.
 
+### Incident (fixed)
+
+The first CI run failed at typecheck. `.gitignore` had `data/` (meant for the SQLite folder),
+which also ignored `tests/data/` (the i18n helper), so that file never reached GitHub. Locally
+everything passed because the file existed on disk. Fix: scope the rule to `/data/` and
+`apps/api/data/` (same in the ESLint and Prettier ignores), then verify on a clean clone with
+`npm ci`. Lesson: CI on a clean checkout catches what local runs hide.
+
 ### Next
 
 1. Questions: DB tables + seed (~15 per topic per language), `POST /api/rounds` (start a round:
