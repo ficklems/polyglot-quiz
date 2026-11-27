@@ -1,0 +1,1046 @@
+[
+  {
+    "id": "music",
+    "name": {
+      "uk": "Музика",
+      "pl": "Muzyka",
+      "en": "Music"
+    },
+    "target": 3000,
+    "seedCount": 3990,
+    "remaining": 0,
+    "file": "questions/music.jsonl",
+    "subcategories": [
+      "international_hits",
+      "ukrainian_music",
+      "polish_music",
+      "english_speaking",
+      "central_europe_music",
+      "1950s",
+      "1960s",
+      "1970s",
+      "1980s",
+      "1990s",
+      "2000s",
+      "2010s",
+      "2020s",
+      "pop",
+      "rock",
+      "hip_hop",
+      "classical",
+      "jazz",
+      "eurovision",
+      "awards",
+      "albums",
+      "soundtracks",
+      "song_matching",
+      "skryabin"
+    ],
+    "seedSubcategories": [
+      "albums",
+      "awards",
+      "central_europe_music",
+      "classical",
+      "english_speaking",
+      "eurovision",
+      "international_hits",
+      "jazz",
+      "polish_music",
+      "rock",
+      "skryabin",
+      "song_matching",
+      "soundtracks",
+      "ukrainian_music"
+    ],
+    "trilingualDraftCount": 3990,
+    "bilingualDraftCount": 0,
+    "externallyAnswerCheckedCount": 20,
+    "newSourceConsultedDraftCount": 16
+  },
+  {
+    "id": "history",
+    "name": {
+      "uk": "Історія та події",
+      "pl": "Historia i wydarzenia",
+      "en": "History & Events"
+    },
+    "target": 2500,
+    "seedCount": 2524,
+    "remaining": 0,
+    "file": "questions/history.jsonl",
+    "subcategories": [
+      "world_events",
+      "ukrainian_history",
+      "polish_history",
+      "central_europe_history",
+      "anglophone_history",
+      "ancient_world",
+      "medieval_history",
+      "early_modern",
+      "modern_history",
+      "20th_century",
+      "21st_century",
+      "empires",
+      "revolutions",
+      "independence",
+      "chronology",
+      "archaeology",
+      "forensics"
+    ],
+    "seedSubcategories": [
+      "20th_century",
+      "ancient_world",
+      "anglophone_history",
+      "central_europe_history",
+      "chronology",
+      "empires",
+      "forensics",
+      "independence",
+      "medieval_history",
+      "polish_history",
+      "revolutions",
+      "ukrainian_history",
+      "world_events"
+    ],
+    "trilingualDraftCount": 2524,
+    "bilingualDraftCount": 0,
+    "externallyAnswerCheckedCount": 9,
+    "newSourceConsultedDraftCount": 0
+  },
+  {
+    "id": "film_tv",
+    "name": {
+      "uk": "Кіно та серіали",
+      "pl": "Filmy i seriale",
+      "en": "Movies & TV"
+    },
+    "target": 2000,
+    "seedCount": 2686,
+    "remaining": 0,
+    "file": "questions/film_tv.jsonl",
+    "subcategories": [
+      "film_directors",
+      "regional_poland",
+      "regional_ukraine",
+      "anglophone_cinema",
+      "central_europe_cinema",
+      "tv_series",
+      "comedy",
+      "drama",
+      "horror",
+      "detective",
+      "romance",
+      "science_fiction",
+      "actors",
+      "awards",
+      "release_years",
+      "emoji",
+      "film_franchises"
+    ],
+    "seedSubcategories": [
+      "actors",
+      "awards",
+      "emoji",
+      "film_directors",
+      "film_franchises",
+      "regional_poland",
+      "regional_ukraine",
+      "release_years",
+      "tv_series"
+    ],
+    "trilingualDraftCount": 2686,
+    "bilingualDraftCount": 0,
+    "externallyAnswerCheckedCount": 1,
+    "newSourceConsultedDraftCount": 0
+  },
+  {
+    "id": "geography",
+    "name": {
+      "uk": "Географія",
+      "pl": "Geografia",
+      "en": "Geography"
+    },
+    "target": 1500,
+    "seedCount": 2005,
+    "remaining": 0,
+    "file": "questions/geography.jsonl",
+    "subcategories": [
+      "capitals",
+      "countries",
+      "cities",
+      "flags_text",
+      "continents",
+      "rivers",
+      "mountains",
+      "oceans",
+      "islands",
+      "borders",
+      "comparison",
+      "map_locations",
+      "capitals_matching",
+      "poland",
+      "ukraine",
+      "central_europe",
+      "anglophone_geography"
+    ],
+    "seedSubcategories": [
+      "borders",
+      "capitals",
+      "capitals_matching",
+      "central_europe",
+      "cities",
+      "comparison",
+      "continents",
+      "countries",
+      "islands",
+      "map_locations",
+      "mountains",
+      "oceans",
+      "rivers"
+    ],
+    "trilingualDraftCount": 2005,
+    "bilingualDraftCount": 0,
+    "externallyAnswerCheckedCount": 4,
+    "newSourceConsultedDraftCount": 0
+  },
+  {
+    "id": "science",
+    "name": {
+      "uk": "Наука",
+      "pl": "Nauka",
+      "en": "Science"
+    },
+    "target": 1000,
+    "seedCount": 1332,
+    "remaining": 0,
+    "file": "questions/science.jsonl",
+    "subcategories": [
+      "periodic_table",
+      "physics",
+      "chemistry",
+      "biology",
+      "mathematics",
+      "scientists",
+      "school_science",
+      "experiments",
+      "scientific_method",
+      "earth_science"
+    ],
+    "seedSubcategories": [
+      "biology",
+      "chemistry",
+      "earth_science",
+      "periodic_table",
+      "physics",
+      "school_science",
+      "scientists"
+    ],
+    "trilingualDraftCount": 1332,
+    "bilingualDraftCount": 0,
+    "externallyAnswerCheckedCount": 275,
+    "newSourceConsultedDraftCount": 0
+  },
+  {
+    "id": "sports",
+    "name": {
+      "uk": "Спорт",
+      "pl": "Sport",
+      "en": "Sports"
+    },
+    "target": 1000,
+    "seedCount": 1339,
+    "remaining": 0,
+    "file": "questions/sports.jsonl",
+    "subcategories": [
+      "olympic_hosts",
+      "sports_rules",
+      "football",
+      "tennis",
+      "basketball",
+      "volleyball",
+      "motorsport",
+      "winter_sports",
+      "boxing",
+      "athletics",
+      "national_sports",
+      "athletes"
+    ],
+    "seedSubcategories": [
+      "athletes",
+      "basketball",
+      "boxing",
+      "football",
+      "motorsport",
+      "olympic_hosts",
+      "sports_rules",
+      "tennis",
+      "winter_sports"
+    ],
+    "trilingualDraftCount": 1339,
+    "bilingualDraftCount": 0,
+    "externallyAnswerCheckedCount": 59,
+    "newSourceConsultedDraftCount": 0
+  },
+  {
+    "id": "pop_culture",
+    "name": {
+      "uk": "Попкультура",
+      "pl": "Popkultura",
+      "en": "Pop Culture"
+    },
+    "target": 1000,
+    "seedCount": 1344,
+    "remaining": 0,
+    "file": "questions/pop_culture.jsonl",
+    "subcategories": [
+      "awards",
+      "celebrities",
+      "television",
+      "media",
+      "festivals",
+      "internet_culture",
+      "regional_pop_culture"
+    ],
+    "seedSubcategories": ["awards", "celebrities"],
+    "trilingualDraftCount": 1344,
+    "bilingualDraftCount": 0,
+    "externallyAnswerCheckedCount": 0,
+    "newSourceConsultedDraftCount": 0
+  },
+  {
+    "id": "nature",
+    "name": {
+      "uk": "Тварини та природа",
+      "pl": "Zwierzęta i przyroda",
+      "en": "Animals & Nature"
+    },
+    "target": 800,
+    "seedCount": 1068,
+    "remaining": 0,
+    "file": "questions/nature.jsonl",
+    "subcategories": [
+      "animals",
+      "dogs",
+      "cats",
+      "birds",
+      "marine_life",
+      "insects",
+      "dinosaurs",
+      "plants",
+      "ecosystems",
+      "weather"
+    ],
+    "seedSubcategories": [
+      "animals",
+      "birds",
+      "cats",
+      "dinosaurs",
+      "dogs",
+      "insects",
+      "marine_life",
+      "plants"
+    ],
+    "trilingualDraftCount": 1068,
+    "bilingualDraftCount": 0,
+    "externallyAnswerCheckedCount": 0,
+    "newSourceConsultedDraftCount": 0
+  },
+  {
+    "id": "food",
+    "name": {
+      "uk": "Їжа та напої",
+      "pl": "Jedzenie i napoje",
+      "en": "Food & Drink"
+    },
+    "target": 800,
+    "seedCount": 779,
+    "remaining": 21,
+    "file": "questions/food.jsonl",
+    "subcategories": [
+      "ingredients",
+      "national_dishes",
+      "world_cuisines",
+      "desserts",
+      "spices",
+      "coffee_tea",
+      "cheese",
+      "cooking_methods",
+      "food_history",
+      "regional_food"
+    ],
+    "seedSubcategories": [
+      "cheese",
+      "coffee_tea",
+      "desserts",
+      "ingredients",
+      "national_dishes",
+      "regional_food",
+      "spices",
+      "world_cuisines"
+    ],
+    "trilingualDraftCount": 779,
+    "bilingualDraftCount": 0,
+    "externallyAnswerCheckedCount": 0,
+    "newSourceConsultedDraftCount": 0
+  },
+  {
+    "id": "technology",
+    "name": {
+      "uk": "Технології та IT",
+      "pl": "Technologie i IT",
+      "en": "Technology & IT"
+    },
+    "target": 800,
+    "seedCount": 345,
+    "remaining": 455,
+    "file": "questions/technology.jsonl",
+    "subcategories": [
+      "acronyms",
+      "chronology",
+      "web",
+      "computers",
+      "smartphones",
+      "internet_history",
+      "programming",
+      "ai",
+      "cybersecurity",
+      "social_media",
+      "companies"
+    ],
+    "seedSubcategories": [
+      "acronyms",
+      "chronology",
+      "computers",
+      "internet_history",
+      "programming",
+      "smartphones",
+      "web"
+    ],
+    "trilingualDraftCount": 345,
+    "bilingualDraftCount": 0,
+    "externallyAnswerCheckedCount": 3,
+    "newSourceConsultedDraftCount": 0
+  },
+  {
+    "id": "space",
+    "name": {
+      "uk": "Космос",
+      "pl": "Kosmos",
+      "en": "Space"
+    },
+    "target": 500,
+    "seedCount": 388,
+    "remaining": 112,
+    "file": "questions/space.jsonl",
+    "subcategories": [
+      "comparison",
+      "facts",
+      "planet_order",
+      "planets",
+      "stars",
+      "galaxies",
+      "missions",
+      "astronauts",
+      "astronomy"
+    ],
+    "seedSubcategories": [
+      "astronauts",
+      "astronomy",
+      "comparison",
+      "facts",
+      "galaxies",
+      "missions",
+      "planet_order",
+      "planets",
+      "stars"
+    ],
+    "trilingualDraftCount": 388,
+    "bilingualDraftCount": 0,
+    "externallyAnswerCheckedCount": 72,
+    "newSourceConsultedDraftCount": 0
+  },
+  {
+    "id": "human_body",
+    "name": {
+      "uk": "Людське тіло",
+      "pl": "Ciało człowieka",
+      "en": "Human Body"
+    },
+    "target": 500,
+    "seedCount": 403,
+    "remaining": 97,
+    "file": "questions/human_body.jsonl",
+    "subcategories": [
+      "anatomy",
+      "organs",
+      "brain",
+      "senses",
+      "sleep",
+      "nutrition",
+      "medical_history",
+      "physiology"
+    ],
+    "seedSubcategories": ["anatomy", "brain", "medical_history", "organs", "physiology"],
+    "trilingualDraftCount": 403,
+    "bilingualDraftCount": 0,
+    "externallyAnswerCheckedCount": 0,
+    "newSourceConsultedDraftCount": 0
+  },
+  {
+    "id": "literature",
+    "name": {
+      "uk": "Література",
+      "pl": "Literatura",
+      "en": "Literature"
+    },
+    "target": 500,
+    "seedCount": 678,
+    "remaining": 0,
+    "file": "questions/literature.jsonl",
+    "subcategories": [
+      "polish_books",
+      "ukrainian_books",
+      "world_books",
+      "anglophone_books",
+      "poetry",
+      "authors",
+      "fantasy",
+      "detective",
+      "childrens_books",
+      "author_matching"
+    ],
+    "seedSubcategories": [
+      "author_matching",
+      "authors",
+      "childrens_books",
+      "fantasy",
+      "poetry",
+      "polish_books",
+      "ukrainian_books",
+      "world_books"
+    ],
+    "trilingualDraftCount": 678,
+    "bilingualDraftCount": 0,
+    "externallyAnswerCheckedCount": 1,
+    "newSourceConsultedDraftCount": 0
+  },
+  {
+    "id": "art",
+    "name": {
+      "uk": "Мистецтво та архітектура",
+      "pl": "Sztuka i architektura",
+      "en": "Art & Architecture"
+    },
+    "target": 500,
+    "seedCount": 220,
+    "remaining": 280,
+    "file": "questions/art.jsonl",
+    "subcategories": [
+      "paintings",
+      "artists",
+      "sculptures",
+      "museums",
+      "architecture",
+      "art_movements",
+      "photography",
+      "design"
+    ],
+    "seedSubcategories": [
+      "architecture",
+      "art_movements",
+      "artists",
+      "museums",
+      "paintings",
+      "sculptures"
+    ],
+    "trilingualDraftCount": 220,
+    "bilingualDraftCount": 0,
+    "externallyAnswerCheckedCount": 0,
+    "newSourceConsultedDraftCount": 0
+  },
+  {
+    "id": "video_games",
+    "name": {
+      "uk": "Відеоігри",
+      "pl": "Gry wideo",
+      "en": "Video Games"
+    },
+    "target": 500,
+    "seedCount": 626,
+    "remaining": 0,
+    "file": "questions/video_games.jsonl",
+    "subcategories": [
+      "games",
+      "studios",
+      "characters",
+      "consoles",
+      "retro_games",
+      "game_mechanics",
+      "board_games"
+    ],
+    "seedSubcategories": ["board_games", "characters", "consoles", "games"],
+    "trilingualDraftCount": 626,
+    "bilingualDraftCount": 0,
+    "externallyAnswerCheckedCount": 2,
+    "newSourceConsultedDraftCount": 0
+  },
+  {
+    "id": "animation",
+    "name": {
+      "uk": "Мультфільми та анімація",
+      "pl": "Animacja i kreskówki",
+      "en": "Animation"
+    },
+    "target": 500,
+    "seedCount": 601,
+    "remaining": 0,
+    "file": "questions/animation.jsonl",
+    "subcategories": [
+      "animated_characters",
+      "emoji",
+      "disney",
+      "pixar",
+      "dreamworks",
+      "anime",
+      "regional_animation",
+      "animation_history"
+    ],
+    "seedSubcategories": [
+      "animated_characters",
+      "animation_history",
+      "anime",
+      "disney",
+      "emoji",
+      "pixar"
+    ],
+    "trilingualDraftCount": 601,
+    "bilingualDraftCount": 0,
+    "externallyAnswerCheckedCount": 1,
+    "newSourceConsultedDraftCount": 0
+  },
+  {
+    "id": "fashion",
+    "name": {
+      "uk": "Мода та краса",
+      "pl": "Moda i uroda",
+      "en": "Fashion & Beauty"
+    },
+    "target": 500,
+    "seedCount": 161,
+    "remaining": 339,
+    "file": "questions/fashion.jsonl",
+    "subcategories": [
+      "fashion_terms",
+      "designers",
+      "brands",
+      "cosmetics",
+      "perfumes",
+      "decades",
+      "styles"
+    ],
+    "seedSubcategories": ["brands", "cosmetics", "designers", "fashion_terms", "perfumes"],
+    "trilingualDraftCount": 161,
+    "bilingualDraftCount": 0,
+    "externallyAnswerCheckedCount": 1,
+    "newSourceConsultedDraftCount": 0
+  },
+  {
+    "id": "travel",
+    "name": {
+      "uk": "Подорожі",
+      "pl": "Podróże",
+      "en": "Travel"
+    },
+    "target": 500,
+    "seedCount": 135,
+    "remaining": 365,
+    "file": "questions/travel.jsonl",
+    "subcategories": [
+      "landmarks",
+      "location_clues",
+      "heritage_sites",
+      "world_wonders",
+      "transport",
+      "local_customs"
+    ],
+    "seedSubcategories": ["heritage_sites", "landmarks", "location_clues"],
+    "trilingualDraftCount": 135,
+    "bilingualDraftCount": 0,
+    "externallyAnswerCheckedCount": 0,
+    "newSourceConsultedDraftCount": 0
+  },
+  {
+    "id": "business",
+    "name": {
+      "uk": "Бізнес та економіка",
+      "pl": "Biznes i ekonomia",
+      "en": "Business & Economics"
+    },
+    "target": 500,
+    "seedCount": 447,
+    "remaining": 53,
+    "file": "questions/business.jsonl",
+    "subcategories": [
+      "economics",
+      "finance",
+      "companies",
+      "entrepreneurs",
+      "currencies",
+      "financial_literacy",
+      "brand_history"
+    ],
+    "seedSubcategories": [
+      "brand_history",
+      "companies",
+      "currencies",
+      "economics",
+      "entrepreneurs",
+      "finance"
+    ],
+    "trilingualDraftCount": 447,
+    "bilingualDraftCount": 0,
+    "externallyAnswerCheckedCount": 1,
+    "newSourceConsultedDraftCount": 0
+  },
+  {
+    "id": "mythology",
+    "name": {
+      "uk": "Міфологія та легенди",
+      "pl": "Mitologia i legendy",
+      "en": "Mythology & Legends"
+    },
+    "target": 500,
+    "seedCount": 232,
+    "remaining": 268,
+    "file": "questions/mythology.jsonl",
+    "subcategories": [
+      "greek_mythology",
+      "roman_mythology",
+      "norse_mythology",
+      "slavic_mythology",
+      "egyptian_mythology",
+      "folk_legends"
+    ],
+    "seedSubcategories": [
+      "egyptian_mythology",
+      "folk_legends",
+      "greek_mythology",
+      "norse_mythology",
+      "roman_mythology"
+    ],
+    "trilingualDraftCount": 232,
+    "bilingualDraftCount": 0,
+    "externallyAnswerCheckedCount": 0,
+    "newSourceConsultedDraftCount": 0
+  },
+  {
+    "id": "languages",
+    "name": {
+      "uk": "Мови та слова",
+      "pl": "Języki i słowa",
+      "en": "Languages & Words"
+    },
+    "target": 500,
+    "seedCount": 623,
+    "remaining": 0,
+    "file": "questions/languages.jsonl",
+    "subcategories": [
+      "word_matching",
+      "writing_systems",
+      "etymology",
+      "idioms",
+      "proverbs",
+      "grammar",
+      "dialects",
+      "slang"
+    ],
+    "seedSubcategories": [
+      "etymology",
+      "grammar",
+      "idioms",
+      "proverbs",
+      "slang",
+      "word_matching",
+      "writing_systems"
+    ],
+    "trilingualDraftCount": 623,
+    "bilingualDraftCount": 0,
+    "externallyAnswerCheckedCount": 0,
+    "newSourceConsultedDraftCount": 0
+  },
+  {
+    "id": "psychology",
+    "name": {
+      "uk": "Психологія",
+      "pl": "Psychologia",
+      "en": "Psychology"
+    },
+    "target": 500,
+    "seedCount": 153,
+    "remaining": 347,
+    "file": "questions/psychology.jsonl",
+    "subcategories": [
+      "cognitive_biases",
+      "memory",
+      "emotions",
+      "perception",
+      "learning",
+      "psychology_history"
+    ],
+    "seedSubcategories": ["cognitive_biases", "learning", "memory", "psychology_history"],
+    "trilingualDraftCount": 153,
+    "bilingualDraftCount": 0,
+    "externallyAnswerCheckedCount": 11,
+    "newSourceConsultedDraftCount": 0
+  },
+  {
+    "id": "inventions",
+    "name": {
+      "uk": "Винаходи та відкриття",
+      "pl": "Wynalazki i odkrycia",
+      "en": "Inventions & Discoveries"
+    },
+    "target": 500,
+    "seedCount": 226,
+    "remaining": 274,
+    "file": "questions/inventions.jsonl",
+    "subcategories": [
+      "discoveries",
+      "inventors",
+      "household_items",
+      "communication",
+      "medicine",
+      "industry",
+      "chronology"
+    ],
+    "seedSubcategories": ["communication", "discoveries", "industry", "inventors"],
+    "trilingualDraftCount": 226,
+    "bilingualDraftCount": 0,
+    "externallyAnswerCheckedCount": 0,
+    "newSourceConsultedDraftCount": 0
+  },
+  {
+    "id": "transport",
+    "name": {
+      "uk": "Транспорт",
+      "pl": "Transport",
+      "en": "Transport"
+    },
+    "target": 500,
+    "seedCount": 279,
+    "remaining": 221,
+    "file": "questions/transport.jsonl",
+    "subcategories": [
+      "vehicle_brands",
+      "aviation",
+      "railways",
+      "ships",
+      "public_transport",
+      "automotive_history"
+    ],
+    "seedSubcategories": ["automotive_history", "aviation", "railways", "ships", "vehicle_brands"],
+    "trilingualDraftCount": 279,
+    "bilingualDraftCount": 0,
+    "externallyAnswerCheckedCount": 2,
+    "newSourceConsultedDraftCount": 0
+  },
+  {
+    "id": "traditions",
+    "name": {
+      "uk": "Свята та традиції",
+      "pl": "Święta i tradycje",
+      "en": "Holidays & Traditions"
+    },
+    "target": 500,
+    "seedCount": 501,
+    "remaining": 0,
+    "file": "questions/traditions.jsonl",
+    "subcategories": [
+      "fixed_dates",
+      "christmas",
+      "easter",
+      "new_year",
+      "halloween",
+      "weddings",
+      "festivals",
+      "regional_traditions"
+    ],
+    "seedSubcategories": [
+      "christmas",
+      "easter",
+      "festivals",
+      "fixed_dates",
+      "halloween",
+      "new_year",
+      "weddings"
+    ],
+    "trilingualDraftCount": 501,
+    "bilingualDraftCount": 0,
+    "externallyAnswerCheckedCount": 4,
+    "newSourceConsultedDraftCount": 0
+  },
+  {
+    "id": "mysteries",
+    "name": {
+      "uk": "Таємниці історії",
+      "pl": "Zagadki historii",
+      "en": "Historical Mysteries"
+    },
+    "target": 500,
+    "seedCount": 41,
+    "remaining": 459,
+    "file": "questions/mysteries.jsonl",
+    "subcategories": [
+      "archaeology",
+      "lost_civilizations",
+      "historical_puzzles",
+      "documented_discoveries"
+    ],
+    "seedSubcategories": ["archaeology", "lost_civilizations"],
+    "trilingualDraftCount": 41,
+    "bilingualDraftCount": 0,
+    "externallyAnswerCheckedCount": 0,
+    "newSourceConsultedDraftCount": 0
+  },
+  {
+    "id": "records",
+    "name": {
+      "uk": "Світові рекорди",
+      "pl": "Rekordy świata",
+      "en": "World Records"
+    },
+    "target": 500,
+    "seedCount": 88,
+    "remaining": 412,
+    "file": "questions/records.jsonl",
+    "subcategories": [
+      "natural_records",
+      "geographic_records",
+      "architecture",
+      "science_records",
+      "human_achievements"
+    ],
+    "seedSubcategories": ["geographic_records", "natural_records"],
+    "trilingualDraftCount": 88,
+    "bilingualDraftCount": 0,
+    "externallyAnswerCheckedCount": 0,
+    "newSourceConsultedDraftCount": 0
+  },
+  {
+    "id": "nostalgia",
+    "name": {
+      "uk": "Ностальгія та дитинство",
+      "pl": "Nostalgia i dzieciństwo",
+      "en": "Nostalgia & Childhood"
+    },
+    "target": 500,
+    "seedCount": 110,
+    "remaining": 390,
+    "file": "questions/nostalgia.jsonl",
+    "subcategories": [
+      "retro_technology",
+      "1980s",
+      "1990s",
+      "2000s",
+      "2010s",
+      "toys",
+      "school_life",
+      "childhood_tv",
+      "regional_nostalgia"
+    ],
+    "seedSubcategories": [
+      "childhood_tv",
+      "regional_nostalgia",
+      "retro_technology",
+      "school_life",
+      "toys"
+    ],
+    "trilingualDraftCount": 110,
+    "bilingualDraftCount": 0,
+    "externallyAnswerCheckedCount": 8,
+    "newSourceConsultedDraftCount": 0
+  },
+  {
+    "id": "logic",
+    "name": {
+      "uk": "Логіка та загадки",
+      "pl": "Logika i zagadki",
+      "en": "Logic & Puzzles"
+    },
+    "target": 500,
+    "seedCount": 234,
+    "remaining": 266,
+    "file": "questions/logic.jsonl",
+    "subcategories": [
+      "arithmetic",
+      "deduction",
+      "sequences",
+      "word_puzzles",
+      "pattern_recognition",
+      "attention",
+      "probability"
+    ],
+    "seedSubcategories": ["arithmetic", "deduction", "probability", "sequences"],
+    "trilingualDraftCount": 234,
+    "bilingualDraftCount": 0,
+    "externallyAnswerCheckedCount": 1,
+    "newSourceConsultedDraftCount": 0
+  },
+  {
+    "id": "general",
+    "name": {
+      "uk": "Загальні знання",
+      "pl": "Wiedza ogólna",
+      "en": "General Knowledge"
+    },
+    "target": 500,
+    "seedCount": 674,
+    "remaining": 0,
+    "file": "questions/general.jsonl",
+    "subcategories": [
+      "calendar",
+      "everyday",
+      "school_knowledge",
+      "unusual_facts",
+      "common_myths",
+      "interdisciplinary"
+    ],
+    "seedSubcategories": ["calendar", "everyday", "interdisciplinary"],
+    "trilingualDraftCount": 674,
+    "bilingualDraftCount": 0,
+    "externallyAnswerCheckedCount": 0,
+    "newSourceConsultedDraftCount": 0
+  },
+  {
+    "id": "memes",
+    "name": {
+      "uk": "Меми",
+      "pl": "Memy",
+      "en": "Memes"
+    },
+    "target": 500,
+    "file": "questions/memes.jsonl",
+    "subcategories": [
+      "ukrainian_memes",
+      "polish_memes",
+      "classic_internet_memes",
+      "political_quotes",
+      "viral_challenges",
+      "viral_videos",
+      "internet_slang"
+    ],
+    "externallyAnswerCheckedCount": 24,
+    "seedCount": 24,
+    "remaining": 476,
+    "trilingualDraftCount": 24,
+    "bilingualDraftCount": 0,
+    "seedSubcategories": [
+      "classic_internet_memes",
+      "polish_memes",
+      "political_quotes",
+      "ukrainian_memes",
+      "viral_challenges"
+    ],
+    "newSourceConsultedDraftCount": 24
+  }
+]

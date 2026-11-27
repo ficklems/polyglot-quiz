@@ -1,0 +1,121 @@
+{
+  "description": "Semantic duplicates between the 45 questions of polyglot-quiz milestone 1 (content/legacy) and the imported dataset. For each pair one record is kept and the other retired; references to a retired id (rounds, answers) are migrated to the kept id. Rule: keep the record with the better reviewed localization in all three languages. Imported OPEN-* records carry unreviewed machine-translated Ukrainian, so the authored legacy record is kept over them; hand-authored imported records are kept over the legacy ones.",
+  "reviewedBy": "manual review of keyword and answer matches, 2026-11-27",
+  "pairs": [
+    {
+      "retiredId": "music-10",
+      "keptId": "MUSIC-00040",
+      "reason": "Same fact: year Ruslana won Eurovision"
+    },
+    {
+      "retiredId": "music-12",
+      "keptId": "MUSIC-00026",
+      "reason": "Same question: performer of \"Dziwny jest ten świat\""
+    },
+    {
+      "retiredId": "music-14",
+      "keptId": "MUSIC-00017",
+      "reason": "Same answer: Jamala, song \"1944\""
+    },
+    {
+      "retiredId": "music-15",
+      "keptId": "MUSIC-EXT-00139",
+      "reason": "Same answer: Kalush Orchestra, \"Stefania\""
+    },
+    {
+      "retiredId": "history-01",
+      "keptId": "HISTORY-00007",
+      "reason": "Same fact: year of Ukrainian independence"
+    },
+    {
+      "retiredId": "history-03",
+      "keptId": "HISTORY-EXT-00046",
+      "reason": "Same fact: Poland joins NATO, 1999"
+    },
+    {
+      "retiredId": "history-04",
+      "keptId": "HISTORY-00014",
+      "reason": "Same fact: Battle of Grunwald, 1410"
+    },
+    {
+      "retiredId": "history-05",
+      "keptId": "HISTORY-EXT-00041",
+      "reason": "Same fact: Union of Lublin, 1569"
+    },
+    {
+      "retiredId": "history-06",
+      "keptId": "HISTORY-00013",
+      "reason": "Same fact: Constitution of 3 May, 1791"
+    },
+    {
+      "retiredId": "history-10",
+      "keptId": "HISTORY-EXT-00038",
+      "reason": "Same fact: Baptism of Poland, 966"
+    },
+    {
+      "retiredId": "general-05",
+      "keptId": "ART-00001",
+      "reason": "Same question: painter of the Mona Lisa"
+    },
+    {
+      "retiredId": "general-08",
+      "keptId": "RECORDS-00002",
+      "reason": "Same question: largest ocean"
+    },
+    {
+      "retiredId": "general-09",
+      "keptId": "GEOGRAPHY-00038",
+      "reason": "Same question: capital of Canada"
+    },
+    {
+      "retiredId": "general-11",
+      "keptId": "LITERATURE-00008",
+      "reason": "Same question: author of \"Kobzar\""
+    },
+    {
+      "retiredId": "general-12",
+      "keptId": "LITERATURE-00011",
+      "reason": "Same question: author of \"Pan Tadeusz\""
+    },
+    {
+      "retiredId": "OPEN-23e1b1e743d468a3f79d",
+      "keptId": "music-05",
+      "reason": "Same answer (Michael Jackson, Thriller); imported Ukrainian is unreviewed machine translation"
+    },
+    {
+      "retiredId": "OPEN-7846b2dc50d331cd76bd",
+      "keptId": "history-02",
+      "reason": "Same fact (Poland joins the EU, 2004); imported Ukrainian is ungrammatical machine translation"
+    },
+    {
+      "retiredId": "OPEN-3cd01de6990a1daddb9e",
+      "keptId": "general-01",
+      "reason": "Same question (largest planet); imported Ukrainian is unreviewed machine translation"
+    },
+    {
+      "retiredId": "SCIENCE-EXT-00286",
+      "keptId": "general-02",
+      "reason": "Same question (chemical symbol of gold); imported Ukrainian names the element \"Аурум\" instead of \"золото\""
+    },
+    {
+      "retiredId": "OPEN-2d66a3f7195056f64be3",
+      "keptId": "general-03",
+      "reason": "Same question (longest river in Europe); imported Ukrainian is ungrammatical"
+    },
+    {
+      "retiredId": "OPEN-c5801bc1552bb7a4386d",
+      "keptId": "general-06",
+      "reason": "Same fact (discoverers of polonium and radium); imported Ukrainian is unintelligible"
+    },
+    {
+      "retiredId": "OPEN-93817cdd90252b4b1a0b",
+      "keptId": "general-13",
+      "reason": "Same question (the Red Planet); imported Ukrainian is unintelligible"
+    },
+    {
+      "retiredId": "OPEN-8fdfa0baa1bc10861c2c",
+      "keptId": "general-14",
+      "reason": "Same question (fastest land animal); imported record has an open translation flag"
+    }
+  ]
+}

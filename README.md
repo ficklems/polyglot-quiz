@@ -9,8 +9,10 @@ The game is the system under test; **the test suite is the main deliverable**.
 | -------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
 | <img src="docs/screenshots/home-light.png" width="240" alt="Home screen, light theme"> | <img src="docs/screenshots/quiz-feedback-light.png" width="240" alt="Wrong answer feedback"> | <img src="docs/screenshots/quiz-feedback-dark.png" width="240" alt="Correct answer, dark theme"> |
 
-> **Status: milestone 2.** Playable rounds (3 topics, 45 questions in 3 languages, 20 s timer,
-> server-side scoring) and a top-10 leaderboard per topic. Deployment is next. Progress: [`docs/DEVLOG.md`](docs/DEVLOG.md).
+> **Status: expansion phase 2 of 10.** A dataset of 24k trilingual draft questions in 31
+> categories is imported and validated; rounds, timer, server-side scoring and a top-10
+> leaderboard per topic work. Next: themed quizzes, regions, difficulty, all eight question
+> formats and five game modes ([plan](docs/EXPANSION_PLAN.md), [dev log](docs/DEVLOG.md)). Progress: [`docs/DEVLOG.md`](docs/DEVLOG.md).
 
 ## How the game works
 
@@ -51,6 +53,10 @@ Highlights of the framework:
 - **Deterministic randomness**: a `seed` reproduces a round exactly; the server clock is
   injectable for time-limit tests.
 - **One contract** for app, API and tests: Zod schemas in `packages/shared`.
+- **Data validation as tests**: the 24k-record dataset is checked on every CI run (schema,
+  structure, duplicates, enough questions per category, nothing withheld leaks into a round).
+- **Database migration test**: a database from the previous release is migrated without
+  losing played rounds or leaderboard entries.
 - QA docs: [test plan](docs/test-plan.md), [test cases](docs/test-cases/),
   [bug reports](docs/bug-reports/) (incl. a real flaky-locator bug found with `--repeat-each`).
 
@@ -69,17 +75,37 @@ Errors always have the shape `{ statusCode, error, message, details? }`.
 
 ## Content
 
-| Topic                 | Questions | Languages  |
-| --------------------- | --------- | ---------- |
-| Music by decade       | 15        | UA, EN, PL |
-| History of the region | 15        | UA, EN, PL |
-| General knowledge     | 15        | UA, EN, PL |
+|                            |                                                                                         |
+| -------------------------- | --------------------------------------------------------------------------------------- |
+| Records                    | 24,256 imported + 45 authored for this project (15 retired as duplicates)               |
+| Categories                 | 31 (e.g. Music, History & Events, Movies & TV, Geography, Memes)                        |
+| Served in English / Polish | 23,951 each                                                                             |
+| Served in Ukrainian        | 2,866 (records with reviewed Ukrainian text; the rest is unrevised machine translation) |
+| Verification               | **All drafts.** 499 answers externally confirmed, 22,571 still pending                  |
 
-**Adding questions:** add an object to `apps/api/src/db/seed/questions.ts` (id like
-`general-16`, the topic, the correct option, text and 4 options in all three languages) and
-delete the local database file (`apps/api/data/quiz.db`) so it is re-seeded. The question-bank
-tests check the new entry automatically. **Adding a topic:** add it to `topics.ts` with at
-least 10 questions.
+Full counts per category and language, and why records are withheld:
+[`docs/CONTENT_REPORT.md`](docs/CONTENT_REPORT.md) (generated with `npm run content:report`).
+
+**How a record gets into the game:** `content/` is validated on API start (schema, answer
+key ↔ options, same options in every language, exact duplicates); review files decide per
+language what is served. Withheld records are reported, never silently shown.
+
+**Adding or fixing questions:** edit the category file in `content/questions/` (gzip JSONL,
+schema in `packages/shared/src/content.ts`), run `npm run content:report` and the tests.
+
+### Sources and licenses
+
+- Code: [MIT](LICENSE).
+- Content: [CC BY-SA 4.0](content/LICENSE.md) — most records are adapted from
+  [OpenTriviaQA](https://github.com/uberspot/OpenTriviaQA) and
+  [QuizBase](https://github.com/maciejdzierzek/quizbase-dumps-byasa) (both CC BY-SA 4.0);
+  attribution is kept per record.
+- All data sources and research references: [`content/DATA_SOURCES.md`](content/DATA_SOURCES.md),
+  [`content/RESEARCH_SOURCES.md`](content/RESEARCH_SOURCES.md), license notices in
+  [`content/licenses/`](content/licenses/). Sources are documentation for this repository
+  only; the game itself has no sources screen.
+- The brief for the expansion: [`content/AGENT_PROMPT.md`](content/AGENT_PROMPT.md),
+  [`content/ORIGINAL_DESIGN_SPEC.md`](content/ORIGINAL_DESIGN_SPEC.md).
 
 ## Tech stack
 
@@ -90,7 +116,8 @@ Vitest · Playwright · GitHub Actions
 
 ```
 apps/web        React frontend (feature folders: quiz, topics, settings; i18n; theme tokens)
-apps/api        Fastify REST API + SQLite; question bank in src/db/seed/
+apps/api        Fastify REST API + SQLite; content importer in src/content/
+content         Question dataset (CC BY-SA 4.0), policies, sources, licenses
 packages/shared Zod schemas and types shared by everything
 tests           Playwright: e2e/, api/, pages/, fixtures/, data/
 docs            Test plan, test cases, bug reports, dev log, screenshots

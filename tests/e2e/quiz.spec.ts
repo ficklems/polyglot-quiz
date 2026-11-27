@@ -1,9 +1,9 @@
 import { POINTS_PER_CORRECT, QUESTIONS_PER_ROUND, TIME_LIMIT_SECONDS } from '@pq/shared';
-import { correctAnswerText } from '../data/questions';
+import { TOPIC_COUNT } from '../data/questions';
 import { text } from '../data/i18n';
 import { expect, test } from '../fixtures';
 
-const TOPIC = 'General knowledge';
+const TOPIC = 'General Knowledge';
 
 test.describe('Quiz round', () => {
   test('a perfect round ends with the maximum score @smoke', async ({
@@ -44,10 +44,9 @@ test.describe('Quiz round', () => {
   }) => {
     await homePage.goto();
     await homePage.startRound(TOPIC);
-    const question = await quizPage.questionText();
+    const correct = await quizPage.correctAnswer();
 
     const picked = await quizPage.answerWrongly();
-    const correct = correctAnswerText(question, 'en');
 
     await expect(quizPage.feedback).toHaveText(
       text('en', 'quiz.feedbackWrong', { answer: correct }),
@@ -66,14 +65,18 @@ test.describe('Quiz round', () => {
   }) => {
     await homePage.goto();
     await homePage.startRound(TOPIC);
-    const first = await quizPage.questionText();
+    // Generic prompts ("Which came first?") repeat, so compare prompt and options together.
+    const first = `${await quizPage.questionText()}|${(await quizPage.optionTexts()).join('|')}`;
     await quizPage.answerCorrectly();
 
     await quizPage.continue();
 
-    await expect(quizPage.question).not.toHaveText(first);
     await expect(quizPage.progress).toHaveAttribute('aria-valuenow', '2');
-    await expect(quizPage.answers).toHaveCount(4);
+    const second = `${await quizPage.questionText()}|${(await quizPage.optionTexts()).join('|')}`;
+    expect(second).not.toBe(first);
+    // 4 options, or 2 for true/false and "which is higher" questions.
+    await expect(quizPage.answers.first()).toBeEnabled();
+    expect([2, 4]).toContain(await quizPage.answers.count());
     for (const button of await quizPage.answers.all()) {
       await expect(button).toBeEnabled();
     }
@@ -110,7 +113,7 @@ test.describe('Quiz round', () => {
     await quizPage.quitButton.click();
 
     await expect(homePage.heading).toHaveText(text('en', 'home.title'));
-    await expect(homePage.topicCards).toHaveCount(3);
+    await expect(homePage.topicCards).toHaveCount(TOPIC_COUNT);
   });
 });
 
@@ -123,7 +126,7 @@ test.describe('Timer', () => {
     await page.clock.install();
     await homePage.goto();
     await homePage.startRound(TOPIC);
-    const question = await quizPage.questionText();
+    const correct = await quizPage.correctAnswer();
 
     await expect(quizPage.timer).toHaveAttribute(
       'aria-label',
@@ -139,7 +142,7 @@ test.describe('Timer', () => {
     await page.clock.runFor((TIME_LIMIT_SECONDS - 5) * 1000);
 
     await expect(quizPage.feedback).toHaveText(
-      text('en', 'quiz.feedbackTimeout', { answer: correctAnswerText(question, 'en') }),
+      text('en', 'quiz.feedbackTimeout', { answer: correct }),
     );
     await expect(quizPage.answers.first()).toBeDisabled();
     await expect(quizPage.score(0)).toBeVisible();
@@ -189,9 +192,8 @@ test.describe('Round language @i18n', () => {
     await homePage.goto();
     await homePage.startRound('Wiedza ogólna');
 
-    const question = await quizPage.questionText();
     // Throws if the text isn't a Polish question from the bank.
-    const correct = correctAnswerText(question, 'pl');
+    const correct = await quizPage.correctAnswer();
     await expect(homePage.languageGroup).toBeHidden();
 
     await quizPage.pick(correct);
@@ -205,7 +207,7 @@ test.describe('Keyboard @a11y', () => {
   test('a round can be played with the keyboard only', async ({ page, homePage, quizPage }) => {
     await homePage.goto();
     await homePage.startRound(TOPIC);
-    const correct = correctAnswerText(await quizPage.questionText(), 'en');
+    const correct = await quizPage.correctAnswer();
 
     await quizPage.answer(correct).focus();
     await page.keyboard.press('Enter');

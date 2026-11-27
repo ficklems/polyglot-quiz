@@ -14,7 +14,7 @@ export class QuizApi {
 
   async createRound(body: Record<string, unknown> = {}): Promise<Round> {
     const res = await this.request.post('/api/rounds', {
-      data: { topicId: 'general-knowledge', lang: 'en', ...body },
+      data: { topicId: 'general', lang: 'en', ...body },
     });
     expect(res.status(), await res.text()).toBe(201);
     return roundSchema.parse(await res.json());
@@ -26,7 +26,7 @@ export class QuizApi {
     for (const [i, q] of round.questions.entries()) {
       if (i > 0) await this.request.post(`/api/rounds/${round.roundId}/next`);
       const correct = correctOptionId(q.id);
-      const optionId = i < correctAnswers ? correct : correct === 'a' ? 'b' : 'a';
+      const optionId = i < correctAnswers ? correct : correct === 'o1' ? 'o2' : 'o1';
       const res = await this.request.post(`/api/rounds/${round.roundId}/answers`, {
         data: { questionId: q.id, optionId },
       });

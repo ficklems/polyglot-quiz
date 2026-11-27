@@ -28,7 +28,7 @@ afterEach(async () => {
 describe('POST /api/rounds', () => {
   it('creates a round of 10 distinct questions from the chosen topic', async () => {
     app = await buildTestApp();
-    const round = await startRound(app, { topicId: 'region-history' });
+    const round = await startRound(app, { topicId: 'history' });
 
     expect(round.questions).toHaveLength(QUESTIONS_PER_ROUND);
     expect(new Set(round.questions.map((q) => q.id)).size).toBe(QUESTIONS_PER_ROUND);
@@ -41,10 +41,11 @@ describe('POST /api/rounds', () => {
     const res = await app.inject({
       method: 'POST',
       url: '/api/rounds',
-      payload: { topicId: 'music-decades', lang: 'uk', seed: 1 },
+      payload: { topicId: 'music', lang: 'uk', seed: 1 },
     });
 
-    expect(res.body).not.toMatch(/correct/i);
+    // Question texts may contain the word "correct", so check for answer fields instead.
+    expect(res.body).not.toMatch(/"(correctOptionId|answer|orderedOptionIds|pairs)"/);
   });
 
   it('gives the same questions and option order for the same seed', async () => {
@@ -75,10 +76,11 @@ describe('POST /api/rounds', () => {
 
   it.each([
     ['unknown topic', { topicId: 'cooking', lang: 'en' }, 404],
-    ['unsupported language', { topicId: 'music-decades', lang: 'ru' }, 400],
+    ['a topic with fewer than 10 playable questions', { topicId: 'memes', lang: 'en' }, 422],
+    ['unsupported language', { topicId: 'music', lang: 'ru' }, 400],
     ['missing topic', { lang: 'en' }, 400],
-    ['negative seed', { topicId: 'music-decades', lang: 'en', seed: -1 }, 400],
-    ['fractional seed', { topicId: 'music-decades', lang: 'en', seed: 1.5 }, 400],
+    ['negative seed', { topicId: 'music', lang: 'en', seed: -1 }, 400],
+    ['fractional seed', { topicId: 'music', lang: 'en', seed: 1.5 }, 400],
   ])('rejects %s with %i', async (_name, payload, status) => {
     app = await buildTestApp();
     const res = await app.inject({ method: 'POST', url: '/api/rounds', payload });
@@ -162,9 +164,9 @@ describe('POST /api/rounds/:roundId/answers', () => {
     app = await buildTestApp();
     const round = await startRound(app);
     const q = round.questions[0]!;
-    await answer(app, round.roundId, { questionId: q.id, optionId: 'a' });
+    await answer(app, round.roundId, { questionId: q.id, optionId: 'o1' });
 
-    const res = await answer(app, round.roundId, { questionId: q.id, optionId: 'b' });
+    const res = await answer(app, round.roundId, { questionId: q.id, optionId: 'o2' });
 
     expect(res.statusCode).toBe(409);
   });
@@ -175,7 +177,7 @@ describe('POST /api/rounds/:roundId/answers', () => {
 
     const res = await answer(app, round.roundId, {
       questionId: round.questions[2]!.id,
-      optionId: 'a',
+      optionId: 'o1',
     });
 
     expect(res.statusCode).toBe(409);
@@ -185,21 +187,43 @@ describe('POST /api/rounds/:roundId/answers', () => {
   it('rejects answering the next question before it was started with 409', async () => {
     app = await buildTestApp();
     const round = await startRound(app);
-    await answer(app, round.roundId, { questionId: round.questions[0]!.id, optionId: 'a' });
+    await answer(app, round.roundId, { questionId: round.questions[0]!.id, optionId: 'o1' });
 
     const res = await answer(app, round.roundId, {
       questionId: round.questions[1]!.id,
-      optionId: 'a',
+      optionId: 'o1',
     });
 
     expect(res.statusCode).toBe(409);
   });
 
+  it("rejects an option id that is not one of the question's options with 400", async () => {
+    app = await buildTestApp();
+    const round = await startRound(app);
+
+    const res = await answer(app, round.roundId, {
+      questionId: round.questions[0]!.id,
+      optionId: 'o9',
+    });
+
+    expect(res.statusCode).toBe(400);
+  });
+
+  it('shuffles options so the correct one is not always first', async () => {
+    app = await buildTestApp();
+    const round = await startRound(app, { seed: 11 });
+
+    const firstIsCorrect = round.questions.filter(
+      (q) => q.options[0]?.id === correctOptionOf(q.id),
+    );
+    expect(firstIsCorrect.length).toBeLessThan(round.questions.length);
+  });
+
   it('rejects a question from outside the round with 400', async () => {
     app = await buildTestApp();
-    const round = await startRound(app, { topicId: 'general-knowledge' });
+    const round = await startRound(app, { topicId: 'general' });
 
-    const res = await answer(app, round.roundId, { questionId: 'music-01', optionId: 'a' });
+    const res = await answer(app, round.roundId, { questionId: 'music-01', optionId: 'o1' });
 
     expect(res.statusCode).toBe(400);
   });
@@ -207,7 +231,7 @@ describe('POST /api/rounds/:roundId/answers', () => {
   it.each([
     ['an unknown option id', { optionId: 'e' }],
     ['a missing option id', {}],
-    ['a malformed question id', { questionId: 'DROP TABLE', optionId: 'a' }],
+    ['a malformed question id', { questionId: 'DROP TABLE', optionId: 'o1' }],
   ])('rejects %s with 400', async (_name, override) => {
     app = await buildTestApp();
     const round = await startRound(app);
@@ -225,9 +249,9 @@ describe('POST /api/rounds/:roundId/answers', () => {
     app = await buildTestApp();
     const unknown = await answer(app, '00000000-0000-4000-8000-000000000000', {
       questionId: 'general-01',
-      optionId: 'a',
+      optionId: 'o1',
     });
-    const malformed = await answer(app, 'not-a-uuid', { questionId: 'general-01', optionId: 'a' });
+    const malformed = await answer(app, 'not-a-uuid', { questionId: 'general-01', optionId: 'o1' });
 
     expect(unknown.statusCode).toBe(404);
     expect(malformed.statusCode).toBe(400);
@@ -272,7 +296,7 @@ describe('time limit (fake clock)', () => {
     app = await buildTestApp(clock);
     const round = await startRound(app);
     const [q1, q2] = round.questions;
-    await answer(app, round.roundId, { questionId: q1!.id, optionId: 'a' });
+    await answer(app, round.roundId, { questionId: q1!.id, optionId: 'o1' });
 
     clock.advance(60); // reading the feedback for a minute
     await next(app, round.roundId);
@@ -309,7 +333,7 @@ describe('GET /api/rounds/:roundId', () => {
 
     expect(roundSummarySchema.parse(res.json())).toEqual({
       roundId: round.roundId,
-      topicId: 'general-knowledge',
+      topicId: 'general',
       lang: 'en',
       score: POINTS_PER_CORRECT,
       correctCount: 1,
@@ -324,7 +348,7 @@ describe('GET /api/rounds/:roundId', () => {
     const round = await startRound(app);
     for (const [i, q] of round.questions.entries()) {
       if (i > 0) await next(app, round.roundId);
-      await answer(app, round.roundId, { questionId: q.id, optionId: 'a' });
+      await answer(app, round.roundId, { questionId: q.id, optionId: 'o1' });
     }
 
     const summary = roundSummarySchema.parse(
@@ -333,7 +357,7 @@ describe('GET /api/rounds/:roundId', () => {
     expect(summary.finished).toBe(true);
     expect((await next(app, round.roundId)).statusCode).toBe(409);
     expect(
-      (await answer(app, round.roundId, { questionId: round.questions[0]!.id, optionId: 'a' }))
+      (await answer(app, round.roundId, { questionId: round.questions[0]!.id, optionId: 'o1' }))
         .statusCode,
     ).toBe(409);
   });

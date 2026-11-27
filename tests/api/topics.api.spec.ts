@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { questionCount, TOPIC_COUNT } from '../data/questions';
 import { apiErrorSchema, healthResponseSchema, LANGUAGES, topicsResponseSchema } from '@pq/shared';
 
 test.describe('GET /api/health', () => {
@@ -19,7 +20,11 @@ test.describe('GET /api/topics', () => {
       expect(res.headers()['content-type']).toContain('application/json');
       const body = topicsResponseSchema.parse(await res.json());
       expect(body.lang).toBe(lang);
-      expect(body.topics).toHaveLength(3);
+      expect(body.topics).toHaveLength(TOPIC_COUNT);
+      // The API and the content oracle must agree on what can be played.
+      for (const topic of body.topics) {
+        expect(topic.questionCount, topic.id).toBe(questionCount(topic.id, lang));
+      }
     });
   }
 

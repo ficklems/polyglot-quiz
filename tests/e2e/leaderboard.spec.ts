@@ -1,8 +1,9 @@
 import { LEADERBOARD_SIZE, QUESTIONS_PER_ROUND, type LeaderboardEntry } from '@pq/shared';
 import { text } from '../data/i18n';
+import { TOPIC_COUNT } from '../data/questions';
 import { expect, test, uniqueNickname } from '../fixtures';
 
-const TOPIC = 'General knowledge';
+const TOPIC = 'General Knowledge';
 
 test.describe('Saving a result', () => {
   test('a finished round can be saved and shows up highlighted in the topic table @smoke', async ({
@@ -78,7 +79,7 @@ test.describe('Saving a result', () => {
       score: 1000,
       correctCount: 10,
       totalQuestions: 10,
-      topicId: 'general-knowledge',
+      topicId: 'general',
       createdAt: '2026-01-01T00:00:00.000Z',
     }));
     const own: LeaderboardEntry = {
@@ -90,7 +91,7 @@ test.describe('Saving a result', () => {
       correctCount: 0,
     };
     await page.route('**/api/leaderboard?*', (route) =>
-      route.fulfill({ json: { topicId: 'general-knowledge', entries: top } }),
+      route.fulfill({ json: { topicId: 'general', entries: top } }),
     );
     await page.route('**/api/leaderboard', (route) =>
       route.request().method() === 'POST'
@@ -135,7 +136,7 @@ test.describe('Leaderboard screen', () => {
     leaderboardPage,
     quizApi,
   }, testInfo) => {
-    const round = await quizApi.playRound(QUESTIONS_PER_ROUND, { topicId: 'music-decades' });
+    const round = await quizApi.playRound(QUESTIONS_PER_ROUND, { topicId: 'music' });
     await quizApi.submitOk(round.roundId, uniqueNickname(testInfo));
     await homePage.goto();
 
@@ -148,15 +149,15 @@ test.describe('Leaderboard screen', () => {
     );
     await expect(leaderboardPage.rows.first()).toBeVisible();
 
-    await leaderboardPage.filter('Music by decade').click();
+    await leaderboardPage.filter('Music').click();
 
-    await expect(leaderboardPage.filter('Music by decade')).toHaveAttribute('aria-pressed', 'true');
+    await expect(leaderboardPage.filter('Music')).toHaveAttribute('aria-pressed', 'true');
     await expect(leaderboardPage.table).toContainText(
-      text('en', 'leaderboard.caption', { topic: 'Music by decade' }),
+      text('en', 'leaderboard.caption', { topic: 'Music' }),
     );
 
     await leaderboardPage.backButton.click();
-    await expect(homePage.topicCards).toHaveCount(3);
+    await expect(homePage.topicCards).toHaveCount(TOPIC_COUNT);
   });
 
   test('shows an empty state when nobody has played yet', async ({

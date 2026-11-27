@@ -1,0 +1,13 @@
+{
+  "rule": "Keep original song, album, single, band and stage names unchanged in all three languages. Translate question prose, explanations and generic answers, not artist names or original music titles. Preserve diacritics, punctuation and official spelling. For Ukrainian and Polish original names preserve native-script spelling rather than romanization. Do not treat untranslated title/name options as a translation defect. For film and book titles, use an established localized release title when available, optionally with original title; do not literal-translate on guesswork. Source spelling and title ambiguity still require review.",
+  "appliesTo": [
+    "prompts",
+    "options",
+    "matching_items",
+    "ordering_items",
+    "explanations",
+    "answer_feedback"
+  ],
+  "automaticHeuristic": "Only aligned English/Polish name-like options or matching quoted title spans are automatically restored; ambiguous records are flagged, not certified.",
+  "doNot": "Never change correct option IDs when only editing names. No lyrics or quoted song content."
+}

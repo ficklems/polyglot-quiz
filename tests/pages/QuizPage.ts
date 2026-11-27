@@ -73,18 +73,32 @@ export class QuizPage {
     await this.answer(answerText).click();
   }
 
+  /** Texts of the options as shown, without the letter badge. */
+  async optionTexts(): Promise<string[]> {
+    return this.answers.locator('.answer-text').allTextContents();
+  }
+
   /** Answers the question on screen correctly; returns the answer it picked. */
   async answerCorrectly(): Promise<string> {
-    const answerText = correctAnswerText(await this.questionText(), this.lang);
+    const answerText = await this.correctAnswer();
     await this.pick(answerText);
     return answerText;
   }
 
   /** Answers the question on screen with a wrong option; returns the answer it picked. */
   async answerWrongly(): Promise<string> {
-    const answerText = wrongAnswerText(await this.questionText(), this.lang);
+    const answerText = wrongAnswerText(
+      await this.questionText(),
+      await this.optionTexts(),
+      this.lang,
+    );
     await this.pick(answerText);
     return answerText;
+  }
+
+  /** The correct answer to the question on screen, from the test oracle. */
+  async correctAnswer(): Promise<string> {
+    return correctAnswerText(await this.questionText(), await this.optionTexts(), this.lang);
   }
 
   /** Plays all remaining questions, every answer right or every answer wrong. */

@@ -16,7 +16,7 @@ async function createRound(
   body: Record<string, unknown> = {},
 ): Promise<Round> {
   const res = await request.post('/api/rounds', {
-    data: { topicId: 'region-history', lang: 'en', ...body },
+    data: { topicId: 'history', lang: 'en', ...body },
   });
   expect(res.status()).toBe(201);
   return roundSchema.parse(await res.json());
@@ -34,10 +34,11 @@ test.describe('POST /api/rounds', () => {
 
   test('does not leak correct answers in the response body', async ({ request }) => {
     const res = await request.post('/api/rounds', {
-      data: { topicId: 'general-knowledge', lang: 'en' },
+      data: { topicId: 'general', lang: 'en' },
     });
 
-    expect(await res.text()).not.toMatch(/correct/i);
+    // Question texts may contain the word "correct", so check for answer fields instead.
+    expect(await res.text()).not.toMatch(/"(correctOptionId|answer|orderedOptionIds|pairs)"/);
     // strictObject: any extra field (like a leaked answer) fails the contract.
     roundSchema.parse(await res.json());
   });
@@ -51,9 +52,9 @@ test.describe('POST /api/rounds', () => {
 
   const invalid: Array<[string, Record<string, unknown>, number]> = [
     ['unknown topic', { topicId: 'astrology', lang: 'en' }, 404],
-    ['unsupported language', { topicId: 'region-history', lang: 'de' }, 400],
+    ['unsupported language', { topicId: 'history', lang: 'de' }, 400],
     ['missing body fields', {}, 400],
-    ['seed as a string', { topicId: 'region-history', lang: 'en', seed: '42' }, 400],
+    ['seed as a string', { topicId: 'history', lang: 'en', seed: '42' }, 400],
   ];
   for (const [name, data, status] of invalid) {
     test(`rejects ${name} with ${status}`, async ({ request }) => {
@@ -108,7 +109,7 @@ test.describe('Playing a round over the API', () => {
 
   test('answering the same question twice returns 409', async ({ request }) => {
     const round = await createRound(request);
-    const data = { questionId: round.questions[0]!.id, optionId: 'a' };
+    const data = { questionId: round.questions[0]!.id, optionId: 'o1' };
     await request.post(`/api/rounds/${round.roundId}/answers`, { data });
 
     const res = await request.post(`/api/rounds/${round.roundId}/answers`, { data });

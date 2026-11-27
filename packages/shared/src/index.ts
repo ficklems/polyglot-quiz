@@ -3,3 +3,4 @@ export * from './topics';
 export * from './errors';
 export * from './rounds';
 export * from './leaderboard';
+export * from './content';

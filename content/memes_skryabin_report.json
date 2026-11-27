@@ -1,0 +1,37 @@
+{
+  "previousMainRecords": 24323,
+  "mainRecords": 24363,
+  "newRecords": 40,
+  "newByCategory": {
+    "music": 16,
+    "memes": 24
+  },
+  "memesBySubcategory": {
+    "political_quotes": 8,
+    "classic_internet_memes": 11,
+    "viral_challenges": 1,
+    "polish_memes": 2,
+    "ukrainian_memes": 2
+  },
+  "newByRegion": {
+    "UA": 24,
+    "PL": 3,
+    "EN": 1,
+    "global": 12
+  },
+  "sourceCount": 30,
+  "localeCounts": {
+    "uk": 24363,
+    "pl": 24363,
+    "en": 24363
+  },
+  "categoryCount": 31,
+  "collectionCount": 20,
+  "targetRecords": 24900,
+  "quotaShortfall": 4818,
+  "newExactPromptDuplicatesSkipped": [],
+  "newStructuralValidation": "PASS",
+  "existingRowsUnchanged": true,
+  "independentSecondFactCheckComplete": false,
+  "publicationStatus": "draft"
+}

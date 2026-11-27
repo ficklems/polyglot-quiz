@@ -1,6 +1,7 @@
 import cors from '@fastify/cors';
 import Fastify, { type FastifyInstance } from 'fastify';
 import type { Config } from './config';
+import { loadContent, type ContentBundle } from './content/load-content';
 import { openDatabase } from './db/database';
 import { randomSeed as defaultRandomSeed } from './lib/random';
 import { registerErrorHandler } from './plugins/error-handler';
@@ -11,6 +12,8 @@ import type { Clock } from './routes/rounds/service';
 import { topicsRoutes } from './routes/topics';
 
 export type BuildAppOptions = Pick<Config, 'dbPath' | 'corsOrigins' | 'logLevel'> & {
+  /** Questions and categories. Defaults to the repository's content/ folder. */
+  content?: ContentBundle;
   /** Current time in ms. Tests inject a fake clock to check the time limit. */
   now?: Clock;
   /** Seed used when a round request doesn't send one. */
@@ -23,7 +26,12 @@ export type BuildAppOptions = Pick<Config, 'dbPath' | 'corsOrigins' | 'logLevel'
 export async function buildApp(options: BuildAppOptions): Promise<FastifyInstance> {
   const app = Fastify({ logger: { level: options.logLevel } });
 
-  const db = openDatabase(options.dbPath);
+  const content = options.content ?? loadContent();
+  app.log.info(
+    { version: content.version, servable: content.report.servableByLanguage },
+    'content loaded',
+  );
+  const db = openDatabase(options.dbPath, content);
   app.decorate('db', db);
   app.addHook('onClose', async () => db.close());
 

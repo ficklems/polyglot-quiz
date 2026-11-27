@@ -1,49 +1,53 @@
 import { mkdirSync } from 'node:fs';
 import { dirname } from 'node:path';
 import { DatabaseSync } from 'node:sqlite';
-import { seedQuestions } from './seed/seed-questions';
-import { seedTopics } from './seed/topics';
+import type { ContentBundle } from '../content/load-content';
+import { migrateFromV1, needsV1Migration } from './migrate-v1';
+import { syncContent } from './sync-content';
 
 export type Database = DatabaseSync;
 
+/** v1 = milestones 0–2 (3 topics, 45 questions). v2 = imported content dataset. */
+export const SCHEMA_VERSION = 2;
+
 const SCHEMA = `
-  CREATE TABLE IF NOT EXISTS topics (
-    id         TEXT PRIMARY KEY,
-    sort_order INTEGER NOT NULL
+  CREATE TABLE IF NOT EXISTS meta (
+    key   TEXT PRIMARY KEY,
+    value TEXT NOT NULL
   );
 
-  CREATE TABLE IF NOT EXISTS topic_translations (
-    topic_id    TEXT NOT NULL REFERENCES topics(id) ON DELETE CASCADE,
-    lang        TEXT NOT NULL CHECK (lang IN ('uk', 'en', 'pl')),
-    name        TEXT NOT NULL,
-    description TEXT NOT NULL,
-    PRIMARY KEY (topic_id, lang)
+  CREATE TABLE IF NOT EXISTS categories (
+    id            TEXT PRIMARY KEY,
+    sort_order    INTEGER NOT NULL,
+    names         TEXT NOT NULL,  -- JSON { uk, en, pl }
+    subcategories TEXT NOT NULL   -- JSON string[]
   );
 
   CREATE TABLE IF NOT EXISTS questions (
-    id             TEXT PRIMARY KEY,
-    topic_id       TEXT NOT NULL REFERENCES topics(id) ON DELETE CASCADE,
-    correct_option TEXT NOT NULL CHECK (correct_option IN ('a', 'b', 'c', 'd'))
+    id            TEXT PRIMARY KEY,
+    fact_key      TEXT NOT NULL,
+    category_id   TEXT NOT NULL REFERENCES categories(id),
+    subcategory   TEXT NOT NULL,
+    region        TEXT NOT NULL,
+    difficulty    TEXT NOT NULL,
+    type          TEXT NOT NULL,
+    tags          TEXT NOT NULL,  -- JSON string[]
+    review_status TEXT NOT NULL,
+    origin        TEXT NOT NULL,  -- dataset | legacy
+    -- JSON { localizations, answer, geo?, emoji? }. Source metadata stays in content/ for audit.
+    payload       TEXT NOT NULL,
+    -- JSON { uk: reason[], en: reason[], pl: reason[] }; empty list = served in that language.
+    exclusions    TEXT NOT NULL,
+    serve_uk      INTEGER NOT NULL,
+    serve_en      INTEGER NOT NULL,
+    serve_pl      INTEGER NOT NULL
   );
 
-  CREATE TABLE IF NOT EXISTS question_texts (
-    question_id TEXT NOT NULL REFERENCES questions(id) ON DELETE CASCADE,
-    lang        TEXT NOT NULL CHECK (lang IN ('uk', 'en', 'pl')),
-    text        TEXT NOT NULL,
-    PRIMARY KEY (question_id, lang)
-  );
-
-  CREATE TABLE IF NOT EXISTS question_options (
-    question_id TEXT NOT NULL REFERENCES questions(id) ON DELETE CASCADE,
-    option_id   TEXT NOT NULL CHECK (option_id IN ('a', 'b', 'c', 'd')),
-    lang        TEXT NOT NULL CHECK (lang IN ('uk', 'en', 'pl')),
-    text        TEXT NOT NULL,
-    PRIMARY KEY (question_id, option_id, lang)
-  );
+  CREATE INDEX IF NOT EXISTS questions_by_category ON questions (category_id, type);
 
   CREATE TABLE IF NOT EXISTS rounds (
     id                 TEXT PRIMARY KEY,
-    topic_id           TEXT NOT NULL REFERENCES topics(id),
+    topic_id           TEXT NOT NULL REFERENCES categories(id),
     lang               TEXT NOT NULL,
     score              INTEGER NOT NULL DEFAULT 0,
     created_at         INTEGER NOT NULL,
@@ -71,7 +75,7 @@ const SCHEMA = `
     -- UNIQUE: one leaderboard entry per round.
     round_id        TEXT NOT NULL UNIQUE REFERENCES rounds(id),
     nickname        TEXT NOT NULL,
-    topic_id        TEXT NOT NULL REFERENCES topics(id),
+    topic_id        TEXT NOT NULL REFERENCES categories(id),
     score           INTEGER NOT NULL,
     correct_count   INTEGER NOT NULL,
     total_questions INTEGER NOT NULL,
@@ -82,26 +86,29 @@ const SCHEMA = `
     ON leaderboard_entries (topic_id, score DESC, created_at, id);
 `;
 
-function isEmpty(db: DatabaseSync, table: 'topics' | 'questions'): boolean {
-  const row = db.prepare(`SELECT COUNT(*) AS count FROM ${table}`).get() as { count: number };
-  return row.count === 0;
-}
-
 /**
- * Opens (or creates) the SQLite database, applies the schema and seeds empty tables.
- * `:memory:` gives every caller a fresh, isolated database, which is what tests want.
+ * Opens (or creates) the database, migrates a v1 database, applies the schema and brings
+ * the questions in line with the content bundle. `:memory:` gives every caller a fresh,
+ * isolated database, which is what tests want.
  */
-export function openDatabase(path: string): Database {
+export function openDatabase(path: string, content: ContentBundle): Database {
   if (path !== ':memory:') {
     mkdirSync(dirname(path), { recursive: true });
   }
 
   const db = new DatabaseSync(path);
-  db.exec('PRAGMA foreign_keys = ON;');
+  // Off while the structure changes; checked explicitly before turning it back on.
+  db.exec('PRAGMA foreign_keys = OFF;');
+
+  if (needsV1Migration(db)) migrateFromV1(db, content, SCHEMA);
   db.exec(SCHEMA);
+  syncContent(db, content);
+  db.exec(`PRAGMA user_version = ${SCHEMA_VERSION};`);
 
-  if (isEmpty(db, 'topics')) seedTopics(db);
-  if (isEmpty(db, 'questions')) seedQuestions(db);
-
+  const violations = db.prepare('PRAGMA foreign_key_check').all();
+  if (violations.length > 0) {
+    throw new Error(`Database has ${violations.length} broken references after migration`);
+  }
+  db.exec('PRAGMA foreign_keys = ON;');
   return db;
 }

@@ -1,7 +1,12 @@
 import type { FastifyInstance } from 'fastify';
 import { roundSchema, type AnswerRequest, type CreateRoundRequest, type Round } from '@pq/shared';
+import { join } from 'node:path';
 import { buildApp } from '../src/app';
-import { QUESTION_SEEDS } from '../src/db/seed/questions';
+import { loadContent, type ContentBundle } from '../src/content/load-content';
+
+/** Small, fixed content for fast tests: the 45 legacy questions plus special cases in "memes". */
+export const FIXTURE_DIR = join(import.meta.dirname, 'fixtures', 'content');
+export const FIXTURE: ContentBundle = loadContent(FIXTURE_DIR);
 
 /** A clock the test moves by hand. */
 export class FakeClock {
@@ -13,11 +18,12 @@ export class FakeClock {
 }
 
 /** A fresh app with its own in-memory database (and, optionally, a fake clock). */
-export function buildTestApp(clock?: FakeClock) {
+export function buildTestApp(clock?: FakeClock, content: ContentBundle = FIXTURE) {
   return buildApp({
     dbPath: ':memory:',
     corsOrigins: [],
     logLevel: 'silent',
+    content,
     ...(clock ? { now: clock.now } : {}),
   });
 }
@@ -29,7 +35,7 @@ export async function startRound(
   const res = await app.inject({
     method: 'POST',
     url: '/api/rounds',
-    payload: { topicId: 'general-knowledge', lang: 'en', seed: 42, ...body },
+    payload: { topicId: 'general', lang: 'en', seed: 42, ...body },
   });
   if (res.statusCode !== 201) {
     throw new Error(`startRound failed: ${res.statusCode} ${res.body}`);
@@ -66,14 +72,14 @@ export function submitScore(app: FastifyInstance, payload: Record<string, unknow
   return app.inject({ method: 'POST', url: '/api/leaderboard', payload });
 }
 
-/** The test oracle: correct and wrong option ids straight from the seed data. */
-export function correctOptionOf(questionId: string) {
-  const seed = QUESTION_SEEDS.find((q) => q.id === questionId);
-  if (!seed) throw new Error(`Unknown question ${questionId}`);
-  return seed.correct;
+/** The test oracle: correct and wrong option ids straight from the fixture content. */
+export function correctOptionOf(questionId: string): string {
+  const q = FIXTURE.questions.find((x) => x.record.id === questionId);
+  if (!q || !('correctOptionId' in q.record.answer))
+    throw new Error(`Unknown question ${questionId}`);
+  return q.record.answer.correctOptionId;
 }
 
-export function wrongOptionOf(questionId: string) {
-  const correct = correctOptionOf(questionId);
-  return correct === 'a' ? 'b' : 'a';
+export function wrongOptionOf(questionId: string): string {
+  return correctOptionOf(questionId) === 'o1' ? 'o2' : 'o1';
 }

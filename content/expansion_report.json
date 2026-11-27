@@ -1,0 +1,172 @@
+{
+  "previousMainRecords": 24198,
+  "newRecords": 125,
+  "mainRecords": 24323,
+  "newByCategory": {
+    "nostalgia": 70,
+    "mysteries": 7,
+    "travel": 7,
+    "psychology": 9,
+    "mythology": 5,
+    "inventions": 3,
+    "transport": 1,
+    "fashion": 10,
+    "records": 1,
+    "art": 5,
+    "business": 3,
+    "logic": 4
+  },
+  "newNostalgiaByRegion": {
+    "UA": 32,
+    "PL": 15,
+    "global": 22,
+    "EN": 1
+  },
+  "localeCounts": {
+    "uk": 24323,
+    "pl": 24323,
+    "en": 24323
+  },
+  "remainingQuotaShortfall": 4342,
+  "beforeQuotaShortfall": 4467,
+  "exactPromptMatchesSkipped": [],
+  "newStructuralValidation": "PASS",
+  "allIdsUnique": true,
+  "allFactKeysUnique": true,
+  "newReviewStatus": "draft",
+  "independentSecondFactCheckComplete": false,
+  "originalRecordsUnchanged": true,
+  "newSourceConsultedRecords": 121,
+  "newOriginalLogicRecords": 4,
+  "sourceUrlCount": 67,
+  "categoryChanges": [
+    {
+      "category": "food",
+      "before": 781,
+      "added": 0,
+      "after": 781,
+      "target": 800,
+      "gap": 19
+    },
+    {
+      "category": "technology",
+      "before": 345,
+      "added": 0,
+      "after": 345,
+      "target": 800,
+      "gap": 455
+    },
+    {
+      "category": "space",
+      "before": 390,
+      "added": 0,
+      "after": 390,
+      "target": 500,
+      "gap": 110
+    },
+    {
+      "category": "human_body",
+      "before": 404,
+      "added": 0,
+      "after": 404,
+      "target": 500,
+      "gap": 96
+    },
+    {
+      "category": "art",
+      "before": 216,
+      "added": 5,
+      "after": 221,
+      "target": 500,
+      "gap": 279
+    },
+    {
+      "category": "fashion",
+      "before": 152,
+      "added": 10,
+      "after": 162,
+      "target": 500,
+      "gap": 338
+    },
+    {
+      "category": "travel",
+      "before": 130,
+      "added": 7,
+      "after": 137,
+      "target": 500,
+      "gap": 363
+    },
+    {
+      "category": "business",
+      "before": 445,
+      "added": 3,
+      "after": 448,
+      "target": 500,
+      "gap": 52
+    },
+    {
+      "category": "mythology",
+      "before": 227,
+      "added": 5,
+      "after": 232,
+      "target": 500,
+      "gap": 268
+    },
+    {
+      "category": "psychology",
+      "before": 144,
+      "added": 9,
+      "after": 153,
+      "target": 500,
+      "gap": 347
+    },
+    {
+      "category": "inventions",
+      "before": 223,
+      "added": 3,
+      "after": 226,
+      "target": 500,
+      "gap": 274
+    },
+    {
+      "category": "transport",
+      "before": 280,
+      "added": 1,
+      "after": 281,
+      "target": 500,
+      "gap": 219
+    },
+    {
+      "category": "mysteries",
+      "before": 34,
+      "added": 7,
+      "after": 41,
+      "target": 500,
+      "gap": 459
+    },
+    {
+      "category": "records",
+      "before": 90,
+      "added": 1,
+      "after": 91,
+      "target": 500,
+      "gap": 409
+    },
+    {
+      "category": "nostalgia",
+      "before": 40,
+      "added": 70,
+      "after": 110,
+      "target": 500,
+      "gap": 390
+    },
+    {
+      "category": "logic",
+      "before": 232,
+      "added": 4,
+      "after": 236,
+      "target": 500,
+      "gap": 264
+    }
+  ]
+}

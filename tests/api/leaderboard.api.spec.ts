@@ -13,14 +13,14 @@ test.describe('POST /api/leaderboard', () => {
   test('saves a finished round with the score computed by the server @smoke', async ({
     quizApi,
   }, testInfo) => {
-    const round = await quizApi.playRound(6, { topicId: 'music-decades' });
+    const round = await quizApi.playRound(6, { topicId: 'music' });
     const nickname = uniqueNickname(testInfo);
 
     const entry = await quizApi.submitOk(round.roundId, nickname);
 
     expect(entry).toMatchObject({
       nickname,
-      topicId: 'music-decades',
+      topicId: 'music',
       score: 6 * POINTS_PER_CORRECT,
       correctCount: 6,
       totalQuestions: QUESTIONS_PER_ROUND,
@@ -31,10 +31,10 @@ test.describe('POST /api/leaderboard', () => {
   test('the reported rank matches the position on the topic board', async ({
     quizApi,
   }, testInfo) => {
-    const round = await quizApi.playRound(QUESTIONS_PER_ROUND, { topicId: 'region-history' });
+    const round = await quizApi.playRound(QUESTIONS_PER_ROUND, { topicId: 'history' });
     const entry = await quizApi.submitOk(round.roundId, uniqueNickname(testInfo));
 
-    const { entries } = await quizApi.board({ topicId: 'region-history' });
+    const { entries } = await quizApi.board({ topicId: 'history' });
 
     if (entry.rank <= LEADERBOARD_SIZE) {
       expect(entries[entry.rank - 1]?.id).toBe(entry.id);
@@ -99,7 +99,7 @@ test.describe('POST /api/leaderboard', () => {
 
 test.describe('GET /api/leaderboard', () => {
   test('is sorted by score with consecutive ranks, on every board', async ({ quizApi }) => {
-    for (const topicId of [undefined, 'music-decades', 'region-history', 'general-knowledge']) {
+    for (const topicId of [undefined, 'music', 'history', 'general']) {
       const { entries } = await quizApi.board(topicId ? { topicId } : {});
 
       expect(entries.length).toBeLessThanOrEqual(LEADERBOARD_SIZE);

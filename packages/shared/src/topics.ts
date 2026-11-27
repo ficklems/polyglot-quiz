@@ -3,13 +3,14 @@ import { languageSchema } from './languages';
 
 export const topicIdSchema = z
   .string()
-  .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, 'Topic id must be kebab-case');
+  .regex(/^[a-z0-9]+(?:[_-][a-z0-9]+)*$/, 'Topic id must be lower case with "_" or "-"');
 
 /** A topic as returned by GET /api/topics, already translated. */
 export const topicSchema = z.object({
   id: topicIdSchema,
   name: z.string().min(1),
-  description: z.string().min(1),
+  /** Topics are the content categories; they have no description yet. */
+  description: z.string().nullable(),
   questionCount: z.number().int().min(0),
 });
 

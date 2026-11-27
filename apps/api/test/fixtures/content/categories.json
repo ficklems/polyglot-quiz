@@ -1,0 +1,38 @@
+[
+  {
+    "id": "music",
+    "name": {
+      "uk": "Музика",
+      "en": "Music",
+      "pl": "Muzyka"
+    },
+    "subcategories": ["albums", "eurovision"]
+  },
+  {
+    "id": "history",
+    "name": {
+      "uk": "Історія та події",
+      "en": "History & Events",
+      "pl": "Historia i wydarzenia"
+    },
+    "subcategories": ["polish_history"]
+  },
+  {
+    "id": "general",
+    "name": {
+      "uk": "Загальні знання",
+      "en": "General Knowledge",
+      "pl": "Wiedza ogólna"
+    },
+    "subcategories": ["school_knowledge"]
+  },
+  {
+    "id": "memes",
+    "name": {
+      "uk": "Меми",
+      "en": "Memes",
+      "pl": "Memy"
+    },
+    "subcategories": ["internet"]
+  }
+]
