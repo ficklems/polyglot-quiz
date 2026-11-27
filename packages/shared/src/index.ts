@@ -5,3 +5,4 @@ export * from './rounds';
 export * from './leaderboard';
 export * from './content';
 export * from './catalog';
+export * from './settings';

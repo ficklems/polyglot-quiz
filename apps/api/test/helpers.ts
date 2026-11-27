@@ -39,6 +39,9 @@ export async function startRound(
     payload: {
       ...(body.selection || body.collectionId ? {} : { topicId: 'general' }),
       lang: 'en',
+      // The fixture's history and part of music are regional (UA/PL/CE); "all" keeps every
+      // fixture question eligible. Region rules have their own tests in settings.test.ts.
+      region: 'all',
       seed: 42,
       ...body,
     },

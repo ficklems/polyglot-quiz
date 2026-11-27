@@ -10,7 +10,11 @@ const meta = new Map(FIXTURE.questions.map((q) => [q.record.id, q.record]));
 const recordOf = (id: string) => meta.get(id)!;
 
 function createRound(payload: Record<string, unknown>) {
-  return app.inject({ method: 'POST', url: '/api/rounds', payload: { lang: 'en', ...payload } });
+  return app.inject({
+    method: 'POST',
+    url: '/api/rounds',
+    payload: { lang: 'en', region: 'all', ...payload },
+  });
 }
 
 describe('POST /api/rounds with a selection', () => {
@@ -86,7 +90,7 @@ describe('POST /api/rounds with a selection', () => {
     const res = await createRound({ selection: { subcategories: ['music/albums'] } });
 
     expect(res.statusCode).toBe(422);
-    expect(res.json().message).toMatch(/has 6 questions in "en", a round needs 10/);
+    expect(res.json().message).toMatch(/has 6 questions in "en" .*, a round needs 10/);
   });
 });
 

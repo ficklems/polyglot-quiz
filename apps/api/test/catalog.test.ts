@@ -6,8 +6,8 @@ import { buildTestApp } from './helpers';
 let app: FastifyInstance;
 afterEach(async () => app?.close());
 
-async function catalog(lang: Language): Promise<CatalogResponse> {
-  const res = await app.inject({ method: 'GET', url: `/api/catalog?lang=${lang}` });
+async function catalog(lang: Language, query = 'region=all'): Promise<CatalogResponse> {
+  const res = await app.inject({ method: 'GET', url: `/api/catalog?lang=${lang}&${query}` });
   expect(res.statusCode).toBe(200);
   return catalogResponseSchema.parse(res.json());
 }

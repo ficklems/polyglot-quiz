@@ -1,6 +1,12 @@
 import { z } from 'zod';
 import { languageSchema } from './languages';
 import { collectionIdSchema, selectionSchema } from './catalog';
+import {
+  difficultySettingSchema,
+  MAX_AVOID_IDS,
+  questionCountSchema,
+  regionPreferenceSchema,
+} from './settings';
 import { topicIdSchema } from './topics';
 
 export const QUESTIONS_PER_ROUND = 10;
@@ -28,6 +34,12 @@ export const createRoundRequestSchema = z
     topicId: topicIdSchema.optional(),
     selection: selectionSchema.optional(),
     collectionId: collectionIdSchema.optional(),
+    region: regionPreferenceSchema.default('auto'),
+    difficulty: difficultySettingSchema.default('mixed'),
+    /** Ignored by themed quizzes with a fixed length (Millionaire Challenge). */
+    questionCount: questionCountSchema.default(10),
+    /** Recently played ids: the server prefers other questions and reports any repeats. */
+    avoidIds: z.array(z.string().max(64)).max(MAX_AVOID_IDS).default([]),
     /** Fixes question and option order. Meant for tests and for replaying a round. */
     seed: z
       .number()
@@ -63,9 +75,14 @@ export const roundSchema = z.strictObject({
   topicId: topicIdSchema.nullable(),
   /** Set for a themed quiz. */
   collectionId: collectionIdSchema.nullable(),
-  /** Only topic and themed-quiz rounds go on the leaderboard; custom mixes don't. */
+  /**
+   * Only standard rounds go on the leaderboard: a topic or a themed quiz, mixed difficulty and
+   * the default length. Custom mixes and easier or longer rounds would not be comparable.
+   */
   ranked: z.boolean(),
   lang: languageSchema,
+  /** Questions that were in avoidIds but had to be used because the pool ran out. */
+  repeatedCount: z.number().int().min(0),
   timeLimitSeconds: z.number().int().positive(),
   questions: z.array(roundQuestionSchema).min(1).max(MAX_QUESTIONS_PER_ROUND),
 });
