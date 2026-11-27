@@ -185,6 +185,9 @@ Playwright rules (from the official best practices):
 
 - Branches: `main` is always green; work in `feat/…`, `fix/…`, `test/…`, `docs/…`.
 - Commits follow Conventional Commits: `feat(quiz): add 20s timer`, `test(api): cover leaderboard validation`.
+- Tests go in their own `test(...)` commits, authored by the owner (she reviews and edits them):
+  `git commit --author="Mariia Shevtsova <110844363+ficklems@users.noreply.github.com>"`,
+  keeping the `Co-Authored-By` trailer. Code and docs commits keep the default author.
 - CI on every push and PR: lint → typecheck → unit → API → E2E.
 - No secrets in the repo; config comes from env vars, documented in `.env.example`.
 
