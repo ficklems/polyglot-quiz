@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { collectionIdSchema } from './catalog';
 import { topicIdSchema } from './topics';
 
 export const LEADERBOARD_SIZE = 10;
@@ -35,7 +36,9 @@ export const leaderboardEntrySchema = z.strictObject({
   score: z.number().int().min(0),
   correctCount: z.number().int().min(0),
   totalQuestions: z.number().int().positive(),
-  topicId: topicIdSchema,
+  /** Exactly one of topicId / collectionId is set: the board the entry belongs to. */
+  topicId: topicIdSchema.nullable(),
+  collectionId: collectionIdSchema.nullable(),
   createdAt: z.iso.datetime(),
 });
 export type LeaderboardEntry = z.infer<typeof leaderboardEntrySchema>;
@@ -45,15 +48,21 @@ export const submitScoreResponseSchema = z.strictObject({
 });
 export type SubmitScoreResponse = z.infer<typeof submitScoreResponseSchema>;
 
-export const leaderboardQuerySchema = z.object({
-  topicId: topicIdSchema.optional(),
-  limit: z.coerce.number().int().min(1).max(LEADERBOARD_SIZE).default(LEADERBOARD_SIZE),
-});
+export const leaderboardQuerySchema = z
+  .object({
+    topicId: topicIdSchema.optional(),
+    collectionId: collectionIdSchema.optional(),
+    limit: z.coerce.number().int().min(1).max(LEADERBOARD_SIZE).default(LEADERBOARD_SIZE),
+  })
+  .refine((q) => !(q.topicId && q.collectionId), {
+    message: 'Ask for a topic board or a collection board, not both',
+  });
 export type LeaderboardQuery = z.infer<typeof leaderboardQuerySchema>;
 
 export const leaderboardResponseSchema = z.strictObject({
-  /** null = all topics together. */
+  /** Both null = all boards together. */
   topicId: topicIdSchema.nullable(),
+  collectionId: collectionIdSchema.nullable(),
   entries: z.array(leaderboardEntrySchema).max(LEADERBOARD_SIZE),
 });
 export type LeaderboardResponse = z.infer<typeof leaderboardResponseSchema>;

@@ -5,10 +5,13 @@ import { fileURLToPath } from 'node:url';
 import { gunzipSync } from 'node:zlib';
 import {
   categorySchema,
+  collectionSchema,
   EXCLUSION_REASONS,
   LANGUAGES,
   questionRecordSchema,
+  subcategoryNamesSchema,
   type Category,
+  type Collection,
   type ExclusionReason,
   type Language,
   type QuestionRecord,
@@ -44,6 +47,10 @@ export type ContentBundle = {
   /** Hash of every file read: changes whenever the content changes. */
   version: string;
   categories: Category[];
+  /** Themed quizzes (content/collections.json): filters over the shared questions. */
+  collections: Collection[];
+  /** Subcategory id → name per language (content/subcategory_names.json). */
+  subcategoryNames: Record<string, Record<Language, string>>;
   questions: PreparedQuestion[];
   /** Retired id → kept id (content/migrations/legacy-duplicate-map.json). */
   duplicateMap: { retiredId: string; keptId: string }[];
@@ -140,6 +147,16 @@ export function loadContent(dir = DEFAULT_CONTENT_DIR): ContentBundle {
     (c) => categorySchema.parse(c),
   );
   const categoryIds = new Set(categories.map((c) => c.id));
+  const collectionsPath = join(dir, 'collections.json');
+  const collections = existsSync(collectionsPath)
+    ? (JSON.parse(readText(collectionsPath, hash)) as unknown[]).map((c) =>
+        collectionSchema.parse(c),
+      )
+    : [];
+  const namesPath = join(dir, 'subcategory_names.json');
+  const subcategoryNames = existsSync(namesPath)
+    ? subcategoryNamesSchema.parse(JSON.parse(readText(namesPath, hash))).names
+    : {};
   const flags = loadFlags(dir, hash);
 
   const report: ContentReport = {
@@ -240,5 +257,13 @@ export function loadContent(dir = DEFAULT_CONTENT_DIR): ContentBundle {
     retiredId,
     keptId,
   }));
-  return { version: hash.digest('hex').slice(0, 16), categories, questions, duplicateMap, report };
+  return {
+    version: hash.digest('hex').slice(0, 16),
+    categories,
+    collections,
+    subcategoryNames,
+    questions,
+    duplicateMap,
+    report,
+  };
 }

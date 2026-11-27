@@ -1,8 +1,9 @@
 import type { Language } from '@pq/shared';
-import { useState } from 'react';
+import { useId, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useTopics } from '../../topics/hooks/use-topics';
+import { useCatalog } from '../../topics/hooks/use-catalog';
 import { useLeaderboard } from '../hooks/use-leaderboard';
+import { ALL_BOARDS, boardValue, parseBoardValue, type Board } from '../leaderboard.utils';
 import { LeaderboardTable } from './LeaderboardTable';
 
 type Props = {
@@ -12,13 +13,20 @@ type Props = {
 
 export function LeaderboardScreen({ lang, onBack }: Props) {
   const { t } = useTranslation();
-  const [topicId, setTopicId] = useState<string | null>(null);
-  const { state: topicsState } = useTopics(lang);
-  const { state, retry } = useLeaderboard(topicId);
+  const selectId = useId();
+  const [board, setBoard] = useState<Board>(ALL_BOARDS);
+  const { state: catalogState } = useCatalog(lang);
+  const { state, retry } = useLeaderboard(board);
 
-  const topics = topicsState.status === 'success' ? topicsState.topics : [];
-  const filters = [{ id: null, name: t('leaderboard.allTopics') }, ...topics];
-  const currentName = filters.find((f) => f.id === topicId)?.name ?? '';
+  const catalog = catalogState.status === 'success' ? catalogState.catalog : null;
+  const categories = catalog?.categories ?? [];
+  const collections = catalog?.collections ?? [];
+  const currentName =
+    board.kind === 'topic'
+      ? (categories.find((c) => c.id === board.id)?.name ?? '')
+      : board.kind === 'collection'
+        ? (collections.find((c) => c.id === board.id)?.name ?? '')
+        : t('leaderboard.allTopics');
 
   return (
     <div className="leaderboard-screen">
@@ -46,18 +54,33 @@ export function LeaderboardScreen({ lang, onBack }: Props) {
         <h1 className="screen-title">{t('leaderboard.title')}</h1>
       </div>
 
-      <div className="filter-chips" role="group" aria-label={t('leaderboard.topicsLabel')}>
-        {filters.map((filter) => (
-          <button
-            key={filter.id ?? 'all'}
-            type="button"
-            className="filter-chip"
-            aria-pressed={filter.id === topicId}
-            onClick={() => setTopicId(filter.id)}
-          >
-            {filter.name}
-          </button>
-        ))}
+      {/* 31 categories and 20 themed quizzes: a select scales where a row of chips doesn't. */}
+      <div className="board-picker">
+        <label className="field-label" htmlFor={selectId}>
+          {t('leaderboard.topicsLabel')}
+        </label>
+        <select
+          id={selectId}
+          className="text-input board-select"
+          value={boardValue(board)}
+          onChange={(event) => setBoard(parseBoardValue(event.target.value))}
+        >
+          <option value={boardValue(ALL_BOARDS)}>{t('leaderboard.allTopics')}</option>
+          <optgroup label={t('categories.heading')}>
+            {categories.map((c) => (
+              <option key={c.id} value={boardValue({ kind: 'topic', id: c.id })}>
+                {c.name}
+              </option>
+            ))}
+          </optgroup>
+          <optgroup label={t('collections.heading')}>
+            {collections.map((c) => (
+              <option key={c.id} value={boardValue({ kind: 'collection', id: c.id })}>
+                {c.name}
+              </option>
+            ))}
+          </optgroup>
+        </select>
       </div>
 
       {state.status === 'loading' && (

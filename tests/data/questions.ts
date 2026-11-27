@@ -75,3 +75,47 @@ export function questionCount(topicId: string, lang: Language): number {
 export const THIN_UK_TOPIC: string | undefined = content.categories.find(
   (c) => questionCount(c.id, 'uk') < 10,
 )?.id;
+
+const playable = (lang: Language) =>
+  served(lang).filter((q) => SINGLE_ANSWER_TYPES.includes(q.record.type));
+
+/** Where a shown question came from, to check that a round respects the player's choice. */
+export function questionMeta(prompt: string, optionTexts: string[], lang: Language) {
+  const record = findOnScreen(prompt, optionTexts, lang);
+  return { category: record.category, subcategory: record.subcategory, tags: record.tags };
+}
+
+export function subcategoryName(subId: string, lang: Language): string {
+  return content.subcategoryNames[subId]?.[lang] ?? subId.replaceAll('_', ' ');
+}
+
+/** Playable questions of one subcategory in a language (what its chip counts). */
+export function subcategoryCount(topicId: string, subId: string, lang: Language): number {
+  return playable(lang).filter(
+    (q) => q.record.category === topicId && q.record.subcategory === subId,
+  ).length;
+}
+
+/**
+ * A subcategory with 2–9 playable questions in `lang` (too few for a round, and the plural
+ * "other" form in English), if there is one.
+ */
+export function thinSubcategory(lang: Language): { topicId: string; subId: string } | undefined {
+  const pairs = new Set(playable(lang).map((q) => `${q.record.category}/${q.record.subcategory}`));
+  const ref = [...pairs].sort().find((pair) => {
+    const [topicId, subId] = pair.split('/') as [string, string];
+    const count = subcategoryCount(topicId, subId, lang);
+    return count > 1 && count < 10;
+  });
+  if (!ref) return undefined;
+  const [topicId, subId] = ref.split('/') as [string, string];
+  return { topicId, subId };
+}
+
+export const COLLECTION_COUNT = content.collections.length;
+
+export function collectionName(collectionId: string, lang: Language): string {
+  const collection = content.collections.find((c) => c.id === collectionId);
+  if (!collection) throw new Error(`Unknown themed quiz ${collectionId}`);
+  return collection.name[lang];
+}

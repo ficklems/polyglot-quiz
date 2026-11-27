@@ -1,5 +1,6 @@
 import type { DatabaseSync } from 'node:sqlite';
 import type { ContentBundle } from '../content/load-content';
+import { rebuildRoundTables } from './rebuild-round-tables';
 
 /** Milestones 0–2 used three topics; their questions now live in these categories. */
 export const V1_TOPIC_TO_CATEGORY: Record<string, string> = {
@@ -52,27 +53,8 @@ export function migrateFromV1(db: DatabaseSync, content: ContentBundle, schema: 
       DROP TABLE IF EXISTS topics;
     `);
 
-    // v1 rounds and leaderboard entries reference the dropped topics table: rebuild them with
-    // the v2 definitions. legacy_alter_table stops the rename from rewriting references in
-    // round_questions, which must keep pointing at "rounds".
-    db.exec(`
-      PRAGMA legacy_alter_table = ON;
-      DROP INDEX IF EXISTS leaderboard_by_topic;
-      ALTER TABLE rounds RENAME TO rounds_v1;
-      ALTER TABLE leaderboard_entries RENAME TO leaderboard_v1;
-    `);
-    db.exec(schema);
-    db.exec(`
-      INSERT INTO rounds (id, topic_id, lang, score, created_at, current_started_at, finished_at)
-        SELECT id, topic_id, lang, score, created_at, current_started_at, finished_at FROM rounds_v1;
-      INSERT INTO leaderboard_entries
-        (id, round_id, nickname, topic_id, score, correct_count, total_questions, created_at)
-        SELECT id, round_id, nickname, topic_id, score, correct_count, total_questions, created_at
-        FROM leaderboard_v1;
-      DROP TABLE rounds_v1;
-      DROP TABLE leaderboard_v1;
-      PRAGMA legacy_alter_table = OFF;
-    `);
+    // v1 rounds and leaderboard entries reference the dropped topics table: rebuild them.
+    rebuildRoundTables(db, schema);
 
     for (const [from, to] of Object.entries(V1_TOPIC_TO_CATEGORY)) {
       db.prepare('UPDATE rounds SET topic_id = ? WHERE topic_id = ?').run(to, from);

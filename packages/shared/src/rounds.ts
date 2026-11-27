@@ -1,8 +1,10 @@
 import { z } from 'zod';
 import { languageSchema } from './languages';
+import { collectionIdSchema, selectionSchema } from './catalog';
 import { topicIdSchema } from './topics';
 
 export const QUESTIONS_PER_ROUND = 10;
+export const MAX_QUESTIONS_PER_ROUND = 50;
 export const TIME_LIMIT_SECONDS = 20;
 export const POINTS_PER_CORRECT = 100;
 
@@ -16,18 +18,33 @@ export const questionIdSchema = z
 
 // ---------- POST /api/rounds ----------
 
-export const createRoundRequestSchema = z.object({
-  topicId: topicIdSchema,
-  lang: languageSchema,
-  /** Fixes question and option order. Meant for tests and for replaying a round. */
-  seed: z
-    .number()
-    .int()
-    .min(0)
-    .max(2 ** 32 - 1)
-    .optional(),
-});
+/**
+ * Exactly one source of questions: a single topic (category), the player's own selection
+ * of categories and subcategories, or a themed quiz (collection).
+ */
+export const createRoundRequestSchema = z
+  .object({
+    lang: languageSchema,
+    topicId: topicIdSchema.optional(),
+    selection: selectionSchema.optional(),
+    collectionId: collectionIdSchema.optional(),
+    /** Fixes question and option order. Meant for tests and for replaying a round. */
+    seed: z
+      .number()
+      .int()
+      .min(0)
+      .max(2 ** 32 - 1)
+      .optional(),
+  })
+  .refine(
+    (r) =>
+      [r.topicId, r.selection, r.collectionId].filter((source) => source !== undefined).length ===
+      1,
+    { message: 'Send exactly one of topicId, selection or collectionId' },
+  );
 export type CreateRoundRequest = z.infer<typeof createRoundRequestSchema>;
+/** What a client sends (defaults not applied yet, e.g. `subcategories` may be left out). */
+export type CreateRoundInput = z.input<typeof createRoundRequestSchema>;
 
 /** A question as the player sees it: no correct answer, options already shuffled. */
 export const roundQuestionSchema = z.strictObject({
@@ -42,10 +59,15 @@ export type RoundQuestion = z.infer<typeof roundQuestionSchema>;
 
 export const roundSchema = z.strictObject({
   roundId: z.uuid(),
-  topicId: topicIdSchema,
+  /** Set for a single-topic round (also a selection of exactly one whole category). */
+  topicId: topicIdSchema.nullable(),
+  /** Set for a themed quiz. */
+  collectionId: collectionIdSchema.nullable(),
+  /** Only topic and themed-quiz rounds go on the leaderboard; custom mixes don't. */
+  ranked: z.boolean(),
   lang: languageSchema,
   timeLimitSeconds: z.number().int().positive(),
-  questions: z.array(roundQuestionSchema).length(QUESTIONS_PER_ROUND),
+  questions: z.array(roundQuestionSchema).min(1).max(MAX_QUESTIONS_PER_ROUND),
 });
 export type Round = z.infer<typeof roundSchema>;
 
@@ -77,7 +99,9 @@ export type AnswerResult = z.infer<typeof answerResultSchema>;
 
 export const roundSummarySchema = z.strictObject({
   roundId: z.uuid(),
-  topicId: topicIdSchema,
+  topicId: topicIdSchema.nullable(),
+  collectionId: collectionIdSchema.nullable(),
+  ranked: z.boolean(),
   lang: languageSchema,
   score: z.number().int().min(0),
   correctCount: z.number().int().min(0),

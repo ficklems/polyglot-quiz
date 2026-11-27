@@ -17,6 +17,11 @@ export class ResultPage {
     return this.page.getByRole('main');
   }
 
+  /** Shown instead of the save form after a custom mix, which isn't ranked. */
+  get notRankedNote(): Locator {
+    return this.page.getByText(text(this.lang, 'result.notRanked'));
+  }
+
   get playAgainButton(): Locator {
     return this.page.getByRole('button', { name: text(this.lang, 'result.playAgain') });
   }

@@ -4,6 +4,62 @@ Newest entry first. Each entry: what was done, decisions and why, how it was ver
 
 ---
 
+## 2026-11-27 · Expansion phase 3: categories, subcategories, themed quizzes (branch `feat/categories-collections`)
+
+### Done
+
+- **API:** `GET /api/catalog?lang=` lists the 31 categories with their subcategories (only
+  those with playable questions in that language, with counts) and the 20 themed quizzes
+  (count, round size, playable). Built once per language from an in-memory pool of question
+  metadata (`QuestionPool`), so a round request no longer scans 24k JSON rows.
+- **Rounds from three sources:** `topicId`, `selection` (`{ categories, subcategories }`,
+  union) or `collectionId`; exactly one. Selection logic is pure and unit tested
+  (`apps/api/src/content/selection.ts`): equal share per category (or per decade for
+  Generations), redistributed only after a group runs out; Millionaire Challenge = 15
+  questions with equal shares of easy/medium/hard, filled from the rest when a level is short,
+  ordered easy → hard. Too small a pool is `422` with the available count.
+- **Leaderboard:** a board per themed quiz (`?collectionId=`); a selection of exactly one
+  whole category counts as that topic; any other mix is unranked and `POST /api/leaderboard`
+  answers `422 Custom mixes are not ranked`.
+- **DB v3:** rounds and entries can belong to a topic or a themed quiz (CHECK: exactly one
+  board per entry). Migration v2 → v3 rebuilds the two tables and keeps all rows; v1 goes
+  straight to v3.
+- **Web:** new home: search (case- and accent-insensitive, also finds subcategories and opens
+  their category), category toggles, expandable subcategory chips, collapsed list of 8 with
+  "Show all (31)", a sticky selection bar (question count, ranked or not, Start), and the 20
+  themed quizzes, which start at once. Quiz/result titles for mixes and quizzes; the result
+  of a mix shows a note instead of the save form. The leaderboard screen uses one `<select>`
+  with option groups (all / categories / themed quizzes) instead of 31 chips.
+- **Content:** `content/subcategory_names.json`, 269 subcategory names in three languages,
+  written for this phase (drafts, to proofread in phase 7).
+
+### Decisions
+
+- Thin categories are no longer disabled: they can be part of a mix. Start is disabled while
+  the selection has fewer than 10 questions, with the real count.
+- Custom mixes are unranked (see above); otherwise a player could pick the easiest
+  subcategories and top a board.
+- "Only Locals" has `requireRegionalSelection`; it plays from all regions until phase 4 adds
+  the region setting.
+
+### Verified
+
+- Vitest: 141 API tests (new: catalog, selection/collection rounds, collection boards,
+  v2 → v3 migration, every themed quiz playable in EN/PL on the real dataset) + 44 web unit
+  tests (search normalization, selection toggling, board helpers).
+- Playwright: home, leaderboard and catalog specs rewritten/added; chromium and Pixel run
+  green, new suites run with `--repeat-each=5` (205/205). Screenshots checked in light and
+  dark on a phone viewport; the first one showed the search field 180 px tall (a flex-basis
+  meant for the nickname row) and the selection bar too tall, both fixed.
+- Firefox/WebKit browsers can't be downloaded in this environment; CI runs them.
+
+### Next
+
+Phase 4: language and region as separate settings, difficulty (Easy/Medium/Hard/Mixed),
+sampling policy for regions.
+
+---
+
 ## 2026-11-27 · Expansion phases 1–2: analysis and content import (branch `feat/content-import`)
 
 Plan, findings and decisions: [`EXPANSION_PLAN.md`](EXPANSION_PLAN.md). Counts:

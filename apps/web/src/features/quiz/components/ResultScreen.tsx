@@ -4,11 +4,13 @@ import { useTranslation } from 'react-i18next';
 import { LeaderboardTable } from '../../leaderboard/components/LeaderboardTable';
 import { SaveScoreForm } from '../../leaderboard/components/SaveScoreForm';
 import { useLeaderboard } from '../../leaderboard/hooks/use-leaderboard';
+import type { Board } from '../../leaderboard/leaderboard.utils';
 
 type Props = {
   roundId: string;
-  topicId: string;
-  topicName: string;
+  /** null for a custom mix: nothing to save. */
+  board: Board | null;
+  title: string;
   score: number;
   correctCount: number;
   total: number;
@@ -18,8 +20,8 @@ type Props = {
 
 export function ResultScreen({
   roundId,
-  topicId,
-  topicName,
+  board,
+  title,
   score,
   correctCount,
   total,
@@ -35,15 +37,17 @@ export function ResultScreen({
   return (
     <div className="result">
       <section className="hero result-hero">
-        <span className="eyebrow">{topicName}</span>
+        <span className="eyebrow">{title}</span>
         <h1>{t('result.title')}</h1>
         <p className="result-score">{t('result.points', { count: score })}</p>
         <p>{t('result.correct', { correct: correctCount, total })}</p>
         <p className="result-verdict">{t(`result.verdict.${verdictKey}`)}</p>
       </section>
 
-      {saved ? (
-        <SavedBoard topicId={topicId} topicName={topicName} entry={saved} />
+      {board === null ? (
+        <p className="status status--info">{t('result.notRanked')}</p>
+      ) : saved ? (
+        <SavedBoard board={board} title={title} entry={saved} />
       ) : (
         <SaveScoreForm roundId={roundId} onSaved={setSaved} />
       )}
@@ -59,17 +63,17 @@ export function ResultScreen({
 }
 
 function SavedBoard({
-  topicId,
-  topicName,
+  board,
+  title,
   entry,
 }: {
-  topicId: string;
-  topicName: string;
+  board: Board;
+  title: string;
   entry: LeaderboardEntry;
 }) {
   const { t } = useTranslation();
   // Load the board after saving, so the player's own entry is included.
-  const { state } = useLeaderboard(topicId, entry.id);
+  const { state } = useLeaderboard(board, entry.id);
 
   return (
     <section className="saved-board">
@@ -78,7 +82,7 @@ function SavedBoard({
       </p>
       {state.status === 'success' && (
         <LeaderboardTable
-          caption={t('leaderboard.caption', { topic: topicName })}
+          caption={t('leaderboard.caption', { topic: title })}
           entries={state.entries}
           ownEntry={entry}
         />

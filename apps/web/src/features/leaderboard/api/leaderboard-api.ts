@@ -5,13 +5,15 @@ import {
   type LeaderboardResponse,
 } from '@pq/shared';
 import { getJson, postJson } from '../../../shared/api/http';
+import { boardQuery, type Board } from '../leaderboard.utils';
 
 export async function fetchLeaderboard(
-  topicId: string | null,
+  board: Board,
   signal?: AbortSignal,
 ): Promise<LeaderboardResponse> {
-  const query = topicId ? `?topicId=${encodeURIComponent(topicId)}` : '';
-  return leaderboardResponseSchema.parse(await getJson(`/api/leaderboard${query}`, signal));
+  return leaderboardResponseSchema.parse(
+    await getJson(`/api/leaderboard${boardQuery(board)}`, signal),
+  );
 }
 
 export async function submitScore(roundId: string, nickname: string): Promise<LeaderboardEntry> {

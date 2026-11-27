@@ -1,8 +1,9 @@
-import { isLanguage, type Language, type Round, type Topic } from '@pq/shared';
+import { isLanguage, type Language, type Round } from '@pq/shared';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { LeaderboardScreen } from '../features/leaderboard/components/LeaderboardScreen';
-import { createRound } from '../features/quiz/api/rounds-api';
+import { boardOfRound, type Board } from '../features/leaderboard/leaderboard.utils';
+import { createRound, type RoundSource } from '../features/quiz/api/rounds-api';
 import { QuizScreen } from '../features/quiz/components/QuizScreen';
 import { ResultScreen } from '../features/quiz/components/ResultScreen';
 import { LanguageSwitcher } from '../features/settings/components/LanguageSwitcher';
@@ -12,12 +13,15 @@ import { HomePage } from './HomePage';
 
 type View =
   | { name: 'home' }
-  | { name: 'quiz'; round: Round; topic: Topic }
+  | { name: 'quiz'; round: Round; source: RoundSource; title: string }
   | { name: 'leaderboard' }
   | {
       name: 'result';
       roundId: string;
-      topic: Topic;
+      source: RoundSource;
+      title: string;
+      /** null for a custom mix, which isn't ranked. */
+      board: Board | null;
       score: number;
       correctCount: number;
       total: number;
@@ -30,14 +34,14 @@ export function App() {
   const lang: Language = isLanguage(i18n.resolvedLanguage) ? i18n.resolvedLanguage : 'en';
 
   /** Throws on failure so the caller can show the error where the player clicked. */
-  const start = async (topic: Topic) => {
-    const round = await createRound(topic.id, lang);
-    setView({ name: 'quiz', round, topic });
+  const start = async (source: RoundSource, title: string) => {
+    const round = await createRound(source, lang);
+    setView({ name: 'quiz', round, source, title });
   };
 
-  const playAgain = async (topic: Topic) => {
+  const playAgain = async (source: RoundSource, title: string) => {
     try {
-      await start(topic);
+      await start(source, title);
     } catch (error) {
       console.error(error);
       setView({ name: 'home' });
@@ -71,10 +75,17 @@ export function App() {
           <QuizScreen
             key={view.round.roundId}
             round={view.round}
-            topicName={view.topic.name}
+            title={view.title}
             onQuit={() => setView({ name: 'home' })}
             onFinish={(r) =>
-              setView({ name: 'result', roundId: view.round.roundId, topic: view.topic, ...r })
+              setView({
+                name: 'result',
+                roundId: view.round.roundId,
+                source: view.source,
+                title: view.title,
+                board: boardOfRound(view.round),
+                ...r,
+              })
             }
           />
         )}
@@ -82,12 +93,12 @@ export function App() {
           <ResultScreen
             key={view.roundId}
             roundId={view.roundId}
-            topicId={view.topic.id}
-            topicName={view.topic.name}
+            board={view.board}
+            title={view.title}
             score={view.score}
             correctCount={view.correctCount}
             total={view.total}
-            onPlayAgain={() => void playAgain(view.topic)}
+            onPlayAgain={() => void playAgain(view.source, view.title)}
             onHome={() => setView({ name: 'home' })}
           />
         )}

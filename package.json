@@ -23,7 +23,7 @@
     "test": "npm run test --workspaces --if-present",
     "test:e2e": "npm run test:e2e -w @pq/tests",
     "test:api": "npm run test:api -w @pq/tests",
-    "content:report": "npm run content:report -w @pq/api"
+    "content:report": "npm run content:report -w @pq/api && prettier --write docs/CONTENT_REPORT.md"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

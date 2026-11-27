@@ -6,18 +6,18 @@ Work is split into phases; the application stays working and green after each on
 
 ## Phases
 
-| #   | Phase                                                                                   | Status                              |
-| --- | --------------------------------------------------------------------------------------- | ----------------------------------- |
-| 1   | Analysis of the repository, the archive and the conflicts between them                  | **done** (this document)            |
-| 2   | Import of the question database, duplicate detection, serving rules                     | **done** (PR "content import")      |
-| 3   | Categories, subcategories (search, multi-select) and the 20 themed quizzes              | next                                |
-| 4   | Languages and regions as independent settings, difficulty incl. Mixed, sampling policy  | planned                             |
-| 5   | The eight question formats (UI for order, matching, map, …)                             | planned                             |
-| 6   | The five game modes (Classic, Multiplayer rooms, Learning, Random Mix, Review Mistakes) | planned                             |
-| 7   | Content editing and verification (Ukrainian proofreading first)                         | planned, ongoing                    |
-| 8   | Automated tests for all of the above                                                    | with every phase                    |
-| 9   | README, sources and licenses                                                            | started in phase 2, kept up to date |
-| 10  | Demo video preparation                                                                  | planned                             |
+| #   | Phase                                                                                   | Status                                        |
+| --- | --------------------------------------------------------------------------------------- | --------------------------------------------- |
+| 1   | Analysis of the repository, the archive and the conflicts between them                  | **done** (this document)                      |
+| 2   | Import of the question database, duplicate detection, serving rules                     | **done** (PR "content import")                |
+| 3   | Categories, subcategories (search, multi-select) and the 20 themed quizzes              | **done** (PR "categories and themed quizzes") |
+| 4   | Languages and regions as independent settings, difficulty incl. Mixed, sampling policy  | next                                          |
+| 5   | The eight question formats (UI for order, matching, map, …)                             | planned                                       |
+| 6   | The five game modes (Classic, Multiplayer rooms, Learning, Random Mix, Review Mistakes) | planned                                       |
+| 7   | Content editing and verification (Ukrainian proofreading first)                         | planned, ongoing                              |
+| 8   | Automated tests for all of the above                                                    | with every phase                              |
+| 9   | README, sources and licenses                                                            | started in phase 2, kept up to date           |
+| 10  | Demo video preparation                                                                  | planned                                       |
 
 ## Phase 1 findings
 
@@ -43,17 +43,20 @@ review files. Structural validation: clean. No record is verified for publicatio
 
 ## Decisions
 
-| Topic                                             | Decision                                                                                                                                                                        | By                                |
-| ------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------- |
-| Leaderboard (spec says "no leaderboards")         | **Kept**: per-topic top 10 with server-side scores, built in milestone 2 and tested; documented as a deliberate deviation                                                       | owner                             |
-| Which drafts the game serves                      | **Drafts without known problems**; flagged records are withheld                                                                                                                 | owner                             |
-| Code license                                      | **MIT** for code, **CC BY-SA 4.0** for content                                                                                                                                  | owner                             |
-| Ukrainian machine translation (finding 1)         | Not served in Ukrainian until proofread; still served in English and Polish. A known problem under the decision above. Easy to change in `apps/api/src/content/load-content.ts` | agent, following the owner's rule |
-| Topics with < 10 playable questions in a language | Shown but disabled with the real count (sampling policy: "show actual eligible counts")                                                                                         | agent                             |
-| Legacy vs imported duplicates                     | 23 pairs found by manual review; for each, the record with the better localization is kept; references to retired ids are migrated                                              | agent                             |
-| Formats in rounds                                 | Rounds use the 6 single-answer formats now; order and matching wait for their UI (phase 5)                                                                                      | agent                             |
-| Profanity                                         | Never served until an opt-in setting exists (spec: default exclude, explicit opt-in)                                                                                            | agent                             |
-| Classic scoring vs spec's multiplayer scoring     | Classic keeps 100 points / 20 s; Multiplayer will use the spec's 1 point / 30 s                                                                                                 | agent                             |
+| Topic                                             | Decision                                                                                                                                                                                                                                                             | By                                |
+| ------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------- |
+| Leaderboard (spec says "no leaderboards")         | **Kept**: per-topic top 10 with server-side scores, built in milestone 2 and tested; documented as a deliberate deviation                                                                                                                                            | owner                             |
+| Which drafts the game serves                      | **Drafts without known problems**; flagged records are withheld                                                                                                                                                                                                      | owner                             |
+| Code license                                      | **MIT** for code, **CC BY-SA 4.0** for content                                                                                                                                                                                                                       | owner                             |
+| Ukrainian machine translation (finding 1)         | Not served in Ukrainian until proofread; still served in English and Polish. A known problem under the decision above. Easy to change in `apps/api/src/content/load-content.ts`                                                                                      | agent, following the owner's rule |
+| Topics with < 10 playable questions in a language | Shown with the real count and selectable (they can be combined); Start stays disabled while the selection has fewer than 10 questions                                                                                                                                | agent                             |
+| Ranking of custom mixes                           | One whole category = that topic's ranked round; themed quizzes have their own boards; any other mix is unranked (422 on submit), so nobody can cherry-pick easy subcategories                                                                                        | agent                             |
+| Themed quiz rules                                 | `collections.json` rules are filters over the shared questions (OR across rules, AND within a rule); Millionaire = 15 questions easy→hard, Generations balanced by decade, others by category. `requireRegionalSelection` (Only Locals) waits for regions in phase 4 | agent                             |
+| Subcategory names                                 | Written for this phase in `content/subcategory_names.json` (269, three languages); drafts to proofread in phase 7                                                                                                                                                    | agent                             |
+| Legacy vs imported duplicates                     | 23 pairs found by manual review; for each, the record with the better localization is kept; references to retired ids are migrated                                                                                                                                   | agent                             |
+| Formats in rounds                                 | Rounds use the 6 single-answer formats now; order and matching wait for their UI (phase 5)                                                                                                                                                                           | agent                             |
+| Profanity                                         | Never served until an opt-in setting exists (spec: default exclude, explicit opt-in)                                                                                                                                                                                 | agent                             |
+| Classic scoring vs spec's multiplayer scoring     | Classic keeps 100 points / 20 s; Multiplayer will use the spec's 1 point / 30 s                                                                                                                                                                                      | agent                             |
 
 ## Not done yet (honest list)
 

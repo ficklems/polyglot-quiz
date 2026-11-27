@@ -4,10 +4,18 @@
   },
   "home": {
     "eyebrow": "Quiz in three languages",
-    "title": "Pick a topic and test yourself",
-    "subtitle": "10 questions, 20 seconds each",
+    "title": "Build your quiz",
+    "subtitle": "Pick categories or a themed quiz. 20 seconds per question.",
     "start": "Start",
-    "startError": "Couldn't start the round. Please try again."
+    "startError": "Couldn't start the round. Please try again.",
+    "selectNothing": "Pick at least one category or subcategory.",
+    "ranked": "Your score can go on this topic’s leaderboard.",
+    "mixNotRanked": "A custom mix is just for fun: it isn’t ranked.",
+    "selectionCount_one": "{{count}} question to play from",
+    "selectionCount_other": "{{count}} questions to play from",
+    "selectionTooSmall_one": "Only {{count}} question selected, a round needs {{needed}}. Add more.",
+    "selectionTooSmall_other": "Only {{count}} questions selected, a round needs {{needed}}. Add more.",
+    "summaryLabel": "Your selection"
   },
   "topics": {
     "heading": "Topics",
@@ -17,8 +25,26 @@
     "count_one": "{{count}} topic",
     "count_other": "{{count}} topics",
     "questions_one": "{{count}} question",
-    "questions_other": "{{count}} questions",
-    "notEnough": "Not enough questions in this language ({{count}} of 10)"
+    "questions_other": "{{count}} questions"
+  },
+  "categories": {
+    "heading": "Categories",
+    "hint": "Pick one or more categories, or open a category to pick subcategories.",
+    "searchLabel": "Search categories",
+    "searchPlaceholder": "e.g. Eurovision, geography",
+    "noResults": "Nothing found for “{{query}}”.",
+    "subcategoriesOf": "Subcategories: {{name}}",
+    "showFewer": "Show fewer",
+    "showAll": "Show all ({{count}})",
+    "results_one": "{{count}} category found",
+    "results_other": "{{count}} categories found"
+  },
+  "collections": {
+    "heading": "Themed quizzes",
+    "hint": "Ready-made rounds. Tap one to start.",
+    "notEnough": "Not enough questions in this language yet",
+    "questionsPerRound_one": "{{count}} question",
+    "questionsPerRound_other": "{{count}} questions"
   },
   "settings": {
     "language": "Interface language",
@@ -45,7 +71,8 @@
     "feedbackTimeout": "Time's up! The correct answer is: {{answer}}",
     "next": "Next",
     "finish": "See result",
-    "answerError": "Couldn't send your answer. Check your connection."
+    "answerError": "Couldn't send your answer. Check your connection.",
+    "customMix": "Your mix"
   },
   "result": {
     "title": "Round complete",
@@ -59,13 +86,14 @@
       "tryAgain": "Give it another go, you’ll get there!"
     },
     "playAgain": "Play again",
-    "home": "Back to topics"
+    "home": "Back to topics",
+    "notRanked": "Custom mixes aren’t ranked, so there is nothing to save. Play a single category or a themed quiz to get on the leaderboard."
   },
   "leaderboard": {
     "open": "Leaderboard",
     "title": "Leaderboard",
-    "allTopics": "All topics",
-    "topicsLabel": "Leaderboard topic",
+    "allTopics": "All boards",
+    "topicsLabel": "Leaderboard",
     "caption": "Top 10: {{topic}}",
     "rank": "Rank",
     "nickname": "Nickname",
@@ -83,7 +111,7 @@
     "label": "Your nickname",
     "hint": "2–20 characters: letters, digits, space, _ - .",
     "submit": "Save",
-    "saved": "Saved! Your rank in this topic: {{rank}}",
+    "saved": "Saved! Your rank on this board: {{rank}}",
     "errors": {
       "tooShort": "The nickname needs at least 2 characters.",
       "tooLong": "The nickname can have at most 20 characters.",
