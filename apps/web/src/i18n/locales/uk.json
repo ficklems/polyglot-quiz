@@ -166,6 +166,10 @@
       "medium": "Середня",
       "hard": "Складна"
     },
-    "questionCount": "Питань у раунді"
+    "questionCount": "Питань у раунді",
+    "countSummary_one": "{{count}} питання",
+    "countSummary_few": "{{count}} питання",
+    "countSummary_many": "{{count}} питань",
+    "countSummary_other": "{{count}} питання"
   }
 }

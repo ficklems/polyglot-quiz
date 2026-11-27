@@ -33,6 +33,31 @@ test.describe('GET /api/catalog', () => {
     });
   }
 
+  test('counts under a chosen region and difficulty', async ({ request }) => {
+    const res = await request.get('/api/catalog', {
+      params: { lang: 'pl', region: 'all', difficulty: 'mixed' },
+    });
+
+    const body = catalogResponseSchema.parse(await res.json());
+    expect(body).toMatchObject({ region: 'all', difficulty: 'mixed' });
+    for (const category of body.categories) {
+      expect(category.questionCount, category.id).toBe(questionCount(category.id, 'pl', 'all'));
+    }
+  });
+
+  test('a single difficulty never counts more than Mixed', async ({ request }) => {
+    const get = async (difficulty: string) =>
+      catalogResponseSchema.parse(
+        await (await request.get('/api/catalog', { params: { lang: 'en', difficulty } })).json(),
+      );
+    const [mixed, easy] = await Promise.all([get('mixed'), get('easy')]);
+
+    for (const category of easy.categories) {
+      const all = mixed.categories.find((c) => c.id === category.id)!;
+      expect(category.questionCount, category.id).toBeLessThanOrEqual(all.questionCount);
+    }
+  });
+
   test('rejects an unsupported language with 400', async ({ request }) => {
     const res = await request.get('/api/catalog', { params: { lang: 'de' } });
 

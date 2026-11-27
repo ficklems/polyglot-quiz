@@ -166,6 +166,10 @@
       "medium": "Średni",
       "hard": "Trudny"
     },
-    "questionCount": "Pytań w rundzie"
+    "questionCount": "Pytań w rundzie",
+    "countSummary_one": "{{count}} pytanie",
+    "countSummary_few": "{{count}} pytania",
+    "countSummary_many": "{{count}} pytań",
+    "countSummary_other": "{{count}} pytania"
   }
 }

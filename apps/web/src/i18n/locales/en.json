@@ -148,6 +148,8 @@
       "medium": "Medium",
       "hard": "Hard"
     },
-    "questionCount": "Questions per round"
+    "questionCount": "Questions per round",
+    "countSummary_one": "{{count}} question",
+    "countSummary_other": "{{count}} questions"
   }
 }
