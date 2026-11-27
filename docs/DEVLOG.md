@@ -53,10 +53,17 @@ Newest entry first. Each entry: what was done, decisions and why, how it was ver
   meant for the nickname row) and the selection bar too tall, both fixed.
 - Firefox/WebKit browsers can't be downloaded in this environment; CI runs them.
 
+### Plan revised with the owner
+
+New phase order in `EXPANSION_PLAN.md`: 4 → 4½ deployment → 5 formats (order/matching first,
+map last) → 6a modes without Multiplayer → 7 Ukrainian proofreading (first batch early) →
+8 QA showcase (Allure, axe, visual regression, bug reports) → 9 → 10 → 6b Multiplayer
+(optional). Reasons are written next to the table.
+
 ### Next
 
 Phase 4: language and region as separate settings, difficulty (Easy/Medium/Hard/Mixed),
-sampling policy for regions.
+sampling policy for regions. Then deployment.
 
 ---
 
