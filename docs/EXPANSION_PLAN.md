@@ -6,18 +6,43 @@ Work is split into phases; the application stays working and green after each on
 
 ## Phases
 
-| #   | Phase                                                                                   | Status                                        |
-| --- | --------------------------------------------------------------------------------------- | --------------------------------------------- |
-| 1   | Analysis of the repository, the archive and the conflicts between them                  | **done** (this document)                      |
-| 2   | Import of the question database, duplicate detection, serving rules                     | **done** (PR "content import")                |
-| 3   | Categories, subcategories (search, multi-select) and the 20 themed quizzes              | **done** (PR "categories and themed quizzes") |
-| 4   | Languages and regions as independent settings, difficulty incl. Mixed, sampling policy  | next                                          |
-| 5   | The eight question formats (UI for order, matching, map, …)                             | planned                                       |
-| 6   | The five game modes (Classic, Multiplayer rooms, Learning, Random Mix, Review Mistakes) | planned                                       |
-| 7   | Content editing and verification (Ukrainian proofreading first)                         | planned, ongoing                              |
-| 8   | Automated tests for all of the above                                                    | with every phase                              |
-| 9   | README, sources and licenses                                                            | started in phase 2, kept up to date           |
-| 10  | Demo video preparation                                                                  | planned                                       |
+Revised with the owner on 2026-11-27 after phase 3 (reasons below the table). Phases are
+listed in the order they are done.
+
+| #   | Phase                                                                                                               | Status                                        |
+| --- | ------------------------------------------------------------------------------------------------------------------- | --------------------------------------------- |
+| 1   | Analysis of the repository, the archive and the conflicts between them                                              | **done** (this document)                      |
+| 2   | Import of the question database, duplicate detection, serving rules                                                 | **done** (PR "content import")                |
+| 3   | Categories, subcategories (search, multi-select) and the 20 themed quizzes                                          | **done** (PR "categories and themed quizzes") |
+| 4   | Languages and regions as independent settings, difficulty incl. Mixed, sampling policy                              | next                                          |
+| 4½  | Deployment: hosted Postgres + free hosting, live link in the README                                                 | planned                                       |
+| 5   | Question formats: order and matching first, then the rest, the map (guess location) last                            | planned                                       |
+| 6a  | Game modes without Multiplayer: Learning, Random Mix, Review Mistakes (stored in the browser, no accounts)          | planned                                       |
+| 7   | Content editing, Ukrainian proofreading first; a first batch (weakest UK categories) before phase 5, then ongoing   | planned, starts early                         |
+| 8   | QA showcase: Allure report on GitHub Pages, axe accessibility checks, visual regression, bug reports, test strategy | planned                                       |
+| 9   | README, sources and licenses (final version)                                                                        | started in phase 2, kept up to date           |
+| 10  | Demo video preparation                                                                                              | planned                                       |
+| 6b  | Multiplayer rooms (WebSocket, synced timers), if time allows                                                        | optional, last                                |
+
+Automated tests are written with every phase (unit, API, E2E, `--repeat-each=5` before merging);
+phase 8 is about presenting the testing, not starting it.
+
+### Why the plan was changed
+
+- **Deployment added (4½).** It was in the v1 scope but missing from the phases. A live link
+  matters more for the portfolio than another format, and hosting surfaces real problems
+  early: SQLite → Postgres, ~2 s startup to load 24k questions, memory on a free tier.
+- **Multiplayer split off (6b).** It is bigger than the other four modes together (rooms,
+  WebSocket, timer sync) and its tests are the most flake-prone. The other modes are cheap
+  and come first.
+- **Phase 8 became the QA showcase.** Tests already come with every phase; for a QA
+  portfolio the value is in how the testing is presented and what it covers beyond
+  functional checks (accessibility, visual regression, reports, real bug reports).
+- **Ukrainian proofreading starts earlier.** Only 2,866 of 24k questions are playable in
+  Ukrainian and three categories have fewer than 10; it is the most visible gap for a
+  Ukrainian-speaking audience.
+- **Formats split by cost.** Order and matching are simple and unlock hundreds of questions;
+  the map needs a map library and licensed tiles, so it goes last.
 
 ## Phase 1 findings
 
