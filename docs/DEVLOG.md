@@ -4,6 +4,75 @@ Newest entry first. Each entry: what was done, decisions and why, how it was ver
 
 ---
 
+## 2026-11-27 · Expansion phases 1–2: analysis and content import (branch `feat/content-import`)
+
+Plan, findings and decisions: [`EXPANSION_PLAN.md`](EXPANSION_PLAN.md). Counts:
+[`CONTENT_REPORT.md`](CONTENT_REPORT.md).
+
+### Done
+
+- **Phase 1 (analysis):** read the archive (spec, data, policies, audit, review files) and
+  profiled the data. Owner decisions taken on three conflicts/choices (leaderboard kept,
+  drafts without known problems served, MIT + CC BY-SA 4.0).
+- **Content in the repo:** `content/` holds the archive (per-category JSONL, gzip, 7.7 MB;
+  the aggregate `questions_main.jsonl` deliberately not imported, as instructed), review
+  files, policies, sources and license notices, plus `legacy/questions.jsonl` (the 45
+  questions of milestones 0–2 converted to the dataset schema) and
+  `migrations/legacy-duplicate-map.json`.
+- **Importer** (`apps/api/src/content/`): reads and validates every record against a shared
+  Zod schema (`packages/shared/src/content.ts`), checks structure the schema can't (answer
+  key ↔ options, same option ids in every language, order/matching shape), detects exact
+  duplicates, applies review flags and decides **per language** whether a record is served.
+  1 second for 24,301 records. `npm run content:report` writes `docs/CONTENT_REPORT.md`.
+- **Database v2:** categories and questions of any format (payload as JSON); content synced
+  on startup when its hash changes, upserting so played rounds keep working; questions that
+  leave the content are marked unserved, never deleted. **Migration from v1** keeps rounds
+  and leaderboard entries: topic ids → category ids, retired question ids → kept ids,
+  option letters → content option ids.
+- **API:** topics are now the 31 categories, with the number of questions playable in the
+  requested language; rounds use the six single-answer formats; an option id that isn't one
+  of the question's options is `400`; true/false shows True first.
+- **Web:** 31 topic cards with icons; a topic that can't fill a round in the current
+  language is disabled and says how many questions it has.
+- **Licenses:** `LICENSE` (MIT, code), `content/LICENSE.md` (CC BY-SA 4.0, attribution and
+  change notice).
+
+### Decisions
+
+See the decision table in `EXPANSION_PLAN.md`. The important one made under the owner's
+rule: Ukrainian machine translation of the `OPEN-*` records is a known problem, so those
+21,416 records are served in English and Polish but not in Ukrainian (2,866 served in UK).
+
+### Bugs and surprises found while testing
+
+- **False duplicates (fixed):** the first duplicate key (prompt + correct answer) reported
+  285 duplicates, the archive's audit said 0. All 285 were order/higher-lower/matching
+  questions sharing a generic prompt ("Which came first?") with different options. The key
+  now includes the option set; a regression test covers it. Result: 0, matching the audit.
+- **Oracle ambiguity (fixed):** the same generic prompts made the Playwright oracle unable
+  to identify a question by its text; it now matches prompt + shown options.
+- **Hidden assumptions in tests (fixed), found with `--repeat-each=5`:** tests assumed four
+  options; true/false and higher/lower have two, so they failed only when such a question
+  was drawn. Same lesson as BUG-001: random content needs repeated runs.
+- **Leak check (fixed):** "no correct answer in the payload" was checked with `/correct/i`,
+  which real question texts can contain; it now checks for answer-key fields.
+- **Translation quality in the dataset:** some unflagged imported Ukrainian is broken (see
+  finding 1). For 8 duplicate pairs this decided which record to keep.
+
+### Verified
+
+- `format:check`, `lint`, `typecheck`: clean.
+- Vitest: 136 passed (104 API incl. full-content checks and the v1→v2 migration, 32 web).
+- Playwright locally (`api`, `chromium`, `mobile-chrome`) against the full content: all
+  passed; UI suites repeated 5× in parallel: 330/330.
+
+### Next
+
+Phase 3: category browser (search, multi-select, subcategories) and the 20 themed quizzes
+from `content/collections.json`.
+
+---
+
 ## 2026-11-27 · Milestone 2: leaderboard (branch `feat/leaderboard`)
 
 ### Done
