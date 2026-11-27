@@ -87,6 +87,15 @@ export class QuizPage {
     return answerText;
   }
 
+  /** Plays all remaining questions, every answer right or every answer wrong. */
+  async playToTheEnd(answers: 'correct' | 'wrong', questions: number): Promise<void> {
+    for (let i = 0; i < questions; i++) {
+      if (answers === 'correct') await this.answerCorrectly();
+      else await this.answerWrongly();
+      await this.continue();
+    }
+  }
+
   /** Moves on after feedback: "Next", or "See result" after the last question. */
   async continue(): Promise<void> {
     await this.nextButton.or(this.finishButton).click();
