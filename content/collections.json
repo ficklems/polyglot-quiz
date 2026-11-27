@@ -1,0 +1,421 @@
+[
+  {
+    "id": "back_to_80s",
+    "name": {
+      "uk": "Назад у 80-ті",
+      "pl": "Powrót do lat 80.",
+      "en": "Back to the 80s"
+    },
+    "description": "Music, movies, fashion and events from 1980–1989.",
+    "rules": [
+      {
+        "anyTags": ["1980s"]
+      }
+    ],
+    "defaultMode": "classic",
+    "settings": {},
+    "minimumUniqueQuestions": 10,
+    "seedMatchesBeforeLanguageRegionFilters": 897,
+    "trilingualDraftMatches": 897,
+    "countsProvisional": true
+  },
+  {
+    "id": "born_in_90s",
+    "name": {
+      "uk": "Народжені в 90-х",
+      "pl": "Urodzeni w latach 90.",
+      "en": "Born in the 90s"
+    },
+    "description": "Nostalgia, toys, media and games from the 1990s; avoid implying players must be born then.",
+    "rules": [
+      {
+        "anyTags": ["1990s"]
+      }
+    ],
+    "defaultMode": "classic",
+    "settings": {},
+    "minimumUniqueQuestions": 10,
+    "seedMatchesBeforeLanguageRegionFilters": 949,
+    "trilingualDraftMatches": 949,
+    "countsProvisional": true
+  },
+  {
+    "id": "2000s_kids",
+    "name": {
+      "uk": "Діти 2000-х",
+      "pl": "Dzieci lat 2000.",
+      "en": "2000s Kids"
+    },
+    "description": "Childhood, phones, music and games of the 2000s.",
+    "rules": [
+      {
+        "anyTags": ["2000s"]
+      }
+    ],
+    "defaultMode": "classic",
+    "settings": {},
+    "minimumUniqueQuestions": 10,
+    "seedMatchesBeforeLanguageRegionFilters": 1088,
+    "trilingualDraftMatches": 1088,
+    "countsProvisional": true
+  },
+  {
+    "id": "around_world",
+    "name": {
+      "uk": "Навколо світу",
+      "pl": "Dookoła świata",
+      "en": "Around the World"
+    },
+    "description": "Countries, customs, languages, landmarks and cuisine.",
+    "rules": [
+      {
+        "categories": ["geography", "travel", "traditions", "food", "languages"]
+      }
+    ],
+    "defaultMode": "classic",
+    "settings": {},
+    "minimumUniqueQuestions": 10,
+    "seedMatchesBeforeLanguageRegionFilters": 4043,
+    "trilingualDraftMatches": 4043,
+    "countsProvisional": true
+  },
+  {
+    "id": "fifth_grader",
+    "name": {
+      "uk": "Розумніший за п’ятикласника?",
+      "pl": "Czy jesteś mądrzejszy od piątoklasisty?",
+      "en": "Are You Smarter Than a 5th Grader?"
+    },
+    "description": "Accessible school-level knowledge, not a standardized curriculum test.",
+    "rules": [
+      {
+        "anyTags": ["school_knowledge"]
+      }
+    ],
+    "defaultMode": "classic",
+    "settings": {},
+    "minimumUniqueQuestions": 10,
+    "seedMatchesBeforeLanguageRegionFilters": 783,
+    "trilingualDraftMatches": 783,
+    "countsProvisional": true
+  },
+  {
+    "id": "true_fan",
+    "name": {
+      "uk": "Знає лише справжній фанат",
+      "pl": "Wie tylko prawdziwy fan",
+      "en": "Only a True Fan Knows"
+    },
+    "description": "Franchise-specific film and series trivia. Optional franchise picker.",
+    "rules": [
+      {
+        "categories": ["film_tv"],
+        "anyTags": ["true_fan"]
+      }
+    ],
+    "defaultMode": "classic",
+    "settings": {
+      "optionalTagFilter": "franchise"
+    },
+    "minimumUniqueQuestions": 10,
+    "seedMatchesBeforeLanguageRegionFilters": 214,
+    "trilingualDraftMatches": 214,
+    "countsProvisional": true
+  },
+  {
+    "id": "internet_legends",
+    "name": {
+      "uk": "Легенди інтернету",
+      "pl": "Legendy internetu",
+      "en": "Internet Legends"
+    },
+    "description": "Memes, web history, social platforms and internet milestones.",
+    "rules": [
+      {
+        "anyTags": ["internet", "memes", "internet_culture"]
+      },
+      {
+        "categories": ["memes"]
+      }
+    ],
+    "defaultMode": "classic",
+    "settings": {},
+    "minimumUniqueQuestions": 10,
+    "seedMatchesBeforeLanguageRegionFilters": 267,
+    "trilingualDraftMatches": 267,
+    "countsProvisional": true
+  },
+  {
+    "id": "foodie",
+    "name": {
+      "uk": "Виклик для гурманів",
+      "pl": "Wyzwanie dla smakoszy",
+      "en": "Foodie Challenge"
+    },
+    "description": "Food, dishes, ingredients and cuisines.",
+    "rules": [
+      {
+        "categories": ["food"]
+      }
+    ],
+    "defaultMode": "classic",
+    "settings": {},
+    "minimumUniqueQuestions": 10,
+    "seedMatchesBeforeLanguageRegionFilters": 779,
+    "trilingualDraftMatches": 779,
+    "countsProvisional": true
+  },
+  {
+    "id": "eurovision",
+    "name": {
+      "uk": "Фанат Євробачення",
+      "pl": "Fan Eurowizji",
+      "en": "Eurovision Fan"
+    },
+    "description": "Contest history, years, countries and performers.",
+    "rules": [
+      {
+        "categories": ["music"],
+        "anyTags": ["eurovision"]
+      }
+    ],
+    "defaultMode": "classic",
+    "settings": {},
+    "minimumUniqueQuestions": 10,
+    "seedMatchesBeforeLanguageRegionFilters": 26,
+    "trilingualDraftMatches": 26,
+    "countsProvisional": true
+  },
+  {
+    "id": "disney",
+    "name": {
+      "uk": "Всесвіт Disney",
+      "pl": "Świat Disneya",
+      "en": "Disney Universe"
+    },
+    "description": "Text-only trivia about Disney and Pixar stories and characters.",
+    "rules": [
+      {
+        "anyTags": ["disney", "pixar"]
+      }
+    ],
+    "defaultMode": "classic",
+    "settings": {},
+    "minimumUniqueQuestions": 10,
+    "seedMatchesBeforeLanguageRegionFilters": 249,
+    "trilingualDraftMatches": 249,
+    "countsProvisional": true
+  },
+  {
+    "id": "potterhead",
+    "name": {
+      "uk": "Виклик для поттероманів",
+      "pl": "Wyzwanie Potterheada",
+      "en": "Potterhead Challenge"
+    },
+    "description": "Text and emoji trivia about the Harry Potter books and films.",
+    "rules": [
+      {
+        "anyTags": ["harry_potter"]
+      }
+    ],
+    "defaultMode": "classic",
+    "settings": {},
+    "minimumUniqueQuestions": 10,
+    "seedMatchesBeforeLanguageRegionFilters": 99,
+    "trilingualDraftMatches": 99,
+    "countsProvisional": true
+  },
+  {
+    "id": "true_crime",
+    "name": {
+      "uk": "Реальні кримінальні справи",
+      "pl": "Prawdziwe sprawy kryminalne",
+      "en": "True Crime"
+    },
+    "description": "Non-graphic, documented cases, forensic terminology and justice history. No operational attack details.",
+    "rules": [
+      {
+        "anyTags": ["true_crime", "forensics"]
+      }
+    ],
+    "defaultMode": "classic",
+    "settings": {},
+    "minimumUniqueQuestions": 10,
+    "seedMatchesBeforeLanguageRegionFilters": 17,
+    "trilingualDraftMatches": 17,
+    "countsProvisional": true
+  },
+  {
+    "id": "millionaire",
+    "name": {
+      "uk": "Виклик мільйонера",
+      "pl": "Wyzwanie milionera",
+      "en": "Millionaire Challenge"
+    },
+    "description": "Mixed questions with increasing difficulty. A classic session preset, not a separate game mode.",
+    "rules": [{}],
+    "defaultMode": "classic",
+    "settings": {
+      "difficultySequence": ["easy", "medium", "hard"],
+      "questionCount": 15,
+      "noCashPrizes": true
+    },
+    "minimumUniqueQuestions": 10,
+    "seedMatchesBeforeLanguageRegionFilters": 24256,
+    "trilingualDraftMatches": 24256,
+    "countsProvisional": true
+  },
+  {
+    "id": "generations",
+    "name": {
+      "uk": "Битва поколінь",
+      "pl": "Bitwa pokoleń",
+      "en": "Battle of Generations"
+    },
+    "description": "Mix of era-tagged questions, balanced across decades.",
+    "rules": [
+      {
+        "anyTags": ["1960s", "1970s", "1980s", "1990s", "2000s", "2010s", "2020s"]
+      }
+    ],
+    "defaultMode": "classic",
+    "settings": {
+      "balanceBy": "decade"
+    },
+    "minimumUniqueQuestions": 10,
+    "seedMatchesBeforeLanguageRegionFilters": 4326,
+    "trilingualDraftMatches": 4326,
+    "countsProvisional": true
+  },
+  {
+    "id": "girls_night",
+    "name": {
+      "uk": "Вікторина для вечірки з подругами",
+      "pl": "Quiz na wieczór z przyjaciółkami",
+      "en": "Girls’ Night Quiz"
+    },
+    "description": "Fashion, pop culture, film, and optional relationship trivia; available to everyone.",
+    "rules": [
+      {
+        "categories": ["fashion", "pop_culture", "film_tv"]
+      },
+      {
+        "anyTags": ["relationships"]
+      }
+    ],
+    "defaultMode": "classic",
+    "settings": {},
+    "minimumUniqueQuestions": 10,
+    "seedMatchesBeforeLanguageRegionFilters": 4191,
+    "trilingualDraftMatches": 4191,
+    "countsProvisional": true
+  },
+  {
+    "id": "pub_quiz",
+    "name": {
+      "uk": "Паб-вікторина",
+      "pl": "Quiz pubowy",
+      "en": "Pub Quiz"
+    },
+    "description": "Mixed classic team-friendly rounds.",
+    "rules": [{}],
+    "defaultMode": "classic",
+    "settings": {
+      "balanceBy": "category"
+    },
+    "minimumUniqueQuestions": 10,
+    "seedMatchesBeforeLanguageRegionFilters": 24256,
+    "trilingualDraftMatches": 24256,
+    "countsProvisional": true
+  },
+  {
+    "id": "weird_true",
+    "name": {
+      "uk": "Дивно, але правда",
+      "pl": "Dziwne, ale prawdziwe",
+      "en": "Weird but True"
+    },
+    "description": "Unusual verified facts and misconceptions.",
+    "rules": [
+      {
+        "anyTags": ["weird_true", "unusual_facts"]
+      }
+    ],
+    "defaultMode": "classic",
+    "settings": {},
+    "minimumUniqueQuestions": 10,
+    "seedMatchesBeforeLanguageRegionFilters": 16,
+    "trilingualDraftMatches": 16,
+    "countsProvisional": true
+  },
+  {
+    "id": "before_after",
+    "name": {
+      "uk": "Раніше чи пізніше?",
+      "pl": "Wcześniej czy później?",
+      "en": "Before or After?"
+    },
+    "description": "Chronology and historical comparisons.",
+    "rules": [
+      {
+        "types": ["order"]
+      },
+      {
+        "anyTags": ["before_after"]
+      }
+    ],
+    "defaultMode": "classic",
+    "settings": {},
+    "minimumUniqueQuestions": 10,
+    "seedMatchesBeforeLanguageRegionFilters": 865,
+    "trilingualDraftMatches": 865,
+    "countsProvisional": true
+  },
+  {
+    "id": "only_locals",
+    "name": {
+      "uk": "Знають лише місцеві",
+      "pl": "Wiedzą tylko miejscowi",
+      "en": "Only Locals Know"
+    },
+    "description": "Questions about the selected regional culture.",
+    "rules": [
+      {
+        "regions": ["UA", "PL", "EN", "CE"]
+      }
+    ],
+    "defaultMode": "classic",
+    "settings": {
+      "requireRegionalSelection": true
+    },
+    "minimumUniqueQuestions": 10,
+    "seedMatchesBeforeLanguageRegionFilters": 2529,
+    "trilingualDraftMatches": 2529,
+    "countsProvisional": true
+  },
+  {
+    "id": "common_knowledge",
+    "name": {
+      "uk": "Загальні знання, які варто мати",
+      "pl": "Wiedza ogólna, którą warto mieć",
+      "en": "Common Knowledge Everyone Should Know"
+    },
+    "description": "Everyday facts and accessible general knowledge.",
+    "rules": [
+      {
+        "categories": ["general"]
+      },
+      {
+        "anyTags": ["school_knowledge"],
+        "difficulties": ["easy"]
+      }
+    ],
+    "defaultMode": "classic",
+    "settings": {},
+    "minimumUniqueQuestions": 10,
+    "seedMatchesBeforeLanguageRegionFilters": 982,
+    "trilingualDraftMatches": 982,
+    "countsProvisional": true
+  }
+]

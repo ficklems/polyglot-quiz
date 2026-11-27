@@ -1,0 +1,162 @@
+{
+  "mainRecords": 24256,
+  "previousMainRecords": 24363,
+  "localeCounts": {
+    "uk": 24256,
+    "pl": 24256,
+    "en": 24256
+  },
+  "verifiedForPublication": 0,
+  "externalAnswerChecks": 499,
+  "localFactConsistencyChecks": 1170,
+  "trilingualContextExplanations": 1987,
+  "typeCounts": {
+    "multiple_choice": 19285,
+    "guess_year": 1086,
+    "matching": 103,
+    "order": 122,
+    "higher_lower": 482,
+    "true_false": 3054,
+    "emoji": 37,
+    "guess_location": 87
+  },
+  "categoryCounts": {
+    "music": 3990,
+    "fashion": 161,
+    "history": 2524,
+    "art": 220,
+    "transport": 279,
+    "inventions": 226,
+    "film_tv": 2686,
+    "geography": 2005,
+    "science": 1332,
+    "mythology": 232,
+    "technology": 345,
+    "logic": 234,
+    "video_games": 626,
+    "space": 388,
+    "sports": 1339,
+    "pop_culture": 1344,
+    "psychology": 153,
+    "nature": 1068,
+    "human_body": 403,
+    "food": 779,
+    "literature": 678,
+    "animation": 601,
+    "travel": 135,
+    "business": 447,
+    "languages": 623,
+    "traditions": 501,
+    "mysteries": 41,
+    "records": 88,
+    "nostalgia": 110,
+    "general": 674,
+    "memes": 24
+  },
+  "regionCounts": {
+    "global": 21727,
+    "UA": 152,
+    "PL": 178,
+    "EN": 2053,
+    "CE": 146
+  },
+  "difficultyCounts": {
+    "medium": 23349,
+    "hard": 403,
+    "easy": 504
+  },
+  "categoryShortfall": 4835,
+  "previousTranslationFlagRecords": 5317,
+  "remainingPriorTranslationFlagRecords": 5133,
+  "recordsWithSpecificFlagResolved": 199,
+  "musicNamePendingRecords": 328,
+  "originalCriticalReviewedForDisposition": 479,
+  "quarantineReviewed": 208,
+  "quarantineRestored": 6,
+  "quarantineStillExcluded": 202,
+  "quarantineDispositions": {
+    "keep_excluded_fact_or_context": 139,
+    "keep_excluded_quote_dependency": 17,
+    "keep_excluded_answer_leak": 1,
+    "keep_excluded_overlap": 6,
+    "keep_excluded_duplicate": 15,
+    "restored_draft": 6,
+    "keep_excluded_scope": 8,
+    "keep_excluded_dated_or_scope": 16
+  },
+  "stats": {
+    "music_scanned": 3985,
+    "name_answer_records_checked": 1150,
+    "direct_prompt_rewrites": 23,
+    "name_options_restored": 743,
+    "title_spans_restored": 533,
+    "en_name_spelling_corrected": 46,
+    "pl_name_spelling_corrected": 13,
+    "common_term_options_corrected": 118,
+    "canonical_records_rewritten": 7,
+    "music_matching_order_names_checked": 39
+  },
+  "structuralErrors": [],
+  "structuralValidation": "PASS",
+  "demoCandidateCount": 972,
+  "limitations": [
+    "Automated name checks and direct selected edits are not full proofreading.",
+    "All previously critical IDs have dispositions, but retained critical records have not all received a second individual linguistic/factual proofread.",
+    "Quarantine reviewed for disposition; retained holds are not all independently fact-checked.",
+    "Name changes use aligned source spellings, not an independent official discography for every name.",
+    "Remaining old flags and new name-alignment flags require review. All records remain draft.",
+    "No complete semantic deduplication, category balance or explanations completion.",
+    "New questions have source citations or mathematical derivations, but independent second fact-check, full language review and full semantic deduplication are not complete. Existing unresolved flags are unchanged.",
+    "New meme and Skryabin records have sourced factual bases; independent second review and rights review of short public quotes pending. No new game UI implemented.",
+    "Factual evidence covers a subset of records; all unconfirmed records remain draft. External confirmation is specific to the keyed answer, not full linguistic, distractor, source rights or publication review.",
+    "Similarity search is heuristic, restricted candidate review; it cannot establish complete semantic uniqueness. Generic special formats not merged based on shared prompts.",
+    "MKQA agreement is dataset comparison only; disagreement can be an alias or scope difference.",
+    "No automatic promotion to published. No game UI source screen."
+  ],
+  "originalCriticalUniqueQuestionIds": 476,
+  "criticalUniqueIdsCurrentlyInMain": 288,
+  "criticalUniqueIdsStillExcluded": 188,
+  "criticalUniqueIdsWithNewNameOrTermEdits": 8,
+  "newNameReviewFlagRecords": 328,
+  "unresolvedReviewRecordsUnion": 5378,
+  "newSourceConsultedDraftRecords": 121,
+  "newOriginalLogicRecords": 4,
+  "categoryCount": 31,
+  "collectionCount": 20,
+  "removed": {
+    "quarantine": 2,
+    "duplicate": 105
+  },
+  "exactDuplicatesRemoved": 0,
+  "semanticCandidatePairsGenerated": 43145,
+  "semanticCandidatePairsIndividuallyReviewed": 125,
+  "recentRecordsComparedToWholeCorpus": 165,
+  "recentNearestPairsReviewed": 135,
+  "factAuditStatusThisPass": {
+    "not_independently_rechecked_this_pass": 23752,
+    "previous_external_check_not_repeated": 126,
+    "external_reference_confirmed": 373,
+    "original_source_scope_corrected": 1,
+    "mathematical_derivation_verified": 4
+  },
+  "factStatusCumulative": {
+    "pending": 22571,
+    "local_dataset_consistency_only": 1170,
+    "external_reference_confirmed": 499,
+    "mathematical_derivation_verified": 16
+  },
+  "newExternalAnswerConfirmations": 140,
+  "recentBatchAudit": {
+    "research_125": {
+      "not_independently_rechecked_this_pass": 103,
+      "external_reference_confirmed": 17,
+      "original_source_scope_corrected": 1,
+      "mathematical_derivation_verified": 4
+    },
+    "memes_skryabin_40": {
+      "external_reference_confirmed": 40
+    }
+  },
+  "mkqaExactAgreement": 1,
+  "mkqaExactDifferentOrAliasUnresolved": 0
+}

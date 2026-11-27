@@ -1,0 +1,114 @@
+{
+  "previousMainRecords": 24363,
+  "mainRecords": 24256,
+  "removed": {
+    "quarantine": 2,
+    "duplicate": 105
+  },
+  "exactDuplicatesRemoved": 0,
+  "semanticCandidatePairsGenerated": 43145,
+  "semanticCandidatePairsIndividuallyReviewed": 125,
+  "recentRecordsComparedToWholeCorpus": 165,
+  "recentNearestPairsReviewed": 135,
+  "factAuditStatusThisPass": {
+    "not_independently_rechecked_this_pass": 23752,
+    "previous_external_check_not_repeated": 126,
+    "external_reference_confirmed": 373,
+    "original_source_scope_corrected": 1,
+    "mathematical_derivation_verified": 4
+  },
+  "factStatusCumulative": {
+    "pending": 22571,
+    "local_dataset_consistency_only": 1170,
+    "external_reference_confirmed": 499,
+    "mathematical_derivation_verified": 16
+  },
+  "newExternalAnswerConfirmations": 140,
+  "recentBatchAudit": {
+    "research_125": {
+      "not_independently_rechecked_this_pass": 103,
+      "external_reference_confirmed": 17,
+      "original_source_scope_corrected": 1,
+      "mathematical_derivation_verified": 4
+    },
+    "memes_skryabin_40": {
+      "external_reference_confirmed": 40
+    }
+  },
+  "mkqaExactAgreement": 1,
+  "mkqaExactDifferentOrAliasUnresolved": 0,
+  "localeCounts": {
+    "uk": 24256,
+    "pl": 24256,
+    "en": 24256
+  },
+  "categoryCount": 31,
+  "collectionCount": 20,
+  "typeCounts": {
+    "multiple_choice": 19285,
+    "guess_year": 1086,
+    "matching": 103,
+    "order": 122,
+    "higher_lower": 482,
+    "true_false": 3054,
+    "emoji": 37,
+    "guess_location": 87
+  },
+  "categoryCounts": {
+    "music": 3990,
+    "fashion": 161,
+    "history": 2524,
+    "art": 220,
+    "transport": 279,
+    "inventions": 226,
+    "film_tv": 2686,
+    "geography": 2005,
+    "science": 1332,
+    "mythology": 232,
+    "technology": 345,
+    "logic": 234,
+    "video_games": 626,
+    "space": 388,
+    "sports": 1339,
+    "pop_culture": 1344,
+    "psychology": 153,
+    "nature": 1068,
+    "human_body": 403,
+    "food": 779,
+    "literature": 678,
+    "animation": 601,
+    "travel": 135,
+    "business": 447,
+    "languages": 623,
+    "traditions": 501,
+    "mysteries": 41,
+    "records": 88,
+    "nostalgia": 110,
+    "general": 674,
+    "memes": 24
+  },
+  "regionCounts": {
+    "global": 21727,
+    "UA": 152,
+    "PL": 178,
+    "EN": 2053,
+    "CE": 146
+  },
+  "difficultyCounts": {
+    "medium": 23349,
+    "hard": 403,
+    "easy": 504
+  },
+  "categoryShortfall": 4835,
+  "structuralErrors": [],
+  "structuralValidation": "PASS",
+  "verifiedForPublication": 0,
+  "externalAnswerChecks": 499,
+  "localFactConsistencyChecks": 1170,
+  "limitations": [
+    "Factual evidence covers a subset of records; all unconfirmed records remain draft. External confirmation is specific to the keyed answer, not full linguistic, distractor, source rights or publication review.",
+    "Similarity search is heuristic, restricted candidate review; it cannot establish complete semantic uniqueness. Generic special formats not merged based on shared prompts.",
+    "MKQA agreement is dataset comparison only; disagreement can be an alias or scope difference.",
+    "No automatic promotion to published. No game UI source screen."
+  ]
+}

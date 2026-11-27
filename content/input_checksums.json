@@ -1,0 +1,32 @@
+[
+  {
+    "filename": "opentdb__translations-pl.jsonl (1).gz",
+    "bytes": 452330,
+    "sha256": "a240888da9403ebd29bbba79b2492ed0ab4ed82e5fea8fb865daa9f3b1d2891e"
+  },
+  {
+    "filename": "opentriviaqa__refinements-en.jsonl (1).gz",
+    "bytes": 5669950,
+    "sha256": "8a4375f47b891657ab82a68513e5af7fe4235499a427095f77c7136609d8c603"
+  },
+  {
+    "filename": "arc__translations-pl.jsonl (1).gz",
+    "bytes": 857728,
+    "sha256": "e8a49582236abf0305f111329f882ec89c692b084b4226067d5610d621713dad"
+  },
+  {
+    "filename": "opentriviaqa__translations-pl.jsonl (1).gz",
+    "bytes": 4806865,
+    "sha256": "3ee9a879e1eaca97fc2a362b3b11cba41e783ce94cda5dce4295860e1f8cca4b"
+  },
+  {
+    "filename": "mkqa.jsonl (1).gz",
+    "bytes": 11903948,
+    "sha256": "f77ac6bf6306e98816c5c047880db71a3c67d2f1491b169896d63e9bb14ef3d3"
+  },
+  {
+    "filename": "OpenTriviaQA-master (1).zip",
+    "bytes": 13456291,
+    "sha256": "f62b96626f4f258629374b665e8d5038f88800bd2b2a5a99f960f0de497deaad"
+  }
+]

@@ -1,0 +1,21 @@
+{
+  "categoryWeights": "equal among selected eligible categories; redistribute only after exhaustion; no duplicates in session",
+  "mixedDifficultyTarget": {
+    "easy": 0.4,
+    "medium": 0.4,
+    "hard": 0.2
+  },
+  "regionalContentTarget": {
+    "global": 0.65,
+    "selectedRegion": 0.35
+  },
+  "whenInsufficient": "show actual eligible counts; shorten session or ask player to widen filters; do not silently relabel",
+  "prioritize": [
+    "externally checked answers",
+    "locally checked facts",
+    "meaningful explanations",
+    "specific translation flags resolved"
+  ],
+  "draftMode": "explicit opt-in only; do not serve unresolved translation flags, near-duplicate candidates or fact conflicts in demo by default",
+  "production": "do not publish without separate fact, rights, and language approval"
+}
