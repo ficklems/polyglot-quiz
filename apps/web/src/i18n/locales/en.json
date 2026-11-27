@@ -59,5 +59,36 @@
     },
     "playAgain": "Play again",
     "home": "Back to topics"
+  },
+  "leaderboard": {
+    "open": "Leaderboard",
+    "title": "Leaderboard",
+    "allTopics": "All topics",
+    "topicsLabel": "Leaderboard topic",
+    "caption": "Top 10: {{topic}}",
+    "rank": "Rank",
+    "nickname": "Nickname",
+    "score": "Points",
+    "correct": "Correct",
+    "correctValue": "{{correct}}/{{total}}",
+    "empty": "Nothing here yet. Be the first to play!",
+    "loading": "Loading the leaderboard…",
+    "error": "Couldn't load the leaderboard.",
+    "back": "Back",
+    "you": "(you)"
+  },
+  "save": {
+    "title": "Save your result to the leaderboard",
+    "label": "Your nickname",
+    "hint": "2–20 characters: letters, digits, space, _ - .",
+    "submit": "Save",
+    "saved": "Saved! Your rank in this topic: {{rank}}",
+    "errors": {
+      "tooShort": "The nickname needs at least 2 characters.",
+      "tooLong": "The nickname can have at most 20 characters.",
+      "invalid": "Use only letters, digits, spaces and _ - .",
+      "already": "This round is already on the leaderboard.",
+      "failed": "Couldn't save your result. Please try again."
+    }
   }
 }

@@ -1,6 +1,7 @@
 import { isLanguage, type Language, type Round, type Topic } from '@pq/shared';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { LeaderboardScreen } from '../features/leaderboard/components/LeaderboardScreen';
 import { createRound } from '../features/quiz/api/rounds-api';
 import { QuizScreen } from '../features/quiz/components/QuizScreen';
 import { ResultScreen } from '../features/quiz/components/ResultScreen';
@@ -12,7 +13,15 @@ import { HomePage } from './HomePage';
 type View =
   | { name: 'home' }
   | { name: 'quiz'; round: Round; topic: Topic }
-  | { name: 'result'; topic: Topic; score: number; correctCount: number; total: number };
+  | { name: 'leaderboard' }
+  | {
+      name: 'result';
+      roundId: string;
+      topic: Topic;
+      score: number;
+      correctCount: number;
+      total: number;
+    };
 
 export function App() {
   const { t, i18n } = useTranslation();
@@ -48,18 +57,32 @@ export function App() {
         </div>
       </header>
       <main>
-        {view.name === 'home' && <HomePage lang={lang} onStart={start} />}
+        {view.name === 'home' && (
+          <HomePage
+            lang={lang}
+            onStart={start}
+            onOpenLeaderboard={() => setView({ name: 'leaderboard' })}
+          />
+        )}
+        {view.name === 'leaderboard' && (
+          <LeaderboardScreen lang={lang} onBack={() => setView({ name: 'home' })} />
+        )}
         {view.name === 'quiz' && (
           <QuizScreen
             key={view.round.roundId}
             round={view.round}
             topicName={view.topic.name}
             onQuit={() => setView({ name: 'home' })}
-            onFinish={(r) => setView({ name: 'result', topic: view.topic, ...r })}
+            onFinish={(r) =>
+              setView({ name: 'result', roundId: view.round.roundId, topic: view.topic, ...r })
+            }
           />
         )}
         {view.name === 'result' && (
           <ResultScreen
+            key={view.roundId}
+            roundId={view.roundId}
+            topicId={view.topic.id}
             topicName={view.topic.name}
             score={view.score}
             correctCount={view.correctCount}

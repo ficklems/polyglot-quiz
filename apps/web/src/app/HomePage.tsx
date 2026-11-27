@@ -7,9 +7,10 @@ import { useTopics } from '../features/topics/hooks/use-topics';
 type Props = {
   lang: Language;
   onStart: (topic: Topic) => Promise<void>;
+  onOpenLeaderboard: () => void;
 };
 
-export function HomePage({ lang, onStart }: Props) {
+export function HomePage({ lang, onStart, onOpenLeaderboard }: Props) {
   const { t } = useTranslation();
   const { state, retry } = useTopics(lang);
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -80,6 +81,14 @@ export function HomePage({ lang, onStart }: Props) {
           </button>
         </>
       )}
+
+      <button
+        type="button"
+        className="secondary-button home-leaderboard"
+        onClick={onOpenLeaderboard}
+      >
+        {t('leaderboard.open')}
+      </button>
     </div>
   );
 }

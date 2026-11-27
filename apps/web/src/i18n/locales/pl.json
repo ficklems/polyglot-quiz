@@ -67,5 +67,36 @@
     },
     "playAgain": "Zagraj jeszcze raz",
     "home": "Wróć do wyboru tematu"
+  },
+  "leaderboard": {
+    "open": "Tabela wyników",
+    "title": "Tabela wyników",
+    "allTopics": "Wszystkie tematy",
+    "topicsLabel": "Temat tabeli",
+    "caption": "Top 10: {{topic}}",
+    "rank": "Miejsce",
+    "nickname": "Nick",
+    "score": "Punkty",
+    "correct": "Poprawne",
+    "correctValue": "{{correct}}/{{total}}",
+    "empty": "Na razie pusto. Zagraj jako pierwszy!",
+    "loading": "Wczytujemy tabelę…",
+    "error": "Nie udało się wczytać tabeli wyników.",
+    "back": "Wstecz",
+    "you": "(ty)"
+  },
+  "save": {
+    "title": "Zapisz wynik w tabeli",
+    "label": "Twój nick",
+    "hint": "2–20 znaków: litery, cyfry, spacja, _ - .",
+    "submit": "Zapisz",
+    "saved": "Zapisano! Twoje miejsce w tym temacie: {{rank}}",
+    "errors": {
+      "tooShort": "Nick musi mieć co najmniej 2 znaki.",
+      "tooLong": "Nick może mieć najwyżej 20 znaków.",
+      "invalid": "Używaj tylko liter, cyfr, spacji oraz _ - .",
+      "already": "Ta runda jest już w tabeli wyników.",
+      "failed": "Nie udało się zapisać wyniku. Spróbuj ponownie."
+    }
   }
 }
