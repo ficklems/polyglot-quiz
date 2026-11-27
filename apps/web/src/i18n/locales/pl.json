@@ -21,7 +21,8 @@
     "questions_one": "{{count}} pytanie",
     "questions_few": "{{count}} pytania",
     "questions_many": "{{count}} pytań",
-    "questions_other": "{{count}} pytania"
+    "questions_other": "{{count}} pytania",
+    "notEnough": "Za mało pytań w tym języku ({{count}} z 10)"
   },
   "settings": {
     "language": "Język interfejsu",

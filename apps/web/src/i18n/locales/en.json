@@ -17,7 +17,8 @@
     "count_one": "{{count}} topic",
     "count_other": "{{count}} topics",
     "questions_one": "{{count}} question",
-    "questions_other": "{{count}} questions"
+    "questions_other": "{{count}} questions",
+    "notEnough": "Not enough questions in this language ({{count}} of 10)"
   },
   "settings": {
     "language": "Interface language",

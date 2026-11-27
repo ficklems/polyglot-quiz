@@ -188,6 +188,14 @@ h3 {
   text-align: left;
 }
 
+.topic-card:disabled {
+  opacity: 0.55;
+}
+
+.topic-card:disabled .topic-meta {
+  color: var(--color-muted);
+}
+
 .topic-card[aria-pressed='true'] {
   border-color: var(--color-accent);
   box-shadow: 0 0 0 2px var(--color-accent) inset;
