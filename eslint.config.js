@@ -8,7 +8,7 @@ export default tseslint.config(
     ignores: [
       '**/node_modules/**',
       '**/dist/**',
-      '**/data/**',
+      'apps/api/data/**',
       'tests/playwright-report/**',
       'tests/test-results/**',
     ],

@@ -1,6 +1,6 @@
 node_modules
 dist
-data
+apps/api/data
 package-lock.json
 tests/playwright-report
 tests/test-results
