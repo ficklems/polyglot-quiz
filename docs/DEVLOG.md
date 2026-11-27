@@ -4,6 +4,89 @@ Newest entry first. Each entry: what was done, decisions and why, how it was ver
 
 ---
 
+## 2026-11-27 · Milestone 1: questions and playable rounds (branch `feat/quiz-rounds`)
+
+### Done
+
+- **Question bank:** 45 questions (15 per topic) in UA, EN and PL, in
+  `apps/api/src/db/seed/questions.ts`. Facts only, neutral wording, no lyrics. Stored in SQLite
+  (`questions`, `question_texts`, `question_options`) and seeded when the table is empty.
+  Topics now report `questionCount`.
+- **Rounds API:**
+  - `POST /api/rounds` `{ topicId, lang, seed? }` → `201`: 10 random questions from the topic,
+    options shuffled, **no correct answers** in the payload (`strictObject` contract).
+  - `POST /api/rounds/:id/answers` `{ questionId, optionId | null }` → correct/timed-out,
+    the correct option id, points, running score, `finished`. `null` = timer ran out.
+  - `POST /api/rounds/:id/next` → `204`: starts the timer for the next question.
+  - `GET /api/rounds/:id` → summary (score, correct count, progress, finished).
+  - Rules: answers in order; one answer per question (`409`); question outside the round
+    (`400`); unknown round (`404`); finished round (`409`); `next` only once per question
+    (`409`), so it can't reset a running timer.
+  - **Server-side time limit:** 20 s + 2 s grace for network delay; a late answer counts as a
+    time-out even if correct. The clock is injectable (`buildApp({ now })`).
+  - **Seeded RNG** (Mulberry32 + Fisher–Yates) so a seed reproduces the round exactly.
+- **Web:** quiz screen (A + C design): progress "levels", score, 20 s timer that turns red in
+  the last 5 s, question card, 4 answers, feedback (correct / wrong + correct answer /
+  time's up), Next / See result. Result screen with points (plural forms in UA/PL), correct
+  count, verdict, Play again, Back to topics. Language switcher hidden during a round. Error
+  states for failed round start and failed answer submit.
+- **Tests:**
+  - Vitest API: rounds (creation, seeds, language, validation, scoring, full round, order and
+    duplicate rules, time limit with a fake clock incl. the exact grace boundary, `next` rules,
+    summary, finished round), question-bank quality (unique ids, ≥10 per topic, texts in all
+    languages, no duplicate options, correct answers spread over a–d), RNG/shuffle.
+  - Vitest web: countdown math, option states after an answer.
+  - Playwright API: round contract per language, no answer leak, seed reproducibility,
+    4 invalid inputs, full perfect round, time-out, 409s, 404.
+  - Playwright UI: perfect round → 1000 points, wrong answer marked + correct revealed, next
+    question resets state, zero-point round + Play again, quit, **timer with `page.clock`**
+    (countdown, time-out, pauses on feedback, restarts per question), Polish round,
+    keyboard-only play, start failure and answer failure (mocked with `page.route`).
+  - New page objects `QuizPage`, `ResultPage`; `tests/data/questions.ts` is the test oracle
+    (correct answers from the seed data).
+
+### Decisions
+
+- **Explicit `next` endpoint** instead of measuring from the previous answer: otherwise
+  time spent reading the feedback would count against the next question.
+- **2 s grace** on the server limit: the browser's timer and the server's clock never agree
+  exactly; without grace an answer clicked at 19.9 s could be rejected.
+- **Optional `seed` in the request** makes API and E2E tests deterministic. Known trade-off:
+  a player could replay a known seed. Acceptable for a portfolio game; candidate for v2
+  (only allow it in a test environment).
+- **Scoring:** 100 points per correct answer, no speed bonus yet (keeps the server rules
+  simple and the expected values obvious in tests).
+
+### Bugs found while testing
+
+- **Test race (fixed):** `QuizPage.questionText()` used `textContent()`, which doesn't
+  auto-wait, so it sometimes read the home heading or the previous question mid-transition.
+  Now it waits for an enabled answer button first.
+- **Flaky locator (fixed), found with `--repeat-each=5`:** answers were located with
+  `hasText`, a case-insensitive substring match over the whole button. The letter badge is
+  part of the button text, so "A" + "Go" = "AGo" matched the answer "Ag" (strict-mode
+  violation in ~10% of runs, depending on shuffle). Fix: match the answer text exactly.
+  Logged as [BUG-001](bug-reports/BUG-001-answer-locator-substring-match.md).
+- **UI (fixed):** the letter badge on a wrong answer kept its neutral color.
+
+### Verified
+
+- `format:check`, `lint`, `typecheck`: clean.
+- Vitest: 80 passed (55 API, 25 web).
+- Playwright locally (`api`, `chromium`, `mobile-chrome`): 70 passed; UI suite repeated 5× in
+  parallel (4 workers): 230/230.
+- Screenshots of the quiz screen in light and dark themes: `docs/screenshots/`.
+
+### Next
+
+1. Leaderboard: `POST /api/leaderboard` (nickname + finished round id, score taken from the
+   server, not the client), `GET /api/leaderboard?topicId=`, screen after the result.
+2. More questions (target 30 per topic) and an admin API in v2.
+3. Accessibility checks with `@axe-core/playwright` (`@a11y` tag).
+4. Deployment (Postgres + free hosting) and a live link in the README.
+
+---
+
 ## 2026-11-27 · Milestone 0: project skeleton
 
 ### Done

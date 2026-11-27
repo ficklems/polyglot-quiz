@@ -1,5 +1,6 @@
 import { LANGUAGES } from '@pq/shared';
 import { text } from '../data/i18n';
+import { correctAnswerText, questionCount } from '../data/questions';
 import { expect, test } from '../fixtures';
 
 test.describe('Home screen', () => {
@@ -23,13 +24,26 @@ test.describe('Home screen', () => {
     await expect(homePage.startButton).toBeEnabled();
   });
 
-  test('Start shows the coming-soon notice with the chosen topic', async ({ homePage }) => {
+  test('each topic card shows how many questions it has', async ({ homePage }) => {
     await homePage.goto();
-    await homePage.selectTopic('Music by decade');
 
-    await homePage.startButton.click();
+    await expect(homePage.topicCard('Music by decade')).toContainText(
+      text('en', 'topics.questions_other', { count: String(questionCount('music-decades')) }),
+    );
+  });
 
-    await expect(homePage.comingSoonStatus).toContainText('Music by decade');
+  test('Start opens the first question of the chosen topic @smoke', async ({
+    homePage,
+    quizPage,
+  }) => {
+    await homePage.goto();
+
+    await homePage.startRound('Music by decade');
+
+    await expect(quizPage.progress).toHaveAttribute('aria-valuenow', '1');
+    await expect(quizPage.answers).toHaveCount(4);
+    // The question must be one of the seeded music questions.
+    expect(correctAnswerText(await quizPage.questionText(), 'en')).toBeTruthy();
   });
 });
 

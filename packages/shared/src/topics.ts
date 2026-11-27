@@ -10,6 +10,7 @@ export const topicSchema = z.object({
   id: topicIdSchema,
   name: z.string().min(1),
   description: z.string().min(1),
+  questionCount: z.number().int().min(0),
 });
 
 export type Topic = z.infer<typeof topicSchema>;

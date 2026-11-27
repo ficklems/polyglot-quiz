@@ -7,7 +7,7 @@
     "title": "Pick a topic and test yourself",
     "subtitle": "10 questions, 20 seconds each",
     "start": "Start",
-    "comingSoon": "Rounds arrive in the next version. Selected topic: {{topic}}"
+    "startError": "Couldn't start the round. Please try again."
   },
   "topics": {
     "heading": "Topics",
@@ -15,7 +15,9 @@
     "error": "Couldn't load topics.",
     "retry": "Try again",
     "count_one": "{{count}} topic",
-    "count_other": "{{count}} topics"
+    "count_other": "{{count}} topics",
+    "questions_one": "{{count}} question",
+    "questions_other": "{{count}} questions"
   },
   "settings": {
     "language": "Interface language",
@@ -25,5 +27,37 @@
     "uk": "Ukrainian",
     "en": "English",
     "pl": "Polish"
+  },
+  "quiz": {
+    "quit": "Back to topics",
+    "progress": "Question {{current}}/{{total}}",
+    "progressLabel": "Round progress",
+    "score": "Score: {{score}}",
+    "secondsShort": "sec",
+    "secondsLeft_one": "{{count}} second left",
+    "secondsLeft_other": "{{count}} seconds left",
+    "answersLabel": "Answer options",
+    "correctMark": "(correct answer)",
+    "wrongMark": "(your answer, wrong)",
+    "feedbackCorrect": "Correct! +{{points}}",
+    "feedbackWrong": "Wrong. The correct answer is: {{answer}}",
+    "feedbackTimeout": "Time's up! The correct answer is: {{answer}}",
+    "next": "Next",
+    "finish": "See result",
+    "answerError": "Couldn't send your answer. Check your connection."
+  },
+  "result": {
+    "title": "Round complete",
+    "points_one": "{{count}} point",
+    "points_other": "{{count}} points",
+    "correct": "Correct answers: {{correct}} of {{total}}",
+    "verdict": {
+      "perfect": "Perfect! Not a single mistake.",
+      "great": "Great result!",
+      "good": "Not bad, you can do even better.",
+      "tryAgain": "Give it another go, you’ll get there!"
+    },
+    "playAgain": "Play again",
+    "home": "Back to topics"
   }
 }

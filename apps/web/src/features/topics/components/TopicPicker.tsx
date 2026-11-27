@@ -32,6 +32,9 @@ export function TopicPicker({ topics, selectedId, onSelect }: Props) {
               <span className="topic-text">
                 <span className="topic-name">{topic.name}</span>
                 <span className="topic-description">{topic.description}</span>
+                <span className="topic-meta">
+                  {t('topics.questions', { count: topic.questionCount })}
+                </span>
               </span>
             </button>
           </li>

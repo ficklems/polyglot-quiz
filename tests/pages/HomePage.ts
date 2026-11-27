@@ -32,10 +32,6 @@ export class HomePage {
     return this.page.getByRole('button', { name: text(this.lang, 'home.start'), exact: true });
   }
 
-  get loadingStatus(): Locator {
-    return this.page.getByRole('status').filter({ hasText: text(this.lang, 'topics.loading') });
-  }
-
   get loadError(): Locator {
     return this.page.getByRole('alert');
   }
@@ -44,10 +40,8 @@ export class HomePage {
     return this.loadError.getByRole('button', { name: text(this.lang, 'topics.retry') });
   }
 
-  get comingSoonStatus(): Locator {
-    return this.page
-      .getByRole('status')
-      .filter({ hasText: text(this.lang, 'home.comingSoon', { topic: '' }) });
+  get startError(): Locator {
+    return this.page.getByRole('alert').filter({ hasText: text(this.lang, 'home.startError') });
   }
 
   async goto(): Promise<void> {
@@ -65,10 +59,16 @@ export class HomePage {
   }
 
   topicCard(name: string): Locator {
-    return this.topicCards.filter({ hasText: name });
+    return this.topicCards.filter({ has: this.page.getByText(name, { exact: true }) });
   }
 
   async selectTopic(name: string): Promise<void> {
     await this.topicCard(name).click();
+  }
+
+  /** Picks a topic and starts a round. */
+  async startRound(topicName: string): Promise<void> {
+    await this.selectTopic(topicName);
+    await this.startButton.click();
   }
 }
