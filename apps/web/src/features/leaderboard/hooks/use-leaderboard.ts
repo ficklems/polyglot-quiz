@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import type { LeaderboardEntry } from '@pq/shared';
 import { fetchLeaderboard } from '../api/leaderboard-api';
+import { boardValue, type Board } from '../leaderboard.utils';
 
 type State =
   { status: 'loading' } | { status: 'error' } | { status: 'success'; entries: LeaderboardEntry[] };
@@ -9,16 +10,17 @@ type Result = { key: string } & (
   { status: 'error' } | { status: 'success'; entries: LeaderboardEntry[] }
 );
 
-/** Top entries for a topic (null = all topics). Change `version` to reload. */
-export function useLeaderboard(topicId: string | null, version = 0) {
+/** Top entries of a board. Change `version` to reload. */
+export function useLeaderboard(board: Board, version = 0) {
   const [attempt, setAttempt] = useState(0);
   const [result, setResult] = useState<Result | null>(null);
-  const key = `${topicId ?? '*'}:${version}:${attempt}`;
+  const boardKey = boardValue(board);
+  const key = `${boardKey}:${version}:${attempt}`;
 
   useEffect(() => {
     const controller = new AbortController();
 
-    fetchLeaderboard(topicId, controller.signal)
+    fetchLeaderboard(board, controller.signal)
       .then((res) => setResult({ key, status: 'success', entries: res.entries }))
       .catch((error: unknown) => {
         if (controller.signal.aborted) return;
@@ -27,7 +29,9 @@ export function useLeaderboard(topicId: string | null, version = 0) {
       });
 
     return () => controller.abort();
-  }, [topicId, key]);
+    // board is captured through boardKey, which is part of key.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [key]);
 
   const state: State =
     result && result.key === key

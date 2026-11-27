@@ -1,6 +1,6 @@
 import type { Locator, Page } from '@playwright/test';
 import type { Language } from '@pq/shared';
-import { correctAnswerText, wrongAnswerText } from '../data/questions';
+import { correctAnswerText, questionMeta, wrongAnswerText } from '../data/questions';
 import { text } from '../data/i18n';
 
 /** Locators and actions for the question screen. Assertions stay in the specs. */
@@ -38,6 +38,11 @@ export class QuizPage {
 
   get finishButton(): Locator {
     return this.page.getByRole('button', { name: text(this.lang, 'quiz.finish'), exact: true });
+  }
+
+  /** Topic, themed quiz or "your mix" above the question. Plain text, hence the test id. */
+  get topicTitle(): Locator {
+    return this.page.getByTestId('quiz-title');
   }
 
   get quitButton(): Locator {
@@ -99,6 +104,11 @@ export class QuizPage {
   /** The correct answer to the question on screen, from the test oracle. */
   async correctAnswer(): Promise<string> {
     return correctAnswerText(await this.questionText(), await this.optionTexts(), this.lang);
+  }
+
+  /** Category, subcategory and tags of the question on screen, from the test oracle. */
+  async questionMeta() {
+    return questionMeta(await this.questionText(), await this.optionTexts(), this.lang);
   }
 
   /** Plays all remaining questions, every answer right or every answer wrong. */

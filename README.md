@@ -9,19 +9,25 @@ The game is the system under test; **the test suite is the main deliverable**.
 | -------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
 | <img src="docs/screenshots/home-light.png" width="240" alt="Home screen, light theme"> | <img src="docs/screenshots/quiz-feedback-light.png" width="240" alt="Wrong answer feedback"> | <img src="docs/screenshots/quiz-feedback-dark.png" width="240" alt="Correct answer, dark theme"> |
 
-> **Status: expansion phase 2 of 10.** A dataset of 24k trilingual draft questions in 31
-> categories is imported and validated; rounds, timer, server-side scoring and a top-10
-> leaderboard per topic work. Next: themed quizzes, regions, difficulty, all eight question
-> formats and five game modes ([plan](docs/EXPANSION_PLAN.md), [dev log](docs/DEVLOG.md)). Progress: [`docs/DEVLOG.md`](docs/DEVLOG.md).
+> **Status: expansion phase 3 of 10.** A dataset of 24k trilingual draft questions in 31
+> categories is imported and validated. Players search and combine categories and
+> subcategories or pick one of 20 themed quizzes; rounds, timer, server-side scoring and
+> top-10 leaderboards per topic and per themed quiz work. Next: regions, difficulty, all
+> eight question formats and five game modes ([plan](docs/EXPANSION_PLAN.md), [dev log](docs/DEVLOG.md)). Progress: [`docs/DEVLOG.md`](docs/DEVLOG.md).
 
 ## How the game works
 
-1. Pick a language (UA / EN / PL) and a topic.
-2. A round is **10 random questions** with **4 options** each and **20 seconds** per question.
+1. Pick a language (UA / EN / PL). Then either build your own quiz (search the 31
+   categories, select one or more, or open a category and pick subcategories) or start one
+   of the **20 themed quizzes** (Back to the 80s, Millionaire Challenge, Pub Quiz, …).
+2. A round is **10 random questions** (15 in Millionaire Challenge, easy to hard) with up to
+   **4 options** each and **20 seconds** per question. A mix of categories gives every
+   selected category an equal share, however big it is.
 3. The server checks every answer: 100 points for a correct one, 0 for wrong or late.
 4. The result screen shows points, correct answers and a verdict.
-5. Save the result under a nickname to get on the **top-10 leaderboard** of the topic. The
-   score is taken from the finished round on the server, so it can't be faked by the client.
+5. Save the result under a nickname to get on the **top-10 leaderboard** of the topic or
+   themed quiz. Custom mixes aren't ranked (players could otherwise pick only easy corners).
+   The score is taken from the finished round on the server, so it can't be faked by the client.
 
 The browser never receives the correct answers in advance: they come back only after the
 player answers. The time limit is enforced on the server too (20 s + 2 s grace).
@@ -62,14 +68,17 @@ Highlights of the framework:
 
 ## API
 
-| Method & path                     | Purpose                                                      |
-| --------------------------------- | ------------------------------------------------------------ |
-| `GET /api/health`                 | Liveness check                                               |
-| `GET /api/topics?lang=uk\|en\|pl` | Topics with names, descriptions and question counts          |
-| `POST /api/rounds`                | Start a round `{ topicId, lang, seed? }` → 10 questions      |
-| `POST /api/rounds/:id/answers`    | Answer `{ questionId, optionId \| null }` → result and score |
-| `POST /api/rounds/:id/next`       | Start the timer for the next question                        |
-| `GET /api/rounds/:id`             | Round summary                                                |
+| Method & path                     | Purpose                                                               |
+| --------------------------------- | --------------------------------------------------------------------- |
+| `GET /api/health`                 | Liveness check                                                        |
+| `GET /api/topics?lang=uk\|en\|pl` | Topics with names, descriptions and question counts                   |
+| `GET /api/catalog?lang=…`         | Categories with subcategories, and themed quizzes, with counts        |
+| `POST /api/rounds`                | Start a round `{ lang, topicId \| selection \| collectionId, seed? }` |
+| `GET /api/leaderboard`            | Top 10 `?topicId=` or `?collectionId=` (or all boards)                |
+| `POST /api/leaderboard`           | Save a finished ranked round `{ roundId, nickname }`                  |
+| `POST /api/rounds/:id/answers`    | Answer `{ questionId, optionId \| null }` → result and score          |
+| `POST /api/rounds/:id/next`       | Start the timer for the next question                                 |
+| `GET /api/rounds/:id`             | Round summary                                                         |
 
 Errors always have the shape `{ statusCode, error, message, details? }`.
 

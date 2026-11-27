@@ -14,7 +14,12 @@ export class QuizApi {
 
   async createRound(body: Record<string, unknown> = {}): Promise<Round> {
     const res = await this.request.post('/api/rounds', {
-      data: { topicId: 'general', lang: 'en', ...body },
+      // A "general" topic round unless the test picks another source.
+      data: {
+        ...('selection' in body || 'collectionId' in body ? {} : { topicId: 'general' }),
+        lang: 'en',
+        ...body,
+      },
     });
     expect(res.status(), await res.text()).toBe(201);
     return roundSchema.parse(await res.json());

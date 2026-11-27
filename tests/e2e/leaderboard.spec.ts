@@ -1,6 +1,6 @@
 import { LEADERBOARD_SIZE, QUESTIONS_PER_ROUND, type LeaderboardEntry } from '@pq/shared';
 import { text } from '../data/i18n';
-import { TOPIC_COUNT } from '../data/questions';
+import { collectionName } from '../data/questions';
 import { expect, test, uniqueNickname } from '../fixtures';
 
 const TOPIC = 'General Knowledge';
@@ -92,7 +92,7 @@ test.describe('Saving a result', () => {
       correctCount: 0,
     };
     await page.route('**/api/leaderboard?*', (route) =>
-      route.fulfill({ json: { topicId: 'general', entries: top } }),
+      route.fulfill({ json: { topicId: 'general', collectionId: null, entries: top } }),
     );
     await page.route('**/api/leaderboard', (route) =>
       route.request().method() === 'POST'
@@ -144,21 +144,18 @@ test.describe('Leaderboard screen', () => {
     await leaderboardPage.openButton.click();
 
     await expect(leaderboardPage.heading).toBeVisible();
-    await expect(leaderboardPage.filter(text('en', 'leaderboard.allTopics'))).toHaveAttribute(
-      'aria-pressed',
-      'true',
-    );
+    await expect(leaderboardPage.boardSelect).toHaveValue('all');
     await expect(leaderboardPage.rows.first()).toBeVisible();
 
-    await leaderboardPage.filter('Music').click();
+    await leaderboardPage.chooseBoard('Music');
 
-    await expect(leaderboardPage.filter('Music')).toHaveAttribute('aria-pressed', 'true');
+    await expect(leaderboardPage.boardSelect).toHaveValue('topic:music');
     await expect(leaderboardPage.table).toContainText(
       text('en', 'leaderboard.caption', { topic: 'Music' }),
     );
 
     await leaderboardPage.backButton.click();
-    await expect(homePage.topicCards).toHaveCount(TOPIC_COUNT);
+    await expect(homePage.categoryRows.first()).toBeVisible();
   });
 
   test('shows an empty state when nobody has played yet', async ({
@@ -167,7 +164,7 @@ test.describe('Leaderboard screen', () => {
     leaderboardPage,
   }) => {
     await page.route('**/api/leaderboard*', (route) =>
-      route.fulfill({ json: { topicId: null, entries: [] } }),
+      route.fulfill({ json: { topicId: null, collectionId: null, entries: [] } }),
     );
     await homePage.goto();
 
@@ -199,12 +196,59 @@ test.describe('Leaderboard screen', () => {
 test.describe('Leaderboard in Polish @i18n', () => {
   test.use({ uiLang: 'pl' });
 
-  test('labels and topic filters are translated', async ({ homePage, leaderboardPage }) => {
+  test('labels and board names are translated', async ({ homePage, leaderboardPage }) => {
     await homePage.goto();
 
     await leaderboardPage.openButton.click();
 
     await expect(leaderboardPage.heading).toHaveText(text('pl', 'leaderboard.title'));
-    await expect(leaderboardPage.filter('Wiedza ogólna')).toBeVisible();
+    await expect(
+      leaderboardPage.boardSelect.getByRole('option', { name: 'Wiedza ogólna', exact: true }),
+    ).toBeAttached();
+  });
+});
+
+test.describe('Themed quizzes and custom mixes on the leaderboard', () => {
+  test('a themed quiz has its own board', async ({
+    homePage,
+    leaderboardPage,
+    quizApi,
+  }, testInfo) => {
+    const nickname = uniqueNickname(testInfo);
+    const round = await quizApi.playRound(2, { collectionId: 'pub_quiz' });
+    await quizApi.submitOk(round.roundId, nickname);
+    await homePage.goto();
+    await leaderboardPage.openButton.click();
+
+    await leaderboardPage.chooseBoard(collectionName('pub_quiz', 'en'));
+
+    await expect(leaderboardPage.boardSelect).toHaveValue('collection:pub_quiz');
+    await expect(leaderboardPage.table).toContainText(
+      text('en', 'leaderboard.caption', { topic: collectionName('pub_quiz', 'en') }),
+    );
+    // Shared server: other tests may have saved better scores, so only check when in the top 10.
+    const board = await quizApi.board({ collectionId: 'pub_quiz' });
+    if (board.entries.some((e) => e.nickname === nickname)) {
+      await expect(leaderboardPage.row(nickname)).toBeVisible();
+    }
+  });
+
+  test('a custom mix shows a note instead of the save form', async ({
+    homePage,
+    quizPage,
+    resultPage,
+    leaderboardPage,
+  }) => {
+    await homePage.goto();
+    await homePage.category('Music').click();
+    await homePage.category('Geography').click();
+    await homePage.startButton.click();
+
+    await expect(quizPage.topicTitle).toHaveText(text('en', 'quiz.customMix'));
+    await quizPage.playToTheEnd('wrong', QUESTIONS_PER_ROUND);
+
+    await expect(resultPage.heading).toBeVisible();
+    await expect(resultPage.notRankedNote).toBeVisible();
+    await expect(leaderboardPage.nicknameInput).toBeHidden();
   });
 });

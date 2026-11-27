@@ -29,12 +29,13 @@ export class LeaderboardPage {
     return this.page.getByRole('button', { name: text(this.lang, 'leaderboard.back') });
   }
 
-  get topicFilters(): Locator {
-    return this.page.getByRole('group', { name: text(this.lang, 'leaderboard.topicsLabel') });
+  /** Picks the board: all, a category or a themed quiz (one select with option groups). */
+  get boardSelect(): Locator {
+    return this.page.getByRole('combobox', { name: text(this.lang, 'leaderboard.topicsLabel') });
   }
 
-  filter(name: string): Locator {
-    return this.topicFilters.getByRole('button', { name, exact: true });
+  async chooseBoard(name: string): Promise<void> {
+    await this.boardSelect.selectOption({ label: name });
   }
 
   get emptyState(): Locator {

@@ -1,12 +1,12 @@
 # Test plan: Polyglot Quiz v1
 
-> Living document. Status: **draft**, covers milestones 0–2 (home screen, rounds, timer, results,
-> leaderboard);
+> Living document. Status: **draft**, covers milestones 0–2 and expansion phases 1–3 (home screen
+> with category search and themed quizzes, rounds, timer, results, leaderboards);
 > extended with each milestone.
 
 ## 1. Scope
 
-**In scope (v1):** language selection (UA/EN/PL), topic selection, quiz rounds (10 questions,
+**In scope (v1):** language selection (UA/EN/PL), category and subcategory selection with search, 20 themed quizzes, quiz rounds (10 questions,
 4 options, 20 s timer), scoring, results, top-10 leaderboard, light/dark theme,
 responsive layout, REST API.
 
@@ -30,7 +30,8 @@ security testing beyond input validation and not exposing correct answers.
 
 ## 4. Test data
 
-- Seeded topics and questions in the API (`apps/api/src/db/seed/`).
+- The content dataset in `content/`; Playwright reads it as the oracle (`tests/data/questions.ts`),
+  Vitest uses the small fixture in `apps/api/test/fixtures/content/` (incl. 4 themed quizzes).
 - Each Playwright worker gets the same deterministic seed; tests don't depend on each other.
 - UI strings come from the app's locale files (`tests/data/i18n.ts`).
 
@@ -44,6 +45,8 @@ security testing beyond input validation and not exposing correct answers.
 | Random question order makes tests flaky       | Seeded RNG, injected in tests                                   |
 | Correct answers leak to the client            | API tests assert round payloads contain no answers              |
 | Layout breaks with long words / small screens | Mobile viewports in CI + manual checks                          |
+| A big category drowns a small one in a mix    | Vitest checks equal shares per category and per decade          |
+| Custom mixes used to farm the leaderboard     | API test: submitting an unranked round is 422                   |
 
 ## 6. Entry / exit criteria
 

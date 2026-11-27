@@ -1,5 +1,4 @@
 import { POINTS_PER_CORRECT, QUESTIONS_PER_ROUND, TIME_LIMIT_SECONDS } from '@pq/shared';
-import { TOPIC_COUNT } from '../data/questions';
 import { text } from '../data/i18n';
 import { expect, test } from '../fixtures';
 
@@ -113,7 +112,7 @@ test.describe('Quiz round', () => {
     await quizPage.quitButton.click();
 
     await expect(homePage.heading).toHaveText(text('en', 'home.title'));
-    await expect(homePage.topicCards).toHaveCount(TOPIC_COUNT);
+    await expect(homePage.categoryRows.first()).toBeVisible();
   });
 });
 

@@ -8,7 +8,8 @@ import { QuestionTimer } from './QuestionTimer';
 
 type Props = {
   round: Round;
-  topicName: string;
+  /** Topic, themed quiz or "custom mix". */
+  title: string;
   onFinish: (result: { score: number; correctCount: number; total: number }) => void;
   onQuit: () => void;
 };
@@ -17,7 +18,7 @@ type Phase = 'answering' | 'submitting' | 'feedback' | 'error';
 
 const LETTERS = ['A', 'B', 'C', 'D'];
 
-export function QuizScreen({ round, topicName, onFinish, onQuit }: Props) {
+export function QuizScreen({ round, title, onFinish, onQuit }: Props) {
   const { t } = useTranslation();
   const [index, setIndex] = useState(0);
   const [phase, setPhase] = useState<Phase>('answering');
@@ -98,7 +99,9 @@ export function QuizScreen({ round, topicName, onFinish, onQuit }: Props) {
             <path d="M15 18l-6-6 6-6" />
           </svg>
         </button>
-        <span className="quiz-topic">{topicName}</span>
+        <span className="quiz-topic" data-testid="quiz-title">
+          {title}
+        </span>
       </div>
 
       <div className="quiz-status">
