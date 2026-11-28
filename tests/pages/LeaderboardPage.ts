@@ -38,6 +38,18 @@ export class LeaderboardPage {
     await this.boardSelect.selectOption({ label: name });
   }
 
+  /** "Play: <board>" on a topic or themed-quiz board. */
+  playButton(boardName: string): Locator {
+    return this.page.getByRole('button', {
+      name: text(this.lang, 'leaderboard.playBoard', { name: boardName }),
+    });
+  }
+
+  /** On "All boards": back home to pick a quiz. */
+  get chooseAndPlayButton(): Locator {
+    return this.page.getByRole('button', { name: text(this.lang, 'leaderboard.playChoose') });
+  }
+
   get emptyState(): Locator {
     return this.page.getByText(text(this.lang, 'leaderboard.empty'));
   }

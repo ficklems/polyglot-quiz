@@ -488,6 +488,10 @@ h3 {
   order: 4;
 }
 
+.leaderboard-play {
+  margin-top: var(--space-2);
+}
+
 /* ---------- Status ---------- */
 
 .status {
