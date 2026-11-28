@@ -4,8 +4,10 @@ import { useTranslation } from 'react-i18next';
 import type { RoundSource } from '../../quiz/api/rounds-api';
 import { useCatalog } from '../../topics/hooks/use-catalog';
 import { useLeaderboard } from '../hooks/use-leaderboard';
+import { useOverall } from '../hooks/use-overall';
 import { ALL_BOARDS, boardValue, parseBoardValue, type Board } from '../leaderboard.utils';
 import { LeaderboardTable } from './LeaderboardTable';
+import { OverallTable } from './OverallTable';
 
 type Props = {
   lang: Language;
@@ -19,7 +21,12 @@ export function LeaderboardScreen({ lang, onBack, onPlay }: Props) {
   const selectId = useId();
   const [board, setBoard] = useState<Board>(ALL_BOARDS);
   const { state: catalogState } = useCatalog(lang);
-  const { state, retry } = useLeaderboard(board);
+  const overallView = board.kind === 'all';
+  const { state: boardState, retry: retryBoard } = useLeaderboard(board);
+  const { state: overallState, retry: retryOverall } = useOverall(overallView);
+  // "All boards" ranks players (one row each), a single board ranks rounds.
+  const state = overallView ? overallState : boardState;
+  const retry = overallView ? retryOverall : retryBoard;
 
   const catalog = catalogState.status === 'success' ? catalogState.catalog : null;
   const categories = catalog?.categories ?? [];
@@ -124,10 +131,16 @@ export function LeaderboardScreen({ lang, onBack, onPlay }: Props) {
           </button>
         </div>
       )}
-      {state.status === 'success' && (
+      {overallView && overallState.status === 'success' && (
+        <>
+          <OverallTable caption={t('leaderboard.overallCaption')} players={overallState.players} />
+          <p className="section-hint">{t('leaderboard.overallHint')}</p>
+        </>
+      )}
+      {!overallView && boardState.status === 'success' && (
         <LeaderboardTable
           caption={t('leaderboard.caption', { topic: currentName })}
-          entries={state.entries}
+          entries={boardState.entries}
         />
       )}
 

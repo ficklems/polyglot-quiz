@@ -111,7 +111,11 @@
     "back": "Back",
     "you": "(you)",
     "playChoose": "Choose a quiz and play",
-    "playBoard": "Play: {{name}}"
+    "playBoard": "Play: {{name}}",
+    "overallCaption": "Top 10 players across all boards",
+    "totalScore": "Total points",
+    "boardsPlayed": "Topics played",
+    "overallHint": "Each player’s best result in every topic and themed quiz, added up. Replaying a topic only counts your best round."
   },
   "save": {
     "title": "Save your result to the leaderboard",
