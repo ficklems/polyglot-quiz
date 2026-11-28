@@ -1,0 +1,59 @@
+# Render Blueprint: deploys the game on Render's free plan (see docs/DEPLOYMENT.md).
+# Leaderboard entries go to a Neon Postgres database (DATABASE_URL, entered in the dashboard);
+# everything else is rebuilt from the repository on every start.
+services:
+  # The API. Free web services sleep after 15 idle minutes and wake in about a minute.
+  - type: web
+    name: polyglot-quiz-api
+    runtime: node
+    plan: free
+    region: frankfurt
+    buildCommand: npm ci
+    startCommand: npm run start -w @pq/api
+    healthCheckPath: /api/health
+    autoDeploy: true
+    envVars:
+      - key: NODE_VERSION
+        value: '22'
+      - key: HOST
+        value: 0.0.0.0
+      # Rounds live only while the service runs; the disk is wiped on restart.
+      - key: DB_PATH
+        value: /tmp/quiz.db
+      # The 512 MB instance: collect garbage before the heap gets near the limit.
+      - key: NODE_OPTIONS
+        value: --max-old-space-size=320
+      - key: LOG_LEVEL
+        value: info
+      # Must match the static site's address below.
+      - key: CORS_ORIGINS
+        value: https://polyglot-quiz.onrender.com
+      # Neon connection string; Render asks for it when the Blueprint is created.
+      - key: DATABASE_URL
+        sync: false
+
+  # The web app: plain files on Render's CDN, always on.
+  - type: web
+    name: polyglot-quiz
+    runtime: static
+    buildCommand: npm ci && npm run build
+    staticPublishPath: apps/web/dist
+    autoDeploy: true
+    envVars:
+      - key: NODE_VERSION
+        value: '22'
+      # Must match the API's address above. If Render had to pick another name, update both.
+      - key: VITE_API_URL
+        value: https://polyglot-quiz-api.onrender.com
+    headers:
+      # Vite fingerprints assets, so they can be cached for good; index.html must not be.
+      - path: /assets/*
+        name: Cache-Control
+        value: public, max-age=31536000, immutable
+      - path: /index.html
+        name: Cache-Control
+        value: no-cache
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
