@@ -66,3 +66,26 @@ export const leaderboardResponseSchema = z.strictObject({
   entries: z.array(leaderboardEntrySchema).max(LEADERBOARD_SIZE),
 });
 export type LeaderboardResponse = z.infer<typeof leaderboardResponseSchema>;
+
+/**
+ * "All boards": one row per player. A player's total is the sum of their best score on each
+ * board, so replaying the same topic can't pile up points, but every topic played counts.
+ * No accounts: the nickname (case-insensitive) is the player.
+ */
+export const overallPlayerSchema = z.strictObject({
+  rank: z.number().int().positive(),
+  nickname: z.string(),
+  totalScore: z.number().int().min(0),
+  /** Topics and themed quizzes with at least one saved round. */
+  boardsPlayed: z.number().int().positive(),
+});
+export type OverallPlayer = z.infer<typeof overallPlayerSchema>;
+
+export const overallQuerySchema = z.object({
+  limit: z.coerce.number().int().min(1).max(LEADERBOARD_SIZE).default(LEADERBOARD_SIZE),
+});
+
+export const overallResponseSchema = z.strictObject({
+  players: z.array(overallPlayerSchema).max(LEADERBOARD_SIZE),
+});
+export type OverallResponse = z.infer<typeof overallResponseSchema>;

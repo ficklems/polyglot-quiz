@@ -1,12 +1,15 @@
-import type { LeaderboardEntry } from '@pq/shared';
+import type { LeaderboardEntry, OverallPlayer } from '@pq/shared';
 import type { Database } from '../db/database';
 import {
   BOARD_ORDER,
+  OVERALL_SQL,
+  toPlayer,
   toEntry,
   type BoardFilter,
   type EntryRow,
   type LeaderboardStore,
   type NewEntry,
+  type OverallRow,
 } from './store';
 
 /** Local development and tests: entries in the same SQLite database as the rounds. */
@@ -59,6 +62,11 @@ export class SqliteLeaderboardStore implements LeaderboardStore {
       )
       .all(...params, limit) as EntryRow[];
     return rows.map(toEntry);
+  }
+
+  async overall(limit: number): Promise<OverallPlayer[]> {
+    const rows = this.db.prepare(OVERALL_SQL('?')).all(limit) as OverallRow[];
+    return rows.map(toPlayer);
   }
 
   async close(): Promise<void> {
