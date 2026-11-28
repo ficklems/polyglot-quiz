@@ -109,7 +109,9 @@
     "loading": "Loading the leaderboard…",
     "error": "Couldn't load the leaderboard.",
     "back": "Back",
-    "you": "(you)"
+    "you": "(you)",
+    "playChoose": "Choose a quiz and play",
+    "playBoard": "Play: {{name}}"
   },
   "save": {
     "title": "Save your result to the leaderboard",

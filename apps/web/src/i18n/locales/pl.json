@@ -127,7 +127,9 @@
     "loading": "Wczytujemy tabelę…",
     "error": "Nie udało się wczytać tabeli wyników.",
     "back": "Wstecz",
-    "you": "(ty)"
+    "you": "(ty)",
+    "playChoose": "Wybierz quiz i zagraj",
+    "playBoard": "Zagraj: {{name}}"
   },
   "save": {
     "title": "Zapisz wynik w tabeli",

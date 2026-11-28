@@ -75,7 +75,7 @@ export function App() {
           />
         )}
         {view.name === 'leaderboard' && (
-          <LeaderboardScreen lang={lang} onBack={() => setView({ name: 'home' })} />
+          <LeaderboardScreen lang={lang} onBack={() => setView({ name: 'home' })} onPlay={start} />
         )}
         {view.name === 'quiz' && (
           <QuizScreen
