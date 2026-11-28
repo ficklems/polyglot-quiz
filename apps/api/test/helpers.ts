@@ -1,7 +1,7 @@
 import type { FastifyInstance } from 'fastify';
 import { roundSchema, type AnswerRequest, type CreateRoundInput, type Round } from '@pq/shared';
 import { join } from 'node:path';
-import { buildApp } from '../src/app';
+import { buildApp, type BuildAppOptions } from '../src/app';
 import { loadContent, type ContentBundle } from '../src/content/load-content';
 
 /** Small, fixed content for fast tests: the 45 legacy questions plus special cases in "memes". */
@@ -18,12 +18,17 @@ export class FakeClock {
 }
 
 /** A fresh app with its own in-memory database (and, optionally, a fake clock). */
-export function buildTestApp(clock?: FakeClock, content: ContentBundle = FIXTURE) {
+export function buildTestApp(
+  clock?: FakeClock,
+  content: ContentBundle = FIXTURE,
+  extra: Partial<BuildAppOptions> = {},
+) {
   return buildApp({
     dbPath: ':memory:',
     corsOrigins: [],
     logLevel: 'silent',
     content,
+    ...extra,
     ...(clock ? { now: clock.now } : {}),
   });
 }
