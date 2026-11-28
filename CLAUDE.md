@@ -29,20 +29,20 @@ Capacitor (Google Play: needs a closed test with 12+ testers for 14 days first).
 
 ## 2. Stack
 
-| Layer            | Choice                                                                                           |
-| ---------------- | ------------------------------------------------------------------------------------------------ |
-| Runtime          | Node.js 22 (`.nvmrc`)                                                                            |
-| Language         | TypeScript 6 everywhere, `strict: true` (pinned to ~6.0 until typescript-eslint supports TS 7)   |
-| Frontend         | React 19 + Vite 8                                                                                |
-| i18n             | i18next + react-i18next, JSON resources per language (`uk`, `en`, `pl`)                          |
-| Backend          | Node.js + Fastify 5, run with `tsx`; request input validated with Zod                            |
-| Database         | Built-in `node:sqlite` locally and in tests (`:memory:`); hosted Postgres planned for deployment |
-| Content          | `content/` (CC BY-SA 4.0): gzip JSONL per category, loaded and validated on API start            |
-| Shared contracts | Zod schemas + inferred types in `packages/shared` (`@pq/shared`)                                 |
-| Unit tests       | Vitest                                                                                           |
-| E2E + API tests  | Playwright Test                                                                                  |
-| CI               | GitHub Actions                                                                                   |
-| Lint / format    | ESLint + Prettier                                                                                |
+| Layer            | Choice                                                                                         |
+| ---------------- | ---------------------------------------------------------------------------------------------- |
+| Runtime          | Node.js 22 (`.nvmrc`)                                                                          |
+| Language         | TypeScript 6 everywhere, `strict: true` (pinned to ~6.0 until typescript-eslint supports TS 7) |
+| Frontend         | React 19 + Vite 8                                                                              |
+| i18n             | i18next + react-i18next, JSON resources per language (`uk`, `en`, `pl`)                        |
+| Backend          | Node.js + Fastify 5, run with `tsx`; request input validated with Zod                          |
+| Database         | Built-in `node:sqlite` for rounds; leaderboard in Neon Postgres in production (`DATABASE_URL`) |
+| Content          | `content/` (CC BY-SA 4.0): gzip JSONL per category, loaded and validated on API start          |
+| Shared contracts | Zod schemas + inferred types in `packages/shared` (`@pq/shared`)                               |
+| Unit tests       | Vitest                                                                                         |
+| E2E + API tests  | Playwright Test                                                                                |
+| CI               | GitHub Actions                                                                                 |
+| Lint / format    | ESLint + Prettier                                                                              |
 
 ## 3. Repository layout (npm workspaces monorepo)
 
@@ -179,6 +179,7 @@ Playwright rules (from the official best practices):
 | `npm run test:e2e`                                         | All Playwright projects (starts servers itself)                     |
 | `npm run test:api`                                         | Playwright API project only                                         |
 | `npm run content:report`                                   | Validate `content/` and write `docs/CONTENT_REPORT.md`              |
+| `TEST_DATABASE_URL=postgres://… npm test`                  | Also run the Postgres leaderboard-store tests (CI does)             |
 | `PW_CHANNEL=chrome npm run test:e2e -- --project=chromium` | Use an installed Chrome instead of downloading browsers             |
 
 ## 7. Git and CI
@@ -190,6 +191,8 @@ Playwright rules (from the official best practices):
   keeping the `Co-Authored-By` trailer. Code and docs commits keep the default author.
 - CI on every push and PR: lint → typecheck → unit → API → E2E.
 - No secrets in the repo; config comes from env vars, documented in `.env.example`.
+- Deployment: Render Blueprint `render.yaml` + Neon; see `docs/DEPLOYMENT.md`. Merging to `main`
+  redeploys.
 
 ## 8. Content rules (questions)
 
