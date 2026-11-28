@@ -5,6 +5,9 @@ The game is the system under test; **the test suite is the main deliverable**.
 
 ![CI](https://github.com/ficklems/polyglot-quiz/actions/workflows/ci.yml/badge.svg)
 
+**▶ Play: <https://polyglot-quiz.onrender.com>** (free hosting: the first visit after a quiet
+period can take up to a minute while the server wakes up)
+
 | Home                                                                                   | Answer feedback                                                                              | Dark theme                                                                                       |
 | -------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
 | <img src="docs/screenshots/home-light.png" width="240" alt="Home screen, light theme"> | <img src="docs/screenshots/quiz-feedback-light.png" width="240" alt="Wrong answer feedback"> | <img src="docs/screenshots/quiz-feedback-dark.png" width="240" alt="Correct answer, dark theme"> |

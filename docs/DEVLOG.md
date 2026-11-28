@@ -37,8 +37,13 @@ Newest entry first. Each entry: what was done, decisions and why, how it was ver
 
 ### Next
 
-Owner creates the Neon and Render accounts (docs/DEPLOYMENT.md); then the live link goes into
-the README. Phase 5: question formats, order and matching first.
+Phase 5: question formats, order and matching first.
+
+### Update: live
+
+The owner created the Neon project (Frankfurt) and the Render Blueprint from `main`; both
+services went live, a round was played and saved on the deployed site. Live link added to the
+README: https://polyglot-quiz.onrender.com
 
 ---
 

@@ -9,20 +9,20 @@ Work is split into phases; the application stays working and green after each on
 Revised with the owner on 2026-11-27 after phase 3 (reasons below the table). Phases are
 listed in the order they are done.
 
-| #   | Phase                                                                                                               | Status                                                                            |
-| --- | ------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
-| 1   | Analysis of the repository, the archive and the conflicts between them                                              | **done** (this document)                                                          |
-| 2   | Import of the question database, duplicate detection, serving rules                                                 | **done** (PR "content import")                                                    |
-| 3   | Categories, subcategories (search, multi-select) and the 20 themed quizzes                                          | **done** (PR "categories and themed quizzes")                                     |
-| 4   | Languages and regions as independent settings, difficulty incl. Mixed, sampling policy                              |                                                                                   | 4   | Languages and regions as independent settings, difficulty incl. Mixed, sampling policy | **done** (PR "regions and difficulty") |     |
-| 4½  | Deployment: hosted Postgres + free hosting, live link in the README                                                 | code **done**; goes live once the owner creates the accounts (docs/DEPLOYMENT.md) |
-| 5   | Question formats: order and matching first, then the rest, the map (guess location) last                            | next                                                                              |
-| 6a  | Game modes without Multiplayer: Learning, Random Mix, Review Mistakes (stored in the browser, no accounts)          | planned                                                                           |
-| 7   | Content editing, Ukrainian proofreading first; a first batch (weakest UK categories) before phase 5, then ongoing   | planned, starts early                                                             |
-| 8   | QA showcase: Allure report on GitHub Pages, axe accessibility checks, visual regression, bug reports, test strategy | planned                                                                           |
-| 9   | README, sources and licenses (final version)                                                                        | started in phase 2, kept up to date                                               |
-| 10  | Demo video preparation                                                                                              | planned                                                                           |
-| 6b  | Multiplayer rooms (WebSocket, synced timers), if time allows                                                        | optional, last                                                                    |
+| #   | Phase                                                                                                               | Status                                               |
+| --- | ------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------- |
+| 1   | Analysis of the repository, the archive and the conflicts between them                                              | **done** (this document)                             |
+| 2   | Import of the question database, duplicate detection, serving rules                                                 | **done** (PR "content import")                       |
+| 3   | Categories, subcategories (search, multi-select) and the 20 themed quizzes                                          | **done** (PR "categories and themed quizzes")        |
+| 4   | Languages and regions as independent settings, difficulty incl. Mixed, sampling policy                              |                                                      | 4   | Languages and regions as independent settings, difficulty incl. Mixed, sampling policy | **done** (PR "regions and difficulty") |     |
+| 4½  | Deployment: hosted Postgres + free hosting, live link in the README                                                 | **done**: live at https://polyglot-quiz.onrender.com |
+| 5   | Question formats: order and matching first, then the rest, the map (guess location) last                            | next                                                 |
+| 6a  | Game modes without Multiplayer: Learning, Random Mix, Review Mistakes (stored in the browser, no accounts)          | planned                                              |
+| 7   | Content editing, Ukrainian proofreading first; a first batch (weakest UK categories) before phase 5, then ongoing   | planned, starts early                                |
+| 8   | QA showcase: Allure report on GitHub Pages, axe accessibility checks, visual regression, bug reports, test strategy | planned                                              |
+| 9   | README, sources and licenses (final version)                                                                        | started in phase 2, kept up to date                  |
+| 10  | Demo video preparation                                                                                              | planned                                              |
+| 6b  | Multiplayer rooms (WebSocket, synced timers), if time allows                                                        | optional, last                                       |
 
 Automated tests are written with every phase (unit, API, E2E, `--repeat-each=5` before merging);
 phase 8 is about presenting the testing, not starting it.
