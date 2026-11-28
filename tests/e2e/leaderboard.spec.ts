@@ -252,3 +252,47 @@ test.describe('Themed quizzes and custom mixes on the leaderboard', () => {
     await expect(leaderboardPage.nicknameInput).toBeHidden();
   });
 });
+
+test.describe('Playing from the leaderboard', () => {
+  test('an empty board invites the player and starts a round of that topic', async ({
+    homePage,
+    leaderboardPage,
+    quizPage,
+    page,
+  }) => {
+    await page.route('**/api/leaderboard?topicId=*', (route) =>
+      route.fulfill({ json: { topicId: 'music', collectionId: null, entries: [] } }),
+    );
+    await homePage.goto();
+    await leaderboardPage.openButton.click();
+    await leaderboardPage.chooseBoard('Music');
+    await expect(leaderboardPage.emptyState).toBeVisible();
+
+    await leaderboardPage.playButton('Music').click();
+
+    await expect(quizPage.topicTitle).toHaveText('Music');
+    await expect(quizPage.answers.first()).toBeEnabled();
+    expect((await quizPage.questionMeta()).category).toBe('music');
+  });
+
+  test('a themed quiz board starts that quiz', async ({ homePage, leaderboardPage, quizPage }) => {
+    const name = collectionName('millionaire', 'en');
+    await homePage.goto();
+    await leaderboardPage.openButton.click();
+    await leaderboardPage.chooseBoard(name);
+
+    await leaderboardPage.playButton(name).click();
+
+    await expect(quizPage.topicTitle).toHaveText(name);
+    await expect(quizPage.progress).toHaveAttribute('aria-valuemax', '15');
+  });
+
+  test('"All boards" leads back home to pick a quiz', async ({ homePage, leaderboardPage }) => {
+    await homePage.goto();
+    await leaderboardPage.openButton.click();
+
+    await leaderboardPage.chooseAndPlayButton.click();
+
+    await expect(homePage.heading).toHaveText(text('en', 'home.title'));
+  });
+});
