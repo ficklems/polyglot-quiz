@@ -16,7 +16,7 @@ export async function leaderboardRoutes(
 ): Promise<void> {
   app.get('/leaderboard', async (request): Promise<LeaderboardResponse> => {
     const { topicId, collectionId, limit } = leaderboardQuerySchema.parse(request.query);
-    return getLeaderboard(app.db, app.pool, {
+    return getLeaderboard(app.db, app.pool, app.leaderboard, {
       limit,
       ...(topicId !== undefined ? { topicId } : {}),
       ...(collectionId !== undefined ? { collectionId } : {}),
@@ -25,7 +25,7 @@ export async function leaderboardRoutes(
 
   app.post('/leaderboard', async (request, reply): Promise<SubmitScoreResponse> => {
     const body = submitScoreRequestSchema.parse(request.body ?? {});
-    const entry = submitScore(app.db, body, now);
+    const entry = await submitScore(app.db, app.leaderboard, body, now);
     reply.status(201);
     return { entry };
   });

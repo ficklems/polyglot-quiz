@@ -15,10 +15,12 @@
     "@fastify/cors": "^11.4.3",
     "@pq/shared": "*",
     "fastify": "^5.12.8",
+    "pg": "^8.23.1",
     "tsx": "^4.23.15",
     "zod": "^4.6.7"
   },
   "devDependencies": {
+    "@types/pg": "^8.23.1",
     "vitest": "^5.1.2"
   }
 }
