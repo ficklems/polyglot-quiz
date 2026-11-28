@@ -4,6 +4,26 @@ Newest entry first. Each entry: what was done, decisions and why, how it was ver
 
 ---
 
+## 2026-11-28 · Owner feedback: play from the leaderboard (branch `feat/leaderboard-play`)
+
+### Done
+
+- The leaderboard screen always ends with a play button: "Play: <board>" starts a round of
+  that topic or themed quiz (with the player's current settings); on "All boards" it leads
+  home to pick a quiz. An empty board ("Be the first to play!") now has a way to actually play.
+
+### Verified
+
+- Playwright: empty topic board, themed-quiz board and "All boards"; Chromium + Pixel with
+  `--repeat-each=5`.
+
+### Next
+
+Phase 5 (formats). Film titles in UA/PL as official release titles: planned as a content step
+(see EXPANSION_PLAN, phase 7), sourced from Wikidata, not translated by guesswork.
+
+---
+
 ## 2026-11-28 · Expansion phase 4½: deployment (branch `feat/deployment`)
 
 ### Done
