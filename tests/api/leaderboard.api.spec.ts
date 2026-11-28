@@ -1,6 +1,7 @@
 import {
   apiErrorSchema,
   LEADERBOARD_SIZE,
+  overallResponseSchema,
   POINTS_PER_CORRECT,
   QUESTIONS_PER_ROUND,
 } from '@pq/shared';
@@ -133,4 +134,24 @@ test.describe('GET /api/leaderboard', () => {
       apiErrorSchema.parse(await res.json());
     });
   }
+});
+
+test.describe('GET /api/leaderboard/overall', () => {
+  test('ranks players, each nickname once, totals in descending order', async ({ request }) => {
+    const res = await request.get('/api/leaderboard/overall');
+
+    expect(res.status()).toBe(200);
+    const { players } = overallResponseSchema.parse(await res.json());
+    const names = players.map((p) => p.nickname.toLowerCase());
+    expect(new Set(names).size).toBe(names.length);
+    expect(players.map((p) => p.rank)).toEqual(players.map((_, i) => i + 1));
+    const totals = players.map((p) => p.totalScore);
+    expect(totals).toEqual([...totals].sort((a, b) => b - a));
+  });
+
+  test('rejects a limit above 10 with 400', async ({ request }) => {
+    const res = await request.get('/api/leaderboard/overall', { params: { limit: '11' } });
+
+    expect(res.status()).toBe(400);
+  });
 });

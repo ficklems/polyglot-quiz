@@ -5,6 +5,8 @@ import {
   LEADERBOARD_SIZE,
   leaderboardResponseSchema,
   nicknameSchema,
+  overallResponseSchema,
+  POINTS_PER_CORRECT,
   submitScoreResponseSchema,
 } from '@pq/shared';
 import { buildTestApp, FakeClock, playRound, startRound, submitScore } from './helpers';
@@ -192,5 +194,31 @@ describe('GET /api/leaderboard', () => {
     app = await buildTestApp();
 
     expect(await board()).toEqual({ topicId: null, collectionId: null, entries: [] });
+  });
+});
+
+describe('GET /api/leaderboard/overall', () => {
+  it('sums each player’s best score per board into one row', async () => {
+    app = await buildTestApp();
+    const music = await playRound(app, { topicId: 'music', correctAnswers: 2 });
+    const general = await playRound(app, { topicId: 'general', correctAnswers: 3 });
+    await submitScore(app, { roundId: music, nickname: 'Ola' });
+    await submitScore(app, { roundId: general, nickname: 'Ola' });
+
+    const res = await app.inject({ method: 'GET', url: '/api/leaderboard/overall' });
+
+    expect(res.statusCode).toBe(200);
+    const { players } = overallResponseSchema.parse(res.json());
+    expect(players).toHaveLength(1);
+    expect(players[0]).toMatchObject({ nickname: 'Ola', boardsPlayed: 2, rank: 1 });
+    expect(players[0]!.totalScore).toBe(5 * POINTS_PER_CORRECT);
+  });
+
+  it('rejects a limit above 10 with 400', async () => {
+    app = await buildTestApp();
+
+    const res = await app.inject({ method: 'GET', url: '/api/leaderboard/overall?limit=11' });
+
+    expect(res.statusCode).toBe(400);
   });
 });
