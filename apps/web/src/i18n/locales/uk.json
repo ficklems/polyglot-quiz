@@ -35,7 +35,8 @@
     "questions_one": "{{count}} питання",
     "questions_few": "{{count}} питання",
     "questions_many": "{{count}} питань",
-    "questions_other": "{{count}} питання"
+    "questions_other": "{{count}} питання",
+    "wakingUp": "Будимо сервер (безкоштовний хостинг присипляє його, коли ніхто не грає). Це може тривати до хвилини…"
   },
   "categories": {
     "heading": "Категорії",
