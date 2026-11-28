@@ -27,7 +27,8 @@
     "count_one": "{{count}} topic",
     "count_other": "{{count}} topics",
     "questions_one": "{{count}} question",
-    "questions_other": "{{count}} questions"
+    "questions_other": "{{count}} questions",
+    "wakingUp": "Waking up the server (free hosting sleeps when idle). This can take up to a minute…"
   },
   "categories": {
     "heading": "Categories",

@@ -139,6 +139,12 @@ docs            Test plan, test cases, bug reports, dev log, screenshots
 
 Details and conventions: [`CLAUDE.md`](CLAUDE.md).
 
+## Deployment
+
+Free hosting: a static site and the API on **Render** (Frankfurt), the leaderboard in
+**Neon** Postgres; described in [`render.yaml`](render.yaml). Setup, limits (the API sleeps
+after 15 idle minutes) and architecture: [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
+
 ## Run it locally
 
 Requires Node.js 22.

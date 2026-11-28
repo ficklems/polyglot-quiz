@@ -1,5 +1,5 @@
 import type { CatalogResponse, Language } from '@pq/shared';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { RoundSource } from '../features/quiz/api/rounds-api';
 import {
@@ -15,6 +15,29 @@ import { CategoryPicker } from '../features/topics/components/CategoryPicker';
 import { CollectionList } from '../features/topics/components/CollectionList';
 import { useCatalog } from '../features/topics/hooks/use-catalog';
 
+/**
+ * The free API host sleeps after 15 idle minutes and takes up to a minute to wake. After a
+ * few seconds of loading, say so instead of leaving the player wondering.
+ */
+const WAKE_UP_HINT_MS = 4000;
+
+function useAfterDelay(active: boolean, ms: number): boolean {
+  // Remember which loading phase the timer fired for, so a new phase starts fresh.
+  const [firedFor, setFiredFor] = useState<number | null>(null);
+  const [phase, setPhase] = useState(0);
+  const [wasActive, setWasActive] = useState(active);
+  if (active !== wasActive) {
+    setWasActive(active);
+    if (active) setPhase(phase + 1);
+  }
+  useEffect(() => {
+    if (!active) return;
+    const timer = setTimeout(() => setFiredFor(phase), ms);
+    return () => clearTimeout(timer);
+  }, [active, ms, phase]);
+  return active && firedFor === phase;
+}
+
 type Props = {
   lang: Language;
   settings: RoundSettings;
@@ -29,6 +52,7 @@ export function HomePage({ lang, settings, onSettingsChange, onStart, onOpenLead
   const [selection, setSelection] = useState<PickerSelection>(EMPTY_SELECTION);
   const [starting, setStarting] = useState(false);
   const [startFailed, setStartFailed] = useState(false);
+  const slowLoad = useAfterDelay(state.status === 'loading', WAKE_UP_HINT_MS);
 
   const change = (next: PickerSelection) => {
     setSelection(next);
@@ -59,7 +83,7 @@ export function HomePage({ lang, settings, onSettingsChange, onStart, onOpenLead
 
       {state.status === 'loading' && (
         <p className="status" role="status">
-          {t('topics.loading')}
+          {slowLoad ? t('topics.wakingUp') : t('topics.loading')}
         </p>
       )}
 

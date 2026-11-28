@@ -4,6 +4,44 @@ Newest entry first. Each entry: what was done, decisions and why, how it was ver
 
 ---
 
+## 2026-11-28 · Expansion phase 4½: deployment (branch `feat/deployment`)
+
+### Done
+
+- **Leaderboard store** (`apps/api/src/leaderboard-store/`): an interface with a SQLite
+  implementation (local, tests) and a Postgres one (production, `DATABASE_URL`). Duplicate
+  rounds are refused with `ON CONFLICT DO NOTHING`; ranks come from `ROW_NUMBER()` in both.
+  The leaderboard service is async now; rounds stay in SQLite.
+- **Render Blueprint** (`render.yaml`): free static site for the web app, free web service for
+  the API in Frankfurt, health check, heap cap, CORS and API URL wired by name.
+- **Web:** `VITE_API_URL` for an API on another host; after 4 s of loading the home screen
+  explains that the free server is waking up.
+- **CI:** a Postgres 16 service, so the Postgres store is tested on every push.
+- `docs/DEPLOYMENT.md`: architecture, free-plan limits, and the owner's one-time steps.
+
+### Decisions
+
+- Render + Neon: both free without a card, Frankfurt for both (close to Wrocław, close to
+  each other). Render's own free Postgres expires after 30 days, Neon's doesn't.
+- Only the leaderboard moves to Postgres. The rest is rebuilt from the repository on start.
+
+### Verified
+
+- One contract suite for both stores (`leaderboard-store.test.ts`): 6 tests × 2 stores plus a
+  restart test (entry survives a new API with an empty SQLite). Ran against a local
+  Postgres 16; CI runs it against its service.
+- The API started like production (Postgres, `/tmp` SQLite, heap cap): ~324 MB RSS, under
+  the 512 MB limit; the table was created on start.
+- Playwright: Chromium + API 101 passed; the new "waking up" test uses `page.clock` and a
+  held route, `--repeat-each=5`.
+
+### Next
+
+Owner creates the Neon and Render accounts (docs/DEPLOYMENT.md); then the live link goes into
+the README. Phase 5: question formats, order and matching first.
+
+---
+
 ## 2026-11-28 · Expansion phase 4: regions, difficulty, round length (branch `feat/regions-difficulty`)
 
 ### Done

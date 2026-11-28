@@ -10,8 +10,14 @@ export class HttpError extends Error {
   }
 }
 
+/**
+ * In development and tests the web app proxies /api to the API (same origin). In production
+ * the API is a separate service, set at build time with VITE_API_URL.
+ */
+const API_BASE = (import.meta.env.VITE_API_URL ?? '').replace(/\/$/, '');
+
 async function request(path: string, init: RequestInit): Promise<unknown> {
-  const res = await fetch(path, {
+  const res = await fetch(`${API_BASE}${path}`, {
     ...init,
     headers: { Accept: 'application/json', ...init.headers },
   });

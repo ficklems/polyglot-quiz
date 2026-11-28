@@ -5,6 +5,8 @@ const envSchema = z.object({
   HOST: z.string().default('127.0.0.1'),
   DB_PATH: z.string().default('./data/quiz.db'),
   CORS_ORIGINS: z.string().default('http://localhost:5173,http://localhost:4173'),
+  // Postgres for leaderboard entries (production). Without it they go to the SQLite file.
+  DATABASE_URL: z.string().url().optional(),
   LOG_LEVEL: z.enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace', 'silent']).default('info'),
 });
 
@@ -13,6 +15,7 @@ export type Config = {
   host: string;
   dbPath: string;
   corsOrigins: string[];
+  databaseUrl?: string;
   logLevel: z.infer<typeof envSchema>['LOG_LEVEL'];
 };
 
@@ -27,5 +30,6 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): Config {
       .map((origin) => origin.trim())
       .filter(Boolean),
     logLevel: parsed.LOG_LEVEL,
+    ...(parsed.DATABASE_URL ? { databaseUrl: parsed.DATABASE_URL } : {}),
   };
 }
