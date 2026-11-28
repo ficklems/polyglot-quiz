@@ -163,8 +163,8 @@ test.describe('Leaderboard screen', () => {
     homePage,
     leaderboardPage,
   }) => {
-    await page.route('**/api/leaderboard*', (route) =>
-      route.fulfill({ json: { topicId: null, collectionId: null, entries: [] } }),
+    await page.route('**/api/leaderboard/overall*', (route) =>
+      route.fulfill({ json: { players: [] } }),
     );
     await homePage.goto();
 
@@ -179,7 +179,7 @@ test.describe('Leaderboard screen', () => {
     homePage,
     leaderboardPage,
   }) => {
-    await page.route('**/api/leaderboard*', (route) =>
+    await page.route('**/api/leaderboard/overall*', (route) =>
       route.fulfill({
         status: 500,
         json: { statusCode: 500, error: 'Internal Server Error', message: 'x' },
@@ -294,5 +294,37 @@ test.describe('Playing from the leaderboard', () => {
     await leaderboardPage.chooseAndPlayButton.click();
 
     await expect(homePage.heading).toHaveText(text('en', 'home.title'));
+  });
+});
+
+test.describe('All boards: players overall', () => {
+  test('lists each player once with the sum of their best score per topic', async ({
+    homePage,
+    leaderboardPage,
+    quizApi,
+  }, testInfo) => {
+    const nickname = uniqueNickname(testInfo);
+    const music = await quizApi.playRound(10, { topicId: 'music' });
+    const general = await quizApi.playRound(10, { topicId: 'general' });
+    const replay = await quizApi.playRound(1, { topicId: 'music' });
+    const saved = [
+      await quizApi.submitOk(music.roundId, nickname),
+      await quizApi.submitOk(general.roundId, nickname),
+      await quizApi.submitOk(replay.roundId, nickname),
+    ];
+    // The weaker music replay doesn't add up: best music + best general.
+    const expectedTotal = saved[0]!.score + saved[1]!.score;
+    await homePage.goto();
+
+    await leaderboardPage.openButton.click();
+
+    await expect(leaderboardPage.table).toContainText(text('en', 'leaderboard.overallCaption'));
+    // Shared server: other tests may hold the top 10; check our row only if it made it.
+    const overall = await quizApi.overall();
+    const ours = overall.players.find((p) => p.nickname === nickname);
+    test.skip(!ours, 'other tests filled the top 10 with higher totals');
+    expect(ours).toMatchObject({ totalScore: expectedTotal, boardsPlayed: 2 });
+    await expect(leaderboardPage.row(nickname)).toHaveCount(1);
+    await expect(leaderboardPage.row(nickname)).toContainText(String(expectedTotal));
   });
 });

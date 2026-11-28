@@ -83,6 +83,7 @@ Highlights of the framework:
 | `GET /api/catalog?lang=…`         | Categories with subcategories, and themed quizzes, with counts                                                         |
 | `POST /api/rounds`                | Start a round `{ lang, topicId \| selection \| collectionId, region?, difficulty?, questionCount?, avoidIds?, seed? }` |
 | `GET /api/leaderboard`            | Top 10 `?topicId=` or `?collectionId=` (or all boards)                                                                 |
+| `GET /api/leaderboard/overall`    | Top 10 players: sum of each player's best score per topic and themed quiz                                              |
 | `POST /api/leaderboard`           | Save a finished ranked round `{ roundId, nickname }`                                                                   |
 | `POST /api/rounds/:id/answers`    | Answer `{ questionId, optionId \| null }` → result and score                                                           |
 | `POST /api/rounds/:id/next`       | Start the timer for the next question                                                                                  |

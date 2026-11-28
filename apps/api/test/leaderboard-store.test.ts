@@ -129,6 +129,41 @@ for (const [name, makeHarness, enabled] of harnesses) {
       expect((await h.store.top({}, 2)).map((e) => e.score)).toEqual([300, 200]);
     });
 
+    it('overall: one row per player, summing their best score on each board', async () => {
+      await add(entry({ nickname: 'Ola', topicId: 'music', score: 300 }));
+      await add(entry({ nickname: 'Ola', topicId: 'music', score: 500 })); // replay: best counts
+      await add(entry({ nickname: 'ola', topicId: 'general', score: 200 })); // same player
+      await add(entry({ nickname: 'Ola', topicId: null, collectionId: 'pub_quiz', score: 100 }));
+      await add(entry({ nickname: 'Max', topicId: 'music', score: 700 }));
+
+      const players = await h.store.overall(10);
+
+      expect(players).toEqual([
+        { rank: 1, nickname: 'Ola', totalScore: 800, boardsPlayed: 3 },
+        { rank: 2, nickname: 'Max', totalScore: 700, boardsPlayed: 1 },
+      ]);
+    });
+
+    it('overall: shows the latest spelling of a nickname and breaks ties by boards played', async () => {
+      await add(entry({ nickname: 'ola', topicId: 'music', score: 300, createdAt: 1 }));
+      await add(entry({ nickname: 'OLA', topicId: 'general', score: 300, createdAt: 2 }));
+      await add(entry({ nickname: 'Max', topicId: 'music', score: 600, createdAt: 3 }));
+
+      const players = await h.store.overall(10);
+
+      expect(players.map((p) => [p.rank, p.nickname, p.boardsPlayed])).toEqual([
+        [1, 'OLA', 2],
+        [2, 'Max', 1],
+      ]);
+    });
+
+    it('overall: respects the limit and is empty without entries', async () => {
+      expect(await h.store.overall(10)).toEqual([]);
+      for (const nickname of ['Aa', 'Bb', 'Cc']) await add(entry({ nickname }));
+
+      expect(await h.store.overall(2)).toHaveLength(2);
+    });
+
     it('returns ISO timestamps and numeric fields', async () => {
       await add(entry({ createdAt: Date.UTC(2026, 0, 2) }));
 

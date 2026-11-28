@@ -129,7 +129,11 @@
     "back": "Wstecz",
     "you": "(ty)",
     "playChoose": "Wybierz quiz i zagraj",
-    "playBoard": "Zagraj: {{name}}"
+    "playBoard": "Zagraj: {{name}}",
+    "overallCaption": "Top 10 graczy ze wszystkich tabel",
+    "totalScore": "Suma punktów",
+    "boardsPlayed": "Zagrane tematy",
+    "overallHint": "Najlepszy wynik gracza w każdym temacie i quizie tematycznym, zsumowany. Przy powtórce tematu liczy się tylko najlepsza runda."
   },
   "save": {
     "title": "Zapisz wynik w tabeli",

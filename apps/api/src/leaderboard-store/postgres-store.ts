@@ -1,12 +1,15 @@
-import type { LeaderboardEntry } from '@pq/shared';
+import type { LeaderboardEntry, OverallPlayer } from '@pq/shared';
 import pg from 'pg';
 import {
   BOARD_ORDER,
+  OVERALL_SQL,
+  toPlayer,
   toEntry,
   type BoardFilter,
   type EntryRow,
   type LeaderboardStore,
   type NewEntry,
+  type OverallRow,
 } from './store';
 
 /*
@@ -89,6 +92,11 @@ export class PostgresLeaderboardStore implements LeaderboardStore {
       [...params, limit],
     );
     return rows.rows.map(toEntry);
+  }
+
+  async overall(limit: number): Promise<OverallPlayer[]> {
+    const rows = (await this.pool.query<OverallRow>(OVERALL_SQL('$1'), [limit])).rows;
+    return rows.map(toPlayer);
   }
 
   async close(): Promise<void> {

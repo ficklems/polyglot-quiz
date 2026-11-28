@@ -4,6 +4,31 @@ Newest entry first. Each entry: what was done, decisions and why, how it was ver
 
 ---
 
+## 2026-11-28 · Owner feedback: "All boards" ranks players (branch `feat/overall-leaderboard`)
+
+### Done
+
+- "All boards" listed every saved round, so a player who played 50 topics appeared 50 times.
+  It now ranks **players**: one row per nickname (case-insensitive) with the **sum of their
+  best score on each topic and themed quiz** and the number of topics played.
+- New endpoint `GET /api/leaderboard/overall`; one SQL query (CTEs + window functions) shared
+  by the SQLite and Postgres stores. `GET /api/leaderboard` without a filter is unchanged.
+
+### Decision
+
+- Best score per board, not every round: otherwise replaying the same easy topic would pile up
+  points. Ties: more topics played first, then the nickname (stable order).
+
+### Verified
+
+- Store contract tests (both stores): summing best scores, case-insensitive grouping, latest
+  spelling shown, limit, empty board. API test via `app.inject`.
+- Playwright API: each nickname once, ranks 1..n, totals descending. E2E: three rounds of one
+  player (one weaker replay) show as one row with best music + best general. Chromium, Pixel
+  and API with `--repeat-each=5` (230 passed).
+
+---
+
 ## 2026-11-28 · Owner feedback: play from the leaderboard (branch `feat/leaderboard-play`)
 
 ### Done

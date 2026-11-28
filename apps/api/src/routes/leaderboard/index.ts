@@ -1,8 +1,10 @@
 import type { FastifyInstance } from 'fastify';
 import {
   leaderboardQuerySchema,
+  overallQuerySchema,
   submitScoreRequestSchema,
   type LeaderboardResponse,
+  type OverallResponse,
   type SubmitScoreResponse,
 } from '@pq/shared';
 import type { Clock } from '../rounds/service';
@@ -21,6 +23,11 @@ export async function leaderboardRoutes(
       ...(topicId !== undefined ? { topicId } : {}),
       ...(collectionId !== undefined ? { collectionId } : {}),
     });
+  });
+
+  app.get('/leaderboard/overall', async (request): Promise<OverallResponse> => {
+    const { limit } = overallQuerySchema.parse(request.query);
+    return { players: await app.leaderboard.overall(limit) };
   });
 
   app.post('/leaderboard', async (request, reply): Promise<SubmitScoreResponse> => {

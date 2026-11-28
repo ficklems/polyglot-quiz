@@ -1,9 +1,11 @@
 import { expect, type APIRequestContext, type TestInfo } from '@playwright/test';
 import {
   leaderboardResponseSchema,
+  overallResponseSchema,
   roundSchema,
   submitScoreResponseSchema,
   type LeaderboardResponse,
+  type OverallResponse,
   type Round,
 } from '@pq/shared';
 import { correctOptionId } from '../data/questions';
@@ -48,6 +50,12 @@ export class QuizApi {
     const res = await this.submit({ roundId, nickname });
     expect(res.status(), await res.text()).toBe(201);
     return submitScoreResponseSchema.parse(await res.json()).entry;
+  }
+
+  async overall(): Promise<OverallResponse> {
+    const res = await this.request.get('/api/leaderboard/overall');
+    expect(res.status()).toBe(200);
+    return overallResponseSchema.parse(await res.json());
   }
 
   async board(params: Record<string, string> = {}): Promise<LeaderboardResponse> {
