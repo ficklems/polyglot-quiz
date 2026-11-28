@@ -313,4 +313,24 @@ test.describe('Resilience', () => {
     await expect(homePage.loadError).toBeHidden();
     await expect(homePage.categoryRows).toHaveCount(COLLAPSED);
   });
+
+  test('explains a slow first load while the free server wakes up', async ({ homePage, page }) => {
+    await page.clock.install();
+    let release = () => {};
+    const serverAwake = new Promise<void>((resolve) => (release = resolve));
+    await page.route('**/api/catalog?*', async (route) => {
+      await serverAwake;
+      await route.continue();
+    });
+
+    await homePage.goto();
+    await expect(page.getByText(text('en', 'topics.loading'))).toBeVisible();
+
+    await page.clock.fastForward(5_000);
+    await expect(page.getByText(text('en', 'topics.wakingUp'))).toBeVisible();
+
+    release();
+    await expect(homePage.categoryRows.first()).toBeVisible();
+    await expect(page.getByText(text('en', 'topics.wakingUp'))).toBeHidden();
+  });
 });
